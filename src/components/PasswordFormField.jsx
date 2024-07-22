@@ -14,21 +14,20 @@ function PasswordFormField({ value, handleInputChange, isValue }) {
 
   return (
     <div>
-      <label htmlFor="password" className="block my-2">Contraseña</label>
       <input
         type={showPassword ? "text" : "password"}
         id="password"
         name="password"
-        placeholder="********"
+        placeholder="Contraseña"
         value={value}
         onChange={handleInputChange}
-        className={`w-[100%] p-2 h-10 border-solid border-2 ${isValue ? 'border-black' : 'border-warn-red'} border-opacity-45 rounded-lg`}
+        className={`mt-2 w-[100%] p-2 h-10 border-solid border-2 ${isValue ? 'border-black' : 'border-warn-red'} border-opacity-45 rounded-lg`}
       />
       <button
         type="button"
         id="togglePassword"
         onClick={handleShowPassword}
-        className="p-2 h-10 absolute right-10"
+        className="mt-2 h-10 absolute right-10 hover:scale-110 transition duration-200"
       >
         <div className="relative">
           <FaEye size='1.3rem'

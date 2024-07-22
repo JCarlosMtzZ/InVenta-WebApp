@@ -2,7 +2,7 @@ import { useState } from "react";
 import FormFieldWarning from "./FormFieldWarning.jsx";
 import PasswordFormField from "./PasswordFormField.jsx";
 
-function SignupForm() {
+function SignupForm({ className }) {
 
   const [formData, setFormData] = useState({
     firstName: '',
@@ -105,77 +105,72 @@ function SignupForm() {
   };
 
   return (
-    <div className='w-[100%]'>
-      <div className="p-10 flex flex-col relative bg-white">
-        <div className="mb-4 text-2xl font-semibold text-center">
-          Crear una cuenta
-        </div>
-        <div className='flex'>
-          <div className='w-[48%] flex flex-col mr-[2%]'>
-            <label htmlFor="firstName" className="my-2">Nombre(s)</label>
-            <input
-              type="text"
-              id="firstName"
-              name="firstName"
-              placeholder="John"
-              value={formData.firstName}
-              onChange={handleInputChange}
-              className={`p-2 h-10 border-solid border-2 ${isFormData.isFirstName ? 'border-black' : 'border-warn-red'} border-opacity-45 rounded-lg`}
-            />
-            <FormFieldWarning
-              isFormField={isFormData.isFirstName}
-              message='Requerido'
-            />
-          </div>
-          <div className='w-[48%] flex flex-col ml-[2%]'>
-            <label htmlFor="lastName" className="my-2">Apellidos</label>
-            <input
-              type="text"
-              id="lastName"
-              name="lastName"
-              placeholder="Doe"
-              value={formData.lastName}
-              onChange={handleInputChange}
-              className={`p-2 h-10 border-solid border-2 ${isFormData.isLastName ? 'border-black' : 'border-warn-red'} border-opacity-45 rounded-lg`}
-            />
-            <FormFieldWarning
-              isFormField={isFormData.isLastName}
-              message='Requerido'
-            />
-          </div>
-        </div>
-        <label htmlFor="email" className="my-2">Correo electrónico</label>
-        <input
-          type="email"
-          id="email"
-          name="email"
-          placeholder="johnDoe@ejemplo.com"
-          value={formData.email}
-          onChange={handleInputChange}
-          className={`p-2 h-10 border-solid border-2 ${isFormData.isEmail ? 'border-black' : 'border-warn-red'} border-opacity-45 rounded-lg`}
-        />
-        <FormFieldWarning
-          isFormField={isFormData.isEmail}
-          message={emailFieldMessage}
-        />
-        <PasswordFormField
-          value={formData.password}
-          handleInputChange={handleInputChange}
-          isValue={isFormData.isPassword} />
-        <FormFieldWarning
-          isFormField={isFormData.isPassword}
-          message={passwordFieldMessage}
-        />
-        <button
-          type="button"
-          onClick={handleSubmit}
-          className="h-10 w-[50%] mt-4 bg-purp-dark text-white rounded-lg self-center
-            hover:bg-white hover:text-black hover:border-black hover:border-2
-            transition"
-        >
-          Enviar
-        </button>
+    <div className={`w-[100%] h-[100%] p-8 flex flex-col justify-center relative bg-white ${className}`}>
+      <div className="mb-10 text-3xl font-semibold">
+        Crear una cuenta
       </div>
+      <div className='flex'>
+        <div className="flex flex-col w-[48%] mr-[4%]">
+          <input
+            type="text"
+            id="firstName"
+            name="firstName"
+            placeholder="Nombre(s)"
+            value={formData.firstName}
+            onChange={handleInputChange}
+            className={`p-2 h-10 border-solid border-2 ${isFormData.isFirstName ? 'border-black' : 'border-warn-red'} border-opacity-45 rounded-lg`}
+          />
+          <FormFieldWarning
+            isFormField={isFormData.isFirstName}
+            message='Requerido'
+          />
+        </div>
+        <div className="flex flex-col w-[48%]">
+          <input
+            type="text"
+            id="lastName"
+            name="lastName"
+            placeholder="Apellidos"
+            value={formData.lastName}
+            onChange={handleInputChange}
+            className={`p-2 h-10 border-solid border-2 ${isFormData.isLastName ? 'border-black' : 'border-warn-red'} border-opacity-45 rounded-lg`}
+          />
+          <FormFieldWarning
+            isFormField={isFormData.isLastName}
+            message='Requerido'
+          />
+        </div>
+      </div>
+      <input
+        type="email"
+        id="email"
+        name="email"
+        placeholder="Correo electrónico"
+        value={formData.email}
+        onChange={handleInputChange}
+        className={`mt-2 p-2 h-10 border-solid border-2 ${isFormData.isEmail ? 'border-black' : 'border-warn-red'} border-opacity-45 rounded-lg`}
+      />
+      <FormFieldWarning
+        isFormField={isFormData.isEmail}
+        message={emailFieldMessage}
+      />
+      <PasswordFormField
+        value={formData.password}
+        handleInputChange={handleInputChange}
+        isValue={isFormData.isPassword} />
+      <FormFieldWarning
+        isFormField={isFormData.isPassword}
+        message={passwordFieldMessage}
+      />
+      <button
+        type="button"
+        onClick={handleSubmit}
+        className="h-10 mt-2 bg-purp-dark text-white rounded-lg
+          hover:bg-white hover:text-black hover:border-black hover:border-2
+          transition"
+      >
+        Enviar
+      </button>
     </div>
   );
 };
