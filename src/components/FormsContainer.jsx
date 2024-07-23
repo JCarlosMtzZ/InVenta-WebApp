@@ -12,10 +12,10 @@ function FormsContainer() {
 
   const handleCLick = () => {
     if (hideLogin) {
-      setLeftText("Utilizar una cuenta existente o:");
+      setLeftText("Utilizar una cuenta existente o");
       setBtnText("Crear cuenta");
     } else {
-      setLeftText("Crea una nueva cuenta o:")
+      setLeftText("Crear una nueva cuenta o")
       setBtnText("Iniciar sesión");
     }
     setAnimationClass('fade-out');
@@ -26,7 +26,7 @@ function FormsContainer() {
   };
 
   return (
-    <div className="flex w-[80%] h-[70%] border-solid border-2 rounded-lg border-purp-dark">
+    <div className="flex w-[50%] h-[70%] border-solid border-2 rounded-lg border-purp-dark">
       <div className="flex flex-col items-center justify-center w-[50%] h-[100%] bg-purp-dark">
         <FaRegUserCircle color="white" size="8rem" />
         <p className='mt-4 w-[60%] text-lg font-normal text-white text-center'>
