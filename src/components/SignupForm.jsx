@@ -113,7 +113,6 @@ function SignupForm({ className }) {
             type="text"
             id="firstName"
             name="firstName"
-            placeholder="Nombre(s)"
             value={formData.firstName}
             onChange={handleInputChange}
             className={`p-2 h-10 border-solid border-2 ${isFormData.isFirstName ? 'border-black' : 'border-warn-red'} border-opacity-45 rounded-lg`}
@@ -129,7 +128,6 @@ function SignupForm({ className }) {
             type="text"
             id="lastName"
             name="lastName"
-            placeholder="Apellidos"
             value={formData.lastName}
             onChange={handleInputChange}
             className={`p-2 h-10 border-solid border-2 ${isFormData.isLastName ? 'border-black' : 'border-warn-red'} border-opacity-45 rounded-lg`}

@@ -16,18 +16,18 @@ function FormsContainer() {
   };
 
   return (
-    <div className='flex flex-col w-[450px] bg-purp-light'>
-      <div className='p-4 pb-0 flex'>
-        <button type='button' onClick={handleCLick} className='w-[35%] flex flex-col items-center text-xl font-semibold'>
+    <div className='w-full h-full min-[450px]:w-[450px] min-[450px]:h-[500px] min-[450px]:rounded-lg min-[450px]:border-2 min-[450px]:border-purp-dark flex flex-col bg-purp-light'>
+      <div className='ml-2 mt-5 flex'>
+        <button type='button' onClick={handleCLick} className='w-[150px] flex flex-col items-center text-lg font-semibold'>
           Iniciar sesión
-          {!hideLogin && <p className='mt-1 w-[80%] border-b-4 border-b-purp-dark'></p>}
+          {!hideLogin && <p className='mt-1 w-[105px] border-b-4 border-b-purp-dark'></p>}
         </button>
-        <button type='button' onClick={handleCLick} className='ml-1 w-[35%] flex flex-col items-center text-xl font-semibold'>
+        <button type='button' onClick={handleCLick} className='ml-1 w-[150px] flex flex-col items-center text-lg font-semibold'>
           Crear Cuenta
-          {hideLogin && <p className='mt-1 w-[82.5%] border-b-4 border-b-purp-dark'></p>}
+          {hideLogin && <p className='mt-1 w-[110px] border-b-4 border-b-purp-dark'></p>}
         </button>
       </div>
-      <div className="flex items-center w-full bg-purp-light">
+      <div>
         {hideLogin ? (
           <SignupForm className={animationClass} />
         ) : (
