@@ -20,7 +20,7 @@ function AdminNavBar() {
 
   return (
     <div className='flex flex-col'>
-      <nav className='w-[100%] h-[50px] bg-purp-dark flex justify-between items-center'>
+      <nav className='w-[100%] h-[10%] bg-purp-dark flex justify-between items-center'>
         <button type='button' className='ml-4 hover:scale-110 transition'>
           <IoHomeOutline color='white' size='2rem' />
         </button>

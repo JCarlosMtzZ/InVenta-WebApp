@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { BrowserRouter, Link, Routes, Route } from 'react-router-dom';
 
 import Login from "./pages/Login.jsx";
@@ -6,14 +7,17 @@ import Dashboard from "./pages/Dashboard.jsx";
 import Sale from "./pages/Sale.jsx";
 import Account from "./pages/Account.jsx";
 
+import UserNavBar from './components/UserNavBar.jsx';
 import AdminNavBar from "./components/AdminNavBar.jsx";
 
 function App() {
 
+  const [isAdminLogged, setIsAdminLogged] = useState(false);
+
   return (
-    <div>
+    <div className='w-screen h-screen overflow-x-auto overflow-y-auto'>
       <BrowserRouter>
-        <AdminNavBar />
+        {isAdminLogged ? <AdminNavBar /> : <UserNavBar />}
         <Routes>
           <Route path="/" element={<Login />} />
           <Route path="/login" element={<Login />} />
@@ -23,17 +27,7 @@ function App() {
           <Route path="/account" element={<Account />} />
         </Routes>
       </BrowserRouter>
-{/*<div className="w-[100vw] h-[100vh] bg-gray-100 flex flex-col justify-center items-center ">
-      <FormsContainer />
-      
-      <LoginForm />
-      <SignupForm />
-      
-      <h1 className="text-6xl font-bold text-mag">Hello, TailwindCSS</h1>
-      
-      </div>*/}
     </div>
-    
   );
 };
 
