@@ -39,15 +39,13 @@ function LoginForm({ className }) {
   };
 
   return (
-    <div className={`w-[100%] h-[100%] p-8 flex flex-col justify-center relative bg-white ${className}`}>
-      <div className="mb-10 text-3xl font-semibold">
-        Iniciar sesión
-      </div>
+    <div className={`w-[100%] h-[100%] p-8 flex flex-col justify-center relative ${className}`}>
+      <label htmlFor="email" className="mb-2">Correo electrónico</label>
       <input
         type="email"
         id="email"
         name="email"
-        placeholder="Correo electrónico"
+        placeholder="correo@ejemplo.com"
         value={formData.email}
         onChange={handleInputChange}
         className={`p-2 h-10 border-solid border-2 ${isFormData.isEmail ? 'border-black' : 'border-warn-red'} border-opacity-45 rounded-lg`}

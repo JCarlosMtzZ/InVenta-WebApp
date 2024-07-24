@@ -14,11 +14,11 @@ function PasswordFormField({ value, handleInputChange, isValue }) {
 
   return (
     <div>
+      <label htmlFor="password" className="mb-2">Contraseña</label>
       <input
         type={showPassword ? "text" : "password"}
         id="password"
         name="password"
-        placeholder="Contraseña"
         value={value}
         onChange={handleInputChange}
         className={`mt-2 w-[100%] p-2 h-10 border-solid border-2 ${isValue ? 'border-black' : 'border-warn-red'} border-opacity-45 rounded-lg`}

@@ -1,23 +1,13 @@
 import { useState } from 'react';
-import { FaRegUserCircle } from 'react-icons/fa';
 import LoginForm from './LoginForm.jsx';
 import SignupForm from './SignupForm';
 
 function FormsContainer() {
 
   const [hideLogin, setHideLogin] = useState(false);
-  const [btnText, setBtnText] = useState("Crear cuenta");
-  const [leftText, setLeftText] = useState("Utilizar una cuenta existente o");
   const [animationClass, setAnimationClass] = useState("fade-in");
 
   const handleCLick = () => {
-    if (hideLogin) {
-      setLeftText("Utilizar una cuenta existente o");
-      setBtnText("Crear cuenta");
-    } else {
-      setLeftText("Crear una nueva cuenta o")
-      setBtnText("Iniciar sesión");
-    }
     setAnimationClass('fade-out');
     setTimeout(() => {
       setHideLogin(!hideLogin);
@@ -26,28 +16,25 @@ function FormsContainer() {
   };
 
   return (
-    <div className="flex w-[50%] h-[70%] border-solid border-2 rounded-lg border-purp-dark">
-      <div className="flex flex-col items-center justify-center w-[50%] h-[100%] bg-purp-dark">
-        <FaRegUserCircle color="white" size="8rem" />
-        <p className='mt-4 w-[60%] text-lg font-normal text-white text-center'>
-          {leftText}
-        </p>
-        <button
-          type='button'
-          onClick={handleCLick}
-          className='mt-4 h-10 w-[60%] text-white rounded-lg border-solid border-2 border-white
-            hover:bg-white hover:text-black hover:border-black hover:scale-110 transition ease-in-out'>
-          {btnText}
+    <div className='flex flex-col w-[450px] bg-purp-light'>
+      <div className='p-4 pb-0 flex'>
+        <button type='button' onClick={handleCLick} className='w-[35%] flex flex-col items-center text-xl font-semibold'>
+          Iniciar sesión
+          {!hideLogin && <p className='mt-1 w-[80%] border-b-4 border-b-purp-dark'></p>}
+        </button>
+        <button type='button' onClick={handleCLick} className='ml-1 w-[35%] flex flex-col items-center text-xl font-semibold'>
+          Crear Cuenta
+          {hideLogin && <p className='mt-1 w-[82.5%] border-b-4 border-b-purp-dark'></p>}
         </button>
       </div>
-      <div className="flex items-center w-[50%] h-[100%] bg-purp-light">
+      <div className="flex items-center w-full bg-purp-light">
         {hideLogin ? (
           <SignupForm className={animationClass} />
         ) : (
           <LoginForm className={animationClass} />
         )}
       </div>
-    </div>
+    </div>  
   );
 };
 
