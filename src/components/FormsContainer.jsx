@@ -7,6 +7,8 @@ function FormsContainer() {
   const [hideLogin, setHideLogin] = useState(false);
   const [animationClass, setAnimationClass] = useState("fade-in");
 
+  const [isWaitingResponse, setIsWaitingResponse] = useState(false);
+
   const handleCLick = () => {
     setAnimationClass('fade-out');
     setTimeout(() => {
@@ -29,9 +31,17 @@ function FormsContainer() {
       </div>
       <div>
         {hideLogin ? (
-          <SignupForm className={animationClass} />
+          <SignupForm
+            className={animationClass}
+            isWaitingResponse={isWaitingResponse}
+            setIsWaitingResponse={setIsWaitingResponse}
+          />
         ) : (
-          <LoginForm className={animationClass} />
+          <LoginForm
+            className={animationClass}
+            isWaitingResponse={isWaitingResponse}
+            setIsWaitingResponse={setIsWaitingResponse}
+          />
         )}
       </div>
     </div>  

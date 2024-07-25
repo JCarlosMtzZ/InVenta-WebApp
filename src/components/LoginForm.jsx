@@ -1,8 +1,11 @@
 import { useState } from "react";
 import FormFieldWarning from "./FormFieldWarning.jsx";
 import PasswordFormField from "./PasswordFormField.jsx";
+import FormSubmitButton from "./FormSubmitButton.jsx";
 
-function LoginForm({ className }) {
+function LoginForm({ className, isWaitingResponse, setIsWaitingResponse }) {
+
+  const [isResponseOk, setIsResponseOk] = useState(true);
 
   const [formData, setFormData] = useState({
     email: '',
@@ -27,6 +30,9 @@ function LoginForm({ className }) {
   };
 
   const handleSubmit = () => {
+    setIsResponseOk(true);
+    setIsWaitingResponse(true);
+
     const currentIsFormData = {
       isEmail: !!formData.email,
       isPassword: !!formData.password
@@ -34,12 +40,45 @@ function LoginForm({ className }) {
     
     if (Object.values(currentIsFormData).some(value => !value)) {
       setIsFormData(currentIsFormData);
+      setIsWaitingResponse(false);
       return;
     }
+
+    fetch('http://localhost:3001/admins/login', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      credentials: 'include',
+      body: JSON.stringify(formData)
+    })
+    .then(response => {
+      if (response.ok) return response.json();
+      if (response.status === 404 || response.status === 401) {
+        setIsResponseOk(false);
+        throw new Error('Correo electrónico o contraseña incorrectos');
+      }
+    })
+    .then(data => {
+      console.log('Success:', data);
+    })
+    .catch(error => {
+      console.error('Error:', error);
+    })
+    .finally(() => {
+      setIsWaitingResponse(false);
+    });
+
   };
 
   return (
     <div className={`w-[100%] h-[100%] p-8 flex flex-col justify-center relative ${className}`}>
+      <div className={`${isResponseOk ? 'hidden' : 'block'} mb-2`}>
+        <FormFieldWarning
+          isFormField={isResponseOk}
+          message='Correo o contraseña incorrectos'
+        />
+      </div>
       <label htmlFor="email" className="mb-2">Correo electrónico</label>
       <input
         type="email"
@@ -62,15 +101,7 @@ function LoginForm({ className }) {
         isFormField={isFormData.isPassword}
         message='Requerido'
       />
-      <button
-        type="button"
-        onClick={handleSubmit}
-        className="h-10 mt-2 bg-purp-dark text-white rounded-lg
-          hover:bg-white hover:text-black hover:border-black hover:border-2
-          transition"
-      >
-        Enviar
-      </button>
+      <FormSubmitButton isWaitingResponse={isWaitingResponse} handleSubmit={handleSubmit} />
     </div>
   );
 };

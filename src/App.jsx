@@ -12,7 +12,7 @@ import AdminNavBar from "./components/AdminNavBar.jsx";
 
 function App() {
 
-  const [isAdminLogged, setIsAdminLogged] = useState(false);
+  const [isAdminLogged, setIsAdminLogged] = useState(true);
 
   return (
     <div className='w-screen h-screen overflow-x-auto overflow-y-auto'>

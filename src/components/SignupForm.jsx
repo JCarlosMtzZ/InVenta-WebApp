@@ -1,8 +1,9 @@
 import { useState } from "react";
 import FormFieldWarning from "./FormFieldWarning.jsx";
 import PasswordFormField from "./PasswordFormField.jsx";
+import FormSubmitButton from "./FormSubmitButton.jsx";
 
-function SignupForm({ className }) {
+function SignupForm({ className, isWaitingResponse, setIsWaitingResponse }) {
 
   const [formData, setFormData] = useState({
     firstName: '',
@@ -18,7 +19,7 @@ function SignupForm({ className }) {
   });
   const [emailFieldMessage, setEmailFieldMessage] = useState("Requerido");
   const [passwordFieldMessage, setPasswordFieldMessage] = useState("Requerido");
-  
+
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData({
@@ -59,6 +60,8 @@ function SignupForm({ className }) {
   };
 
   const handleSubmit = () => {
+    setIsWaitingResponse(true);
+
     const currentIsFormData = {
       isFirstName: !!formData.firstName,
       isLastName: !!formData.lastName,
@@ -68,6 +71,7 @@ function SignupForm({ className }) {
     
     if (Object.values(currentIsFormData).some(value => !value)) {
       setIsFormData(currentIsFormData);
+      setIsWaitingResponse(false);
       return;
     }
     const currentEmail = formData.email;
@@ -76,6 +80,7 @@ function SignupForm({ className }) {
       setIsFormData({
         ...isFormData,
         isEmail: false});
+      setIsWaitingResponse(false);
       return;
     }
     const currentPassword = formData.password;
@@ -85,23 +90,38 @@ function SignupForm({ className }) {
       setIsFormData({
         ...isFormData,
         isPassword: false});
+      setIsWaitingResponse(false);
       return;
     }
     
-    //fetch('http://localhost:3001/admins/', {
-    //  method: 'POST',
-    //  headers: {
-    //    'Content-Type': 'application/json'
-    //  },
-    //  body: JSON.stringify(formData)
-    //})
-    //.then(response => response.json())
-    //.then(data => {
-    //  console.log('Success:', data);
-    //})
-    //.catch(error => {
-    //  console.error('Error:', error);
-    //});
+    fetch('http://localhost:3001/admins/signup', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      credentials: 'include',
+      body: JSON.stringify(formData)
+    })
+    .then(response => {
+      if (response.ok) return response.json();
+      if (response.status === 500) {
+        setEmailFieldMessage("Correo electrónico en uso");
+        setIsFormData({
+          ...isFormData,
+          isEmail: false,
+        });
+        throw new Error('Correo electrónico en uso');
+      }
+    })
+    .then(data => {
+      console.log('Success:', data);
+    })
+    .catch(error => {
+      console.error('Error:', error);
+    })
+    .finally(() => {
+      setIsWaitingResponse(false);
+    });
   };
 
   return (
@@ -160,15 +180,7 @@ function SignupForm({ className }) {
         isFormField={isFormData.isPassword}
         message={passwordFieldMessage}
       />
-      <button
-        type="button"
-        onClick={handleSubmit}
-        className="h-10 mt-2 bg-purp-dark text-white rounded-lg
-          hover:bg-white hover:text-black hover:border-black hover:border-2
-          transition"
-      >
-        Enviar
-      </button>
+      <FormSubmitButton isWaitingResponse={isWaitingResponse} handleSubmit={handleSubmit} />
     </div>
   );
 };
