@@ -18,7 +18,7 @@ function FormsContainer() {
   };
 
   return (
-    <div className='w-full h-full min-[450px]:w-[450px] min-[450px]:h-[500px] min-[450px]:rounded-lg min-[450px]:border-2 min-[450px]:border-purp-dark flex flex-col bg-purp-light'>
+    <div className='w-full h-full sm:w-[500px] sm:h-[500px] sm:rounded-lg sm:shadow-lg flex flex-col'>
       <div className='ml-2 mt-5 flex'>
         <button type='button' onClick={handleCLick} className='w-[150px] flex flex-col items-center text-lg font-semibold'>
           Iniciar sesión

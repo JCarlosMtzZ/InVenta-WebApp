@@ -6,6 +6,7 @@ import Inventory from "./pages/Inventory.jsx";
 import Dashboard from "./pages/Dashboard.jsx";
 import Sale from "./pages/Sale.jsx";
 import Account from "./pages/Account.jsx";
+import ShopItemDetail from "./components/ShopItemDetail.jsx";
 
 import UserNavBar from './components/UserNavBar.jsx';
 import AdminNavBar from "./components/AdminNavBar.jsx";
@@ -25,6 +26,7 @@ function App() {
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/sale" element={<Sale />} />
           <Route path="/account" element={<Account />} />
+          <Route path="/inventory/product/:id" element={<ShopItemDetail />} />
         </Routes>
       </BrowserRouter>
     </div>
