@@ -12,7 +12,7 @@ function Inventory() {
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const response = await fetch('http://localhost:3001/products/images/discounts');
+        const response = await fetch('http://localhost:3001/products/category/images/discounts');
         if (!response.ok)
           throw new Error('Error fetching products');
         const result = await response.json();

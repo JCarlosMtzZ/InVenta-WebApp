@@ -18,7 +18,7 @@ function App() {
   return (
     <div className='w-screen h-screen overflow-x-auto overflow-y-auto'>
       <BrowserRouter>
-        {isAdminLogged ? <AdminNavBar /> : <UserNavBar />}
+        {!isAdminLogged ? <AdminNavBar /> : <UserNavBar />}
         <Routes>
           <Route path="/" element={<Login />} />
           <Route path="/login" element={<Login />} />

@@ -20,6 +20,7 @@
   } else {
     finalPrice = unitPrice;
   }
+  finalPrice = finalPrice.toFixed(2);
 
   return (
     <div className="p-4 flex flex-col justify-center w-full h-[90px]">

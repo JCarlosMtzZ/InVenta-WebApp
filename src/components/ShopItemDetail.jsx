@@ -22,8 +22,9 @@ function ShopItemDetail() {
 
   useEffect(() => {
     const fetchProduct = async () => {
+      setIsLoading(true);
       try {
-        const response = await fetch(`http://localhost:3001/products/images/discounts/${id}`);
+        const response = await fetch(`http://localhost:3001/products/category/images/discounts/${id}`);
         if (!response.ok)
           throw new Error('Error fetching product');
         const result = await response.json();
@@ -36,7 +37,7 @@ function ShopItemDetail() {
       }
     };
     fetchProduct();
-  }, []);
+  }, [id]);
 
   const handleRightClick = () => {
     if (imageIndex >= images.length - 1)
@@ -74,13 +75,17 @@ function ShopItemDetail() {
                 <PriceDisplay product={product} />
               </div>
               <div className="flex gap-2 p-4">
-                <div className="h-[50px] w-[70px] text-sm hover:border-mag border-dashed border rounded-lg p-2 flex flex-col items-center justify-center">
+                <div className="h-[50px] w-fit text-sm hover:border-mag border-dashed border rounded-lg p-2 flex flex-col items-center justify-center">
                   <p>Marca:</p>
                   <p>{product.brand}</p>
                 </div>
-                <div className="h-[50px] w-[70px] text-sm hover:border-mag border-dashed border rounded-lg p-2 flex flex-col items-center justify-center">
+                <div className="h-[50px] w-fit text-sm hover:border-mag border-dashed border rounded-lg p-2 flex flex-col items-center justify-center">
                   <p>Tamaño:</p>
                   <p>{product.size}</p>
+                </div>
+                <div className="h-[50px] w-fit text-sm hover:border-mag border-dashed border rounded-lg p-2 flex flex-col items-center justify-center">
+                  <p>Categoría:</p>
+                  <p>{product.Category.name}</p>
                 </div>
               </div>
             </div>
