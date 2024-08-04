@@ -62,7 +62,7 @@ function SearchBar() {
   };
 
   return (
-    <div ref={dropdownRef} className="relative">
+    <div ref={dropdownRef} className="relative z-20">
       <div className="flex items-center">
         <input
           type="text"

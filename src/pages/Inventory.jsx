@@ -2,12 +2,20 @@ import { useEffect, useState } from 'react';
 import ShopItem from '../components/ShopItem.jsx';
 
 import { AiOutlineLoading } from 'react-icons/ai';
+import { FaPlus } from "react-icons/fa";
 import { useNavigate } from 'react-router-dom';
+import AddProductButton from '../components/AddProductButton.jsx';
+import AddProductForm from '../components/AddProductForm.jsx';
 
 function Inventory() {
 
   const [products, setProducts] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [isAddingProduct, setIsAddingProduct] = useState(false);
+
+  const handlePlusButtonClick = () => {
+    setIsAddingProduct(true);
+  };
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -41,14 +49,31 @@ function Inventory() {
             <AiOutlineLoading size='4rem' color='#605399' />
           </div>
         ) : (
-          <div className='w-full flex flex-wrap justify-center gap-4 pt-2 pl-2'>
-            {products.length > 0 && (
-              products.map((product) => (
-              <ShopItem
-                key={product.id}
-                product={product}
-                onClick={handleShopItemClick} />
-            )))}
+          <div className={`relative w-full h-full ${isAddingProduct && 'overflow-hidden'}`}>
+            
+            {isAddingProduct ? (
+              <div className='absolute w-full h-full flex items-center justify-center z-10'>
+                <AddProductForm
+                  isOpen={isAddingProduct}
+                  setIsOpen={setIsAddingProduct}
+                />
+              </div>
+            ) : (
+              <div className='fixed right-[20px] bottom-[20px]'>
+                <button onClick={handlePlusButtonClick} type="button" className="bg-purp-dark p-2 rounded-[50%] hover:scale-105 transition">
+                  <FaPlus color="white" size='1.8rem' />
+                </button>
+              </div>
+            )}
+            <div className='w-full flex flex-wrap justify-center gap-4 pt-2 pl-2'>
+              {products.length > 0 && (
+                products.map((product) => (
+                <ShopItem
+                  key={product.id}
+                  product={product}
+                  onClick={handleShopItemClick} />
+              )))}
+            </div>
           </div>
         )}
       </div>

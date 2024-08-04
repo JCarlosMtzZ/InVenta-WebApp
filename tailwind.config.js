@@ -13,7 +13,8 @@ export default {
       'purp-light': '#e4def9',
       'mag-light': '#ebc1ee',
       'mag': '#d562be',
-      'warn-red': '#b80600'
+      'warn-red': '#b80600',
+      'ok-green': '#138808'
 
     },
     extend: {},

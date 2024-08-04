@@ -6,7 +6,7 @@ function FormSubmitButton({ isWaitingResponse, handleSubmit }) {
       disabled={isWaitingResponse}
       type="button"
       onClick={handleSubmit}
-      className={`h-10 mt-2 bg-purp-dark text-white rounded-lg disabled:opacity-75
+      className={`h-10 w-full bg-purp-dark text-white rounded-lg disabled:opacity-75
         enabled:hover:bg-white enabled:hover:text-black enabled:hover:border-black enabled:hover:border-2
         transition`}
     >
