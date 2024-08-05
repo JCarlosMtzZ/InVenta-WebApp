@@ -99,7 +99,7 @@ function AddProductForm({ isOpen, setIsOpen }) {
   const [priceFieldMessage, setPriceFieldMessage] = useState("Requerido");
   const [stockFieldMessage, setStockFieldMessage] = useState("Requerido");
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     setIsWaitingResponse(true);
 
     const currentIsFormData = {
@@ -141,58 +141,68 @@ function AddProductForm({ isOpen, setIsOpen }) {
         return;
       }
     }
-    setIsWaitingResponse(false);
-    
-    
 
-    //const currentEmail = formData.email;
-    //if (!validateEmail(currentEmail)) {
-    //  setEmailFieldMessage("Utiliza una dirección válida");
-    //  setIsFormData({
-    //    ...isFormData,
-    //    isEmail: false});
-    //  setIsWaitingResponse(false);
-    //  return;
-    //}
-    //const currentPassword = formData.password;
-    //const passwordWarnMsg = validatePassword(currentPassword);
-    //if (passwordWarnMsg) {
-    //  setPasswordFieldMessage("Utiliza al menos " + passwordWarnMsg);
-    //  setIsFormData({
-    //    ...isFormData,
-    //    isPassword: false});
-    //  setIsWaitingResponse(false);
-    //  return;
-    //}
+    try {
+      
+      const newProductResponse = await
+      fetch('http://localhost:3001/products', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        credentials: 'include',
+        body: JSON.stringify(formData)
+      });
     
-    //fetch('http://localhost:3001/admins/signup', {
-    //  method: 'POST',
-    //  headers: {
-    //    'Content-Type': 'application/json'
-    //  },
-    //  credentials: 'include',
-    //  body: JSON.stringify(formData)
-    //})
-    //.then(response => {
-    //  if (response.ok) return response.json();
-    //  if (response.status === 500) {
-    //    setEmailFieldMessage("Correo electrónico en uso");
-    //    setIsFormData({
-    //      ...isFormData,
-    //      isEmail: false,
-    //    });
-    //    throw new Error('Correo electrónico en uso');
-    //  }
-    //})
-    //.then(data => {
-    //  console.log('Success:', data);
-    //})
-    //.catch(error => {
-    //  console.error('Error:', error);
-    //})
-    //.finally(() => {
-    //  setIsWaitingResponse(false);
-    //});
+      if (!newProductResponse.ok)
+        throw new Error('Error al crear producto');
+
+      const newProduct = await newProductResponse.json();
+
+      const form_Data = new FormData();
+      form_Data.append('prefix', newProduct.id);
+      const currentSelectedFiles = selectedFiles;
+      for (let file of currentSelectedFiles)
+        form_Data.append('files', file);
+
+      const uploadFilesResponse = await
+      fetch('http://localhost:3001/files/', {
+        method: 'POST',
+        body: form_Data
+      });
+
+      if (!uploadFilesResponse.ok)
+        throw new Error('Error al subir archivos');
+
+      const uploadedFilesResponse = await
+        fetch(`http://localhost:3001/files/${newProduct.id}`);
+
+      if (!uploadedFilesResponse.ok)
+        throw new Error('Error al obtener archivos');
+
+      const uploadedFiles = await uploadedFilesResponse.json();
+
+      for (let file of uploadedFiles) {
+        const newImageResponse = await
+          fetch('http://localhost:3001/images', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            credentials: 'include',
+            body: JSON.stringify({
+              url: file.name,
+              productId: newProduct.id
+            })
+          });
+        if (!newImageResponse.ok)
+          throw new Error('Error al subir imagen');
+      }
+    } catch (error) {
+      console.log(error); 
+    } finally {
+      setIsWaitingResponse(false);
+    }
   };
 
   const handleClose = () => {

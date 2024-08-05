@@ -7,11 +7,10 @@ import { useNavigate } from 'react-router-dom';
 import AddProductButton from '../components/AddProductButton.jsx';
 import AddProductForm from '../components/AddProductForm.jsx';
 
-function Inventory() {
+function Inventory({ isLogging, isAddingProduct, setIsAddingProduct }) {
 
   const [products, setProducts] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [isAddingProduct, setIsAddingProduct] = useState(false);
 
   const handlePlusButtonClick = () => {
     setIsAddingProduct(true);
@@ -58,7 +57,7 @@ function Inventory() {
                 />
               </div>
             ) : (
-              <div className='fixed right-[35px] bottom-[30px] z-10'>
+              <div className={`${isLogging && 'hidden'} fixed right-[35px] bottom-[30px] z-10`}>
                 <button onClick={handlePlusButtonClick} type="button" className="bg-purp-dark p-2 rounded-[50%] hover:scale-105 transition">
                   <FaPlus color="white" size='1.8rem' />
                 </button>

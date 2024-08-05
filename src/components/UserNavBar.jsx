@@ -3,9 +3,10 @@ import { FaRegUserCircle } from "react-icons/fa";
 import SearchBar from "./SearchBar";
 import { Link } from "react-router-dom";
 
-function UserNavBar({ isLogging, setIsLogging }) {
+function UserNavBar({ setIsLogging, setIsAddingProduct }) {
 
   const handleOpen = () => {
+    setIsAddingProduct(false);
     setIsLogging(true);
   }
 

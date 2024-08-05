@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import { BrowserRouter, Link, Routes, Route } from 'react-router-dom';
 
-import Login from "./pages/Login.jsx";
 import Inventory from "./pages/Inventory.jsx";
 import Dashboard from "./pages/Dashboard.jsx";
 import Sale from "./pages/Sale.jsx";
@@ -16,14 +15,14 @@ function App() {
 
   const [isAdminLogged, setIsAdminLogged] = useState(true);
   const [isLogging, setIsLogging] = useState(false);
+  const [isAddingProduct, setIsAddingProduct] = useState(false);
 
   return (
     <div className={`w-full h-screen ${isLogging && 'overflow-hidden'}`}>
       {isLogging && (
           <div className={`bg-black/70 absolute w-full min-h-[89.8%] top-[60px] flex items-center justify-center z-20`}>
             <FormsContainer
-              isOpen={isLogging}
-              setIsOpen={setIsLogging}  
+              setIsOpen={setIsLogging}
             />
           </div>
       )}
@@ -32,14 +31,21 @@ function App() {
           <AdminNavBar />
           ) : (
             <UserNavBar
-              isLogging={isLogging}
               setIsLogging={setIsLogging}
+              setIsAddingProduct={setIsAddingProduct}
             />
           )}
         <Routes>
-          <Route path="/" element={<Login />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/inventory" element={<Inventory />} />
+          <Route path="/" element={<Inventory />} />
+          <Route
+            path="/inventory"
+            element={
+              <Inventory
+                isLogging={isLogging}
+                isAddingProduct={isAddingProduct}
+                setIsAddingProduct={setIsAddingProduct}
+              />}
+          />
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/sale" element={<Sale />} />
           <Route path="/account" element={<Account />} />

@@ -3,7 +3,7 @@ import LoginForm from './LoginForm.jsx';
 import SignupForm from './SignupForm';
 import { IoCloseCircleOutline } from 'react-icons/io5';
 
-function FormsContainer({ isOpen, setIsOpen }) {
+function FormsContainer({ setIsOpen }) {
 
   const [hideLogin, setHideLogin] = useState(false);
   const [animationClass, setAnimationClass] = useState("fade-in");
@@ -23,7 +23,7 @@ function FormsContainer({ isOpen, setIsOpen }) {
   };
 
   return (
-    <div className='bg-white w-full h-full sm:w-[500px] sm:h-[500px] sm:rounded-lg sm:shadow-lg flex flex-col'>
+    <div className='bg-white w-full h-[89.8vh] sm:w-[500px] sm:h-[500px] sm:rounded-lg sm:shadow-lg flex flex-col'>
       <div className='ml-2 mr-7 mt-5 flex justify-between items-center'>
         <div className='flex'>
           <button type='button' onClick={handleCLick} className='w-[150px] flex flex-col items-center text-lg font-semibold'>
