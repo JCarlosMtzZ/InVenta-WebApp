@@ -43,23 +43,22 @@ function Inventory() {
 
 
   return (
-      <div className={`w-full h-[90%] ${isLoading && 'flex justify-center items-center'}`}>
+      <div className={`w-full h-[89.8%] ${isLoading && 'flex justify-center items-center'}`}>
         {isLoading ? (
           <div className='w-fit h-fit animate-spin'>
             <AiOutlineLoading size='4rem' color='#605399' />
           </div>
         ) : (
-          <div className={`relative w-full h-full ${isAddingProduct && 'overflow-hidden'}`}>
-            
+          <div className={`relative w-full min-h-full max-h-[500px]  ${isAddingProduct && 'overflow-hidden'}`}>
             {isAddingProduct ? (
-              <div className='absolute w-full h-full flex items-center justify-center z-10'>
+              <div className='absolute w-full h-full flex items-center justify-center z-20'>
                 <AddProductForm
                   isOpen={isAddingProduct}
                   setIsOpen={setIsAddingProduct}
                 />
               </div>
             ) : (
-              <div className='fixed right-[20px] bottom-[20px]'>
+              <div className='fixed right-[35px] bottom-[30px] z-10'>
                 <button onClick={handlePlusButtonClick} type="button" className="bg-purp-dark p-2 rounded-[50%] hover:scale-105 transition">
                   <FaPlus color="white" size='1.8rem' />
                 </button>

@@ -7,7 +7,7 @@ import FormSubmitButton from "./FormSubmitButton";
 
 function AddProductForm({ isOpen, setIsOpen }) {
 
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const [isWaitingResponse, setIsWaitingResponse] = useState(false);
   const [categories, setCategories] = useState([]);
 
@@ -200,10 +200,12 @@ function AddProductForm({ isOpen, setIsOpen }) {
   };
 
   return(
-    <div className={`w-full h-full flex justify-center items-center ${isLoading ? 'bg-white' : 'bg-black/70'}`}>
+    <div className={`w-full h-full flex justify-center items-center bg-black/70`}>
       {isLoading ? (
-        <div className='w-fit h-fit animate-spin'>
-          <AiOutlineLoading size='4rem' color='#605399' />
+        <div className="bg-white flex items-center justify-center w-full h-full sm:w-[500px] sm:h-[500px] sm:rounded-lg sm:shadow-lg">
+          <div className='w-fit h-fit animate-spin'>
+            <AiOutlineLoading size='4rem' color='#605399' />
+          </div>
         </div>
       ) : (
         <div className='relative bg-white w-full h-full sm:w-[500px] sm:h-[500px] sm:rounded-lg sm:shadow-lg flex flex-col items-center'>
