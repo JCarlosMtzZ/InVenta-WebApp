@@ -10,28 +10,58 @@ import AddProductForm from '../components/AddProductForm.jsx';
 function Inventory({ isLogging, isAddingProduct, setIsAddingProduct }) {
 
   const [products, setProducts] = useState([]);
+  const [filteredProducts, setFilteredProducts] = useState([]);
+  const [filter, setFilter] = useState('all');
+
+  const [categories, setCategories] = useState([]);
+  
   const [isLoading, setIsLoading] = useState(true);
 
   const handlePlusButtonClick = () => {
     setIsAddingProduct(true);
   };
 
+  const handleFilterChange = (e) => {
+    const value = e.target.value;
+    if (value === 'all') {
+      setFilteredProducts(products);
+    } else if (value === 'discounts') {
+      const productsByFilter = products.filter((product) => product.Discounts.length > 0);
+      setFilteredProducts(productsByFilter);
+    } else {
+      const productsByFilter = products.filter((product) => product.categoryId === value);
+      setFilteredProducts(productsByFilter);
+    }
+    setFilter(value);
+  };
+
   useEffect(() => {
-    const fetchProducts = async () => {
+    const initialFetch = async () => {
       try {
-        const response = await fetch('http://localhost:3001/products/category/images/discounts');
-        if (!response.ok)
+        const productsResponse = await fetch('http://localhost:3001/products/category/images/discounts');
+        const categoriesResponse = await fetch('http://localhost:3001/categories')
+        if (!productsResponse.ok)
           throw new Error('Error fetching products');
-        const result = await response.json();
-        if (result)
+        if (!categoriesResponse.ok)
+          throw new Error('Error fetching categories');
+        const productsResult = await productsResponse.json();
+        const categoriesResult = await categoriesResponse.json();
+        if (productsResult && categoriesResult) {
+          setCategories(categoriesResult);
+          setProducts(productsResult.sort(
+            (a, b) => {
+              if (a.name < b.name) return -1;
+              if (a.name > b.name) return 1;
+              return 0;
+          }));
+          setFilteredProducts(productsResult);
           setIsLoading(false);
-        console.log(result);
-        setProducts(result);
+        }
       } catch (error) {
         console.log(error);
       }
     };
-    fetchProducts();
+    initialFetch();
   }, []);
 
   const navigate = useNavigate();
@@ -63,9 +93,51 @@ function Inventory({ isLogging, isAddingProduct, setIsAddingProduct }) {
                 </button>
               </div>
             )}
-            <div className='w-full flex flex-wrap justify-center gap-4 pt-2 pl-2'>
-              {products.length > 0 && (
-                products.map((product) => (
+            <div className='w-full flex flex-wrap justify-center gap-4'>
+              <div className='w-full h-14 flex items-center justify-center gap-4 overflow-y-hidden'>
+                <button
+                  type='button'
+                  value='all'
+                  onClick={handleFilterChange}
+                  className={`${filter === 'all' ? 'bg-purp-dark/90 text-white' : 'bg-purp-dark/20'} h-10 w-fit px-4 rounded-lg hover:scale-105 transition`}
+                >
+                  Todos
+                </button>
+                <button
+                  type='button'
+                  value='discounts'
+                  onClick={handleFilterChange}
+                  className={`${filter === 'discounts' ? 'bg-purp-dark/90 text-white' : 'bg-purp-dark/20'} h-10 w-fit px-4 rounded-lg hover:scale-105 transition`}
+                >
+                  Ofertas
+                </button>
+                <select
+                  name="categoryId"
+                  id="categoryId"
+                  value={`${filter === 'all' || filter === 'discounts' ? '' : filter}`}
+                  onChange={handleFilterChange}
+                  className={`${filter != 'all' && filter != 'discounts' ? 'bg-purp-dark/90 text-white' : 'bg-purp-dark/20'} h-10 w-fit px-4 rounded-lg hover:scale-105 transition cursor-pointer focus:outline-none`}
+                >
+                  <option
+                    value=""
+                    disabled
+                  >
+                    Categorías
+                  </option>
+                    {categories.length > 0 && (
+                      categories.map((category) => (
+                        <option
+                          key={category.id}
+                          value={category.id}
+                        >
+                          {category.name}
+                        </option>
+                      ))
+                    )}
+                </select>
+              </div>
+              {filteredProducts.length > 0 && (
+                filteredProducts.map((product) => (
                 <ShopItem
                   key={product.id}
                   product={product}
