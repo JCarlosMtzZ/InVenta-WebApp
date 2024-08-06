@@ -1,6 +1,9 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { AiOutlineLoading } from "react-icons/ai";
+import { FaPlus } from "react-icons/fa";
+import { HiUpload } from "react-icons/hi";
+
 import PriceDisplay from "./PriceDisplay";
 
 import { FaAngleLeft } from 'react-icons/fa';
@@ -12,14 +15,67 @@ import img3 from '../assets/img3.jpeg';
 
 function ShopItemDetail() {
 
-  const images = [img1, img2, img3];
+  const uri = 'https://axi88wcqsfqf.objectstorage.mx-queretaro-1.oci.customer-oci.com/n/axi88wcqsfqf/b/bucket-catalog-web-app/o/';
 
+  const [images, setImages] = useState([]);
   const [imageIndex, setImageIndex] = useState(0);
 
   const { id } = useParams();
   const [product, setProduct] = useState();
   const [isLoading, setIsLoading] = useState(true);
 
+  const [selectedFiles, setSelectedFiles] = useState([]);
+  const [isWaitingResponse, setIsWaitingResponse] = useState(false);
+
+  const handleFileChange = (e) => {
+    const files = Array.from(e.target.files);
+    setSelectedFiles(files);
+  };
+
+  const handleSubmitFiles = async () => {
+    setIsWaitingResponse(true);
+    const form_Data = new FormData();
+    form_Data.append('prefix', product.id);
+    const currentSelectedFiles = selectedFiles;
+    for (let file of currentSelectedFiles)
+      form_Data.append('files', file);
+
+    try {
+      const uploadFilesResponse = await
+      fetch('http://localhost:3001/files/', {
+        method: 'POST',
+        body: form_Data
+      });
+      
+      if (!uploadFilesResponse.ok)
+        throw new Error('Error al subir archivos');
+
+      const uploadedFiles = await uploadFilesResponse.json();
+
+      for (let fileName of uploadedFiles) {
+        const newImageResponse = await
+          fetch('http://localhost:3001/images', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            credentials: 'include',
+            body: JSON.stringify({
+              url: fileName,
+              productId: product.id
+            })
+          });
+        if (!newImageResponse.ok)
+          throw new Error('Error al subir imagen');
+      } 
+    } catch (error) {
+      console.log(error); 
+    } finally {
+      setIsWaitingResponse(false);
+      setSelectedFiles([]);
+    }
+  };
+  
   useEffect(() => {
     const fetchProduct = async () => {
       setIsLoading(true);
@@ -31,6 +87,7 @@ function ShopItemDetail() {
         if (result)
           setIsLoading(false);
         console.log(result);
+        setImages(result.Images)
         setProduct(result);
       } catch (error) {
         console.log(error);
@@ -89,16 +146,51 @@ function ShopItemDetail() {
                 </div>
               </div>
             </div>
+            <div className={`flex ${selectedFiles.length > 0 ? 'w-[140px]' : 'w-[100px]'}  h-[100px]`}>
+              <label htmlFor="file-upload" className={`bg-purp-dark/10 scale-95 transition hover:scale-100 flex items-center justify-center  w-[100px] h-full cursor-pointer border-4 border-purp-dark border-dashed rounded-lg`}>
+                {selectedFiles.length > 0 ? (
+                  <p>{`${selectedFiles.length} foto(s)`}</p>
+                ) : (
+                  <FaPlus size='2.5rem' color="#605399" />
+                )}
+              </label>
+              <input
+                type="file"
+                id='file-upload'
+                multiple
+                accept=".jpeg,.jpg,.png,.gif"
+                onChange={handleFileChange}
+                className="hidden"
+              />
+              {selectedFiles.length > 0 &&
+                <button
+                  type="button"
+                  onClick={handleSubmitFiles}
+                  disabled={isWaitingResponse}
+                  className={`flex items-center justify-center scale-95 transition hover:scale-100 bg-purp-dark w-[35px] h-full rounded-lg disabled:opacity-75 disabled:hover:scale-95`}
+                >
+                  {isWaitingResponse ? (
+                    <AiOutlineLoading color='white' size='1.4rem' className='animate-spin' />
+                  ) : (
+                    <HiUpload color="white" size='1.5rem' />
+                  )}
+                  
+                </button>
+              }
+            </div>
             {images.map((image, index) => (
               <img
                 onMouseOver={() => handleOnMouseOver(index)}
                 key={index}
-                src={image}
+                src={uri + image.url}
                 className={`${imageIndex === index && 'ring-4 ring-mag'} object-cover w-[100px] h-[100px] scale-95 hover:scale-100 transition rounded-lg`} />
             ))}
+            
           </div>
           <div className="relative p-2 w-[100%] md:w-[70%] flex items-center justify-center">
-            <img src={images[imageIndex]} className="object-cover w-full h-full rounded-lg" />
+            <img
+              src={uri + images[imageIndex].url}
+              className="object-cover w-full h-full rounded-lg" />
             <button onClick={handleLeftClick} type="button" className="opacity-0 hover:opacity-70 transition flex items-center justify-center left-2 top-2 bottom-2 rounded-l-lg absolute w-12 bg-white">
               <FaAngleLeft size='3rem' color="black" />
             </button>
