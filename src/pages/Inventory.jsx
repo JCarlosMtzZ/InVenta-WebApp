@@ -141,7 +141,8 @@ function Inventory({ isLogging, isAddingProduct, setIsAddingProduct }) {
                 <ShopItem
                   key={product.id}
                   product={product}
-                  onClick={handleShopItemClick} />
+                  onClick={handleShopItemClick}
+                  showButtons={false} />
               )))}
             </div>
           </div>

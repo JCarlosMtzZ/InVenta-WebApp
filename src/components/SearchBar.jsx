@@ -5,7 +5,7 @@ import { IoSearchSharp } from "react-icons/io5";
 import { useNavigate } from "react-router-dom";
 
 
-function SearchBar() {
+function SearchBar({ externalProducts, setExternalProducts, hasDropdown }) {
 
   const [searchTerm, setSearchTerm] = useState('');
   const [products, setProducts] = useState([]);
@@ -14,12 +14,18 @@ function SearchBar() {
 
   const fetchProducts = async (term) => {
     try {
-      const response = await fetch(`http://localhost:3001/products?name=${term}`);
+      let response;
+      if (hasDropdown)
+        response = await fetch(`http://localhost:3001/products?name=${term}`);
+      else
+        response = await fetch(`http://localhost:3001/products/category/images/discounts?name=${term}`);
       if (!response.ok)
         throw new Error('Error fetching products');
       const result = await response.json();
-      console.log(result);
-      setProducts(result);
+      if (hasDropdown)
+        setProducts(result);
+      else
+        setExternalProducts(result);
     } catch (error) {
       console.log(error);
     }
@@ -62,8 +68,8 @@ function SearchBar() {
   };
 
   return (
-    <div ref={dropdownRef} className="relative z-30">
-      <div className="flex items-center">
+    <div ref={dropdownRef} className={`relative ${hasDropdown && 'z-30'}`}>
+      <div className="flex items-center w-fit rounded-lg shadow-md">
         <input
           type="text"
           placeholder="Buscar producto"
@@ -71,13 +77,13 @@ function SearchBar() {
           onChange={handleInputChange}
           onClick={() => setIsTyping(true)}
           onfocusout
-          className="text-black focus:outline-none p-3 h-[40px] w-[160px] sm:w-[300px] rounded-l-lg focus:border-0"
+          className={`text-black focus:outline-none p-3 h-[40px] w-[160px] sm:w-[300px] rounded-l-lg focus:border-0`}
         />
         <button type="button" className="p-1 bg-white h-[40px] w-[40px] rounded-r-lg flex justify-center items-center">
           <IoSearchSharp size='1.8rem' color="#605399" className="hover:scale-110 transition"/>
         </button>
       </div>
-      {isTyping && 
+      {isTyping && hasDropdown &&
         <div className="absolute mt-1 bg-white w-[200px] sm:w-[340px] rounded-lg shadow-md z-10">
           {products.map((product) => (
             <div onClick={() => handleProductNameClick(product.id)} key={product.id} className="hover:text-mag hover:font-semibold  hover:cursor-pointer h-[35px] w-full my-2 mx-4 flex items-center text-nowrap line-clamp-1">
@@ -90,4 +96,4 @@ function SearchBar() {
   );
 };
 
-export default SearchBar
+export default SearchBar;

@@ -15,7 +15,9 @@ function UserNavBar({ setIsLogging, setIsAddingProduct }) {
       <button type='button' className='ml-4 hover:scale-110 transition'>
         <IoHomeOutline color='white' size='2rem' />
       </button>
-      <SearchBar />  
+      <SearchBar
+        hasDropdown={true}
+      />  
       <button
         type="button"
         onClick={handleOpen}
