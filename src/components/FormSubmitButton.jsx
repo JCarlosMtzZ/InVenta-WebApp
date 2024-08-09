@@ -1,6 +1,6 @@
 import { AiOutlineLoading } from 'react-icons/ai';
 
-function FormSubmitButton({ isWaitingResponse, handleSubmit }) {
+function FormSubmitButton({ isWaitingResponse, handleSubmit, text }) {
   return (
     <button
       disabled={isWaitingResponse}
@@ -16,7 +16,7 @@ function FormSubmitButton({ isWaitingResponse, handleSubmit }) {
           Cargando
         </div>
       ) : (
-        <p>Enviar</p>
+        <p>{text}</p>
       )}
     </button>
   );

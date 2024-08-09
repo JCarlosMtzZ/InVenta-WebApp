@@ -3,8 +3,7 @@ import { BrowserRouter, Link, Routes, Route } from 'react-router-dom';
 
 import Inventory from "./pages/Inventory.jsx";
 import Dashboard from "./pages/Dashboard.jsx";
-import Sale from "./pages/Sale.jsx";
-import Account from "./pages/Account.jsx";
+import Discounts from "./pages/Discounts.jsx";
 import ShopItemDetail from "./components/ShopItemDetail.jsx";
 import FormsContainer from './components/FormsContainer.jsx';
 
@@ -13,7 +12,7 @@ import AdminNavBar from "./components/AdminNavBar.jsx";
 
 function App() {
 
-  const [isAdminLogged, setIsAdminLogged] = useState(true);
+  const [isAdminLogged, setIsAdminLogged] = useState(false);
   const [isLogging, setIsLogging] = useState(false);
   const [isAddingProduct, setIsAddingProduct] = useState(false);
 
@@ -36,7 +35,7 @@ function App() {
             />
           )}
         <Routes>
-          <Route path="/" element={<Inventory />} />
+          <Route path="/" element={<Dashboard />} />
           <Route
             path="/inventory"
             element={
@@ -47,8 +46,7 @@ function App() {
               />}
           />
           <Route path="/dashboard" element={<Dashboard />} />
-          <Route path="/sale" element={<Sale />} />
-          <Route path="/account" element={<Account />} />
+          <Route path="/discounts" element={<Discounts />} />
           <Route path="/inventory/product/:id" element={<ShopItemDetail />} />
         </Routes>
       </BrowserRouter>

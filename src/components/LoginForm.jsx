@@ -101,7 +101,11 @@ function LoginForm({ className, isWaitingResponse, setIsWaitingResponse }) {
         isFormField={isFormData.isPassword}
         message='Requerido'
       />
-      <FormSubmitButton isWaitingResponse={isWaitingResponse} handleSubmit={handleSubmit} />
+      <FormSubmitButton
+        isWaitingResponse={isWaitingResponse}
+        handleSubmit={handleSubmit}
+        text='Enviar'
+      />
     </div>
   );
 };

@@ -17,8 +17,11 @@ export default {
       'ok-green': '#138808'
 
     },
-    extend: {},
+    extend: {
+    },
   },
-  plugins: [],
+  plugins: [
+    require('tailwind-scrollbar'),
+  ],
 }
 

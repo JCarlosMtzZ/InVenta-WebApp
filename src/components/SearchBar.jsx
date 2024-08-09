@@ -5,12 +5,22 @@ import { IoSearchSharp } from "react-icons/io5";
 import { useNavigate } from "react-router-dom";
 
 
-function SearchBar({ externalProducts, setExternalProducts, hasDropdown }) {
+function SearchBar({ originalProducts, externalProducts, setExternalProducts, hasDropdown, prefetchedDataSource, categories }) {
 
   const [searchTerm, setSearchTerm] = useState('');
   const [products, setProducts] = useState([]);
   const [isTyping, setIsTyping] = useState(false);
   const dropdownRef = useRef(null);
+
+  const getSource = (source) => {
+    if (source === 'all')
+      return 'Todos'
+    if (source === 'discounts')
+      return 'Ofertas'
+    else {
+      return categories.find(category => category.id === source).name;
+    }
+  };
 
   const fetchProducts = async (term) => {
     try {
@@ -41,10 +51,16 @@ function SearchBar({ externalProducts, setExternalProducts, hasDropdown }) {
 
   useEffect(() => {
     const term = searchTerm;
-    if (term)
+    if (term && hasDropdown)
       debouncedSearch(searchTerm);
-    else
+    if (term && !hasDropdown) {
+      setExternalProducts(originalProducts.filter(product =>
+        product.name.toLowerCase().includes(term.toLowerCase()) || product.description.toLowerCase().includes(term.toLowerCase())));
+    }
+    if (!term && hasDropdown)
       setProducts([]);
+    if (!term && !hasDropdown)
+      setExternalProducts(originalProducts);
   }, [searchTerm]);
 
   useEffect(() => {
@@ -72,7 +88,7 @@ function SearchBar({ externalProducts, setExternalProducts, hasDropdown }) {
       <div className="flex items-center w-fit rounded-lg shadow-md">
         <input
           type="text"
-          placeholder="Buscar producto"
+          placeholder={`${hasDropdown ? 'Buscar producto' : 'Buscar en ' + getSource(prefetchedDataSource)}`}
           value={searchTerm}
           onChange={handleInputChange}
           onClick={() => setIsTyping(true)}

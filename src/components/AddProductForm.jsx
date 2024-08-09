@@ -5,29 +5,29 @@ import { IoCloseCircleOutline } from "react-icons/io5";
 import FormFieldWarning from "./FormFieldWarning";
 import FormSubmitButton from "./FormSubmitButton";
 
-function AddProductForm({ isOpen, setIsOpen }) {
+function AddProductForm({ categories, isOpen, setIsOpen }) {
 
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
   const [isWaitingResponse, setIsWaitingResponse] = useState(false);
-  const [categories, setCategories] = useState([]);
+  //const [categories, setCategories] = useState([]);
 
-  useEffect(() => {
-    const fetchCategories = async () => {
-      try {
-        const response = await fetch('http://localhost:3001/categories');
-        if (!response.ok)
-          throw new Error('Error fetching categories');
-        const result = await response.json();
-        if (result)
-          setIsLoading(false);
-        console.log(result);
-        setCategories(result);
-      } catch (error) {
-        console.log(error);
-      }
-    };
-    fetchCategories();
-  }, []);
+  //useEffect(() => {
+  //  const fetchCategories = async () => {
+  //    try {
+  //      const response = await fetch('http://localhost:3001/categories');
+  //      if (!response.ok)
+  //        throw new Error('Error fetching categories');
+  //      const result = await response.json();
+  //      if (result)
+  //        setIsLoading(false);
+  //      console.log(result);
+  //      setCategories(result);
+  //    } catch (error) {
+  //      console.log(error);
+  //    }
+  //  };
+  //  fetchCategories();
+  //}, []);
 
   const [formData, setFormData] = useState({
     name: '',
@@ -385,7 +385,11 @@ function AddProductForm({ isOpen, setIsOpen }) {
                 Anterior
               </button>
               <div className="w-[40%]">
-                <FormSubmitButton isWaitingResponse={isWaitingResponse} handleSubmit={handleSubmit} />
+                <FormSubmitButton
+                  isWaitingResponse={isWaitingResponse}
+                  handleSubmit={handleSubmit}
+                  text='Enviar'
+                />
               </div> 
             </div>
           </div>
