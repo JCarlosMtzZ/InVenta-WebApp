@@ -12,8 +12,10 @@ import AdminNavBar from "./components/AdminNavBar.jsx";
 
 function App() {
 
-  const [isAdminLogged, setIsAdminLogged] = useState(false);
+  const [isAdminLogged, setIsAdminLogged] = useState(true);
   const [isLogging, setIsLogging] = useState(false);
+  const [cart, setCart] = useState([]);
+  const [isCart, setIsCart] = useState(false);
   const [isAddingProduct, setIsAddingProduct] = useState(false);
 
   return (
@@ -26,12 +28,13 @@ function App() {
           </div>
       )}
       <BrowserRouter>
-        {!isAdminLogged ? (
+        {isAdminLogged ? (
           <AdminNavBar />
           ) : (
             <UserNavBar
               setIsLogging={setIsLogging}
               setIsAddingProduct={setIsAddingProduct}
+              setIsCart={setIsCart}
             />
           )}
         <Routes>
@@ -43,6 +46,10 @@ function App() {
                 isLogging={isLogging}
                 isAddingProduct={isAddingProduct}
                 setIsAddingProduct={setIsAddingProduct}
+                cart={cart}
+                setCart={setCart}
+                isCart={isCart}
+                setIsCart={setIsCart}
               />}
           />
           <Route path="/dashboard" element={<Dashboard />} />

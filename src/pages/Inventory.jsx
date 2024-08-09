@@ -10,7 +10,14 @@ import ManagementBar from '../components/ManagementBar.jsx';
 import ShoppingCart from "../components/ShoppingCart.jsx";
 
 
-function Inventory({ isLogging, isAddingProduct, setIsAddingProduct }) {
+function Inventory({ 
+  isAddingProduct,
+  setIsAddingProduct,
+  cart,
+  setCart,
+  isCart,
+  setIsCart
+ }) {
 
   const [products, setProducts] = useState([]);
   const [filteredProducts, setFilteredProducts] = useState([]);
@@ -21,9 +28,6 @@ function Inventory({ isLogging, isAddingProduct, setIsAddingProduct }) {
   
   const [isManaging, setIsManaging] = useState(true);
   const [isLoading, setIsLoading] = useState(true);
-
-  const [cart, setCart] = useState([]);
-  const [isCart, setIsCart] = useState(false);
 
   const handleOpenCart = () => {
     const currentIsCart = isCart;
@@ -100,11 +104,11 @@ function Inventory({ isLogging, isAddingProduct, setIsAddingProduct }) {
             <AiOutlineLoading size='4rem' color='#605399' />
           </div>
         ) : (
-          <div className={`relative w-full min-h-full max-h-[500px]  ${isAddingProduct || isCart && 'overflow-hidden'}`}>
+          <div className={`relative w-full min-h-full max-h-[500px]  ${isAddingProduct && 'overflow-hidden'} ${isCart && 'overflow-hidden'} `}>
             <button
               type="button"
               onClick={handleOpenCart}
-              className="p-3 hover:scale-105 transition fixed bottom-[100px] right-[20px] rounded-[50%] bg-purp-dark z-20"
+              className="p-3 hover:scale-105 transition fixed bottom-[100px] right-[20px] rounded-[50%] bg-purp-dark z-10"
             >
               {cart.length > 0 &&
                 <div className="text-white text-sm font-semibold flex items-center justify-center p-1 w-[25px] h-[25px] absolute -top-[7px] -right-[7px] rounded-[50%] bg-mag">
@@ -152,7 +156,7 @@ function Inventory({ isLogging, isAddingProduct, setIsAddingProduct }) {
             </div>
             
               <div className='w-full h-full'>
-                <div className='w-full flex flex-wrap justify-center gap-4'>
+                <div className='pb-4 w-full flex flex-wrap justify-center gap-4'>
                   {productsBySearch.length > 0 && (
                     productsBySearch.map((product) => (
                       <ShopItem
