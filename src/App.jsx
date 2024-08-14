@@ -12,6 +12,8 @@ import AdminNavBar from "./components/AdminNavBar.jsx";
 
 function App() {
 
+  const [isLoading, setIsLoading] = useState(false);
+
   const [isAdminLogged, setIsAdminLogged] = useState(true);
   const [isLogging, setIsLogging] = useState(false);
   const [cart, setCart] = useState([]);
@@ -43,6 +45,8 @@ function App() {
             path="/inventory"
             element={
               <Inventory
+                isLoading={isLoading}
+                setIsLoading={setIsLoading}
                 isLogging={isLogging}
                 isAddingProduct={isAddingProduct}
                 setIsAddingProduct={setIsAddingProduct}

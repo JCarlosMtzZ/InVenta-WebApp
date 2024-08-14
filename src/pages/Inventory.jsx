@@ -1,16 +1,24 @@
 import { useEffect, useState } from 'react';
+
 import { AiOutlineLoading } from 'react-icons/ai';
 import { RiShoppingCartLine } from "react-icons/ri";
-
 import { FaPlus } from "react-icons/fa";
 import { useNavigate } from 'react-router-dom';
+
 import ShopItem from '../components/ShopItem.jsx';
 import AddProductForm from '../components/AddProductForm.jsx';
 import ManagementBar from '../components/ManagementBar.jsx';
 import ShoppingCart from "../components/ShoppingCart.jsx";
 
+import { 
+  getAllProductsCategoriesImagesDiscounts,
+  getAllProductsCategoriesImagesDiscountsByNameAndFilter
+ } from '../services/productsService.js';
+import { getAllCategories } from '../services/categoriesService.js';
 
-function Inventory({ 
+function Inventory({
+  isLoading, 
+  setIsLoading,
   isAddingProduct,
   setIsAddingProduct,
   cart,
@@ -19,75 +27,54 @@ function Inventory({
   setIsCart
  }) {
 
-  const [products, setProducts] = useState([]);
-  const [filteredProducts, setFilteredProducts] = useState([]);
-  const [productsBySearch, setProductsBySearch] = useState([]);
   const [filter, setFilter] = useState('all');
 
-  const [categories, setCategories] = useState([]);
-  
-  const [isManaging, setIsManaging] = useState(true);
-  const [isLoading, setIsLoading] = useState(true);
-
-  const handleOpenCart = () => {
-    const currentIsCart = isCart;
-    setIsCart(!currentIsCart);
+  const handleFilterChange = async (e) => {
+    setIsLoading(true);
+    const filter = e.target.value;
+    if (filter === 'all') {
+      const productsResult = await getAllProductsCategoriesImagesDiscounts();
+      setProducts(productsResult);
+    } else {
+      const productsResult = await getAllProductsCategoriesImagesDiscountsByNameAndFilter('', filter);
+      setProducts(productsResult);
+    }
+    setFilter(filter);
+    setIsLoading(false);
   };
 
+  const [isManaging, setIsManaging] = useState(true);
+
   const handleMode = () => {
-    const currentMode = isManaging;
-    setIsManaging(!currentMode);
+    setIsManaging(!isManaging);
+  };
+
+  const [products, setProducts] = useState([]);
+  const [categories, setCategories] = useState([]);
+
+  const handleOpenCart = () => {
+    setIsCart(!isCart);
   };
 
   const handlePlusButtonClick = () => {
     setIsAddingProduct(true);
   };
 
-  const handleFilterChange = (e) => {
-    const value = e.target.value;
-    if (value === 'all') {
-      setFilteredProducts(products);
-      setProductsBySearch(products);
-    } else if (value === 'discounts') {
-      const productsByFilter = products.filter((product) => product.Discounts.length > 0);
-      setFilteredProducts(productsByFilter);
-      setProductsBySearch(productsByFilter);
-    } else {
-      const productsByFilter = products.filter((product) => product.categoryId === value);
-      setFilteredProducts(productsByFilter);
-      setProductsBySearch(productsByFilter);
+  const fetchData = async () => {
+    try {
+      const categoriesResult = await getAllCategories();
+      const productsResult = await getAllProductsCategoriesImagesDiscounts();
+      setCategories(categoriesResult);
+      setProducts(productsResult);
+      setIsLoading(false);
+    } catch (error) {
+      console.error('Error fetching data', error);
     }
-    setFilter(value);
   };
 
   useEffect(() => {
-    const initialFetch = async () => {
-      try {
-        const productsResponse = await fetch('http://localhost:3001/products/category/images/discounts');
-        const categoriesResponse = await fetch('http://localhost:3001/categories')
-        if (!productsResponse.ok)
-          throw new Error('Error fetching products');
-        if (!categoriesResponse.ok)
-          throw new Error('Error fetching categories');
-        const productsResult = await productsResponse.json();
-        const categoriesResult = await categoriesResponse.json();
-        if (productsResult && categoriesResult) {
-          setCategories(categoriesResult);
-          setProducts(productsResult.sort(
-            (a, b) => {
-              if (a.name < b.name) return -1;
-              if (a.name > b.name) return 1;
-              return 0;
-          }));
-          setFilteredProducts(productsResult);
-          setProductsBySearch(productsResult);
-          setIsLoading(false);
-        }
-      } catch (error) {
-        console.log(error);
-      }
-    };
-    initialFetch();
+    setIsLoading(true);
+    fetchData();
   }, []);
 
   const navigate = useNavigate();
@@ -95,7 +82,6 @@ function Inventory({
   const handleShopItemClick = (id) => {
     navigate(`/inventory/product/${id}`)
   };
-
 
   return (
       <div className={`w-full h-[89.8%] ${isLoading && 'flex justify-center items-center'}`}>
@@ -144,21 +130,20 @@ function Inventory({
                 )}
             <div className='w-full'>
               <ManagementBar
-                handleMode={handleMode}
-                isManaging={isManaging}
-                handleFilterChange={handleFilterChange}
+                setIsLoading={setIsLoading}
                 filter={filter}
+                handleFilterChange={handleFilterChange}
+                isManaging={isManaging}
+                handleMode={handleMode}
                 categories={categories}
-                originalProducts={filteredProducts}
-                filteredProducts={productsBySearch}
-                setFilteredProducts={setProductsBySearch}
+                setProducts={setProducts}
               />
             </div>
             
               <div className='w-full h-full'>
                 <div className='pb-4 w-full flex flex-wrap justify-center gap-4'>
-                  {productsBySearch.length > 0 && (
-                    productsBySearch.map((product) => (
+                  {products.length > 0 && (
+                    products.map((product) => (
                       <ShopItem
                         key={product.id}
                         product={product}

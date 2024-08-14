@@ -4,40 +4,36 @@ import { IoSearchSharp } from "react-icons/io5";
 
 import { useNavigate } from "react-router-dom";
 
+import {
+  getProductsByNameFilter,
+  getAllProductsCategoriesImagesDiscountsByNameAndFilter
+} from "../services/productsService";
 
-function SearchBar({ originalProducts, externalProducts, setExternalProducts, hasDropdown, prefetchedDataSource, categories }) {
 
-  const [searchTerm, setSearchTerm] = useState('');
+function SearchBar({ setExternalProducts, hasDropdown, getFilterName, filter }) {
+
   const [products, setProducts] = useState([]);
+  const [searchTerm, setSearchTerm] = useState('');
   const [isTyping, setIsTyping] = useState(false);
   const dropdownRef = useRef(null);
 
-  const getSource = (source) => {
-    if (source === 'all')
-      return 'Todos'
-    if (source === 'discounts')
-      return 'Ofertas'
-    else {
-      return categories.find(category => category.id === source).name;
-    }
-  };
 
   const fetchProducts = async (term) => {
     try {
-      let response;
-      if (hasDropdown)
-        response = await fetch(`http://localhost:3001/products?name=${term}`);
-      else
-        response = await fetch(`http://localhost:3001/products/category/images/discounts?name=${term}`);
-      if (!response.ok)
-        throw new Error('Error fetching products');
-      const result = await response.json();
-      if (hasDropdown)
-        setProducts(result);
-      else
-        setExternalProducts(result);
+      let productsResult;
+      if (hasDropdown) {
+        productsResult = await getProductsByNameFilter(term);
+        setProducts(productsResult);
+      } else {
+        if (filter === 'all') {
+          productsResult = await getAllProductsCategoriesImagesDiscountsByNameAndFilter(term, '');
+        } else {
+          productsResult = await getAllProductsCategoriesImagesDiscountsByNameAndFilter(term, filter);
+        }
+        setExternalProducts(productsResult);
+      }
     } catch (error) {
-      console.log(error);
+      console.error('Error fetching products: ', error);
     }
   };
 
@@ -50,17 +46,10 @@ function SearchBar({ originalProducts, externalProducts, setExternalProducts, ha
   };
 
   useEffect(() => {
-    const term = searchTerm;
-    if (term && hasDropdown)
+    if (searchTerm)
       debouncedSearch(searchTerm);
-    if (term && !hasDropdown) {
-      setExternalProducts(originalProducts.filter(product =>
-        product.name.toLowerCase().includes(term.toLowerCase()) || product.description.toLowerCase().includes(term.toLowerCase())));
-    }
-    if (!term && hasDropdown)
+    if (!searchTerm && hasDropdown)
       setProducts([]);
-    if (!term && !hasDropdown)
-      setExternalProducts(originalProducts);
   }, [searchTerm]);
 
   useEffect(() => {
@@ -88,11 +77,10 @@ function SearchBar({ originalProducts, externalProducts, setExternalProducts, ha
       <div className="flex items-center w-fit rounded-lg shadow-md">
         <input
           type="text"
-          placeholder={`${hasDropdown ? 'Buscar producto' : 'Buscar en ' + getSource(prefetchedDataSource)}`}
+          placeholder={`${hasDropdown ? 'Buscar producto' : 'Buscar en ' + getFilterName()}`}
           value={searchTerm}
           onChange={handleInputChange}
           onClick={() => setIsTyping(true)}
-          onfocusout
           className={`text-black focus:outline-none p-3 h-[40px] w-[160px] sm:w-[300px] rounded-l-lg focus:border-0`}
         />
         <button type="button" className="p-1 bg-white h-[40px] w-[40px] rounded-r-lg flex justify-center items-center">

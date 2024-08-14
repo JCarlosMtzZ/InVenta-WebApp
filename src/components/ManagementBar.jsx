@@ -1,16 +1,37 @@
+import { useState } from 'react';
+
 import { MdOutlineInventory } from 'react-icons/md';
 import { AiOutlineStock } from 'react-icons/ai';
 import SearchBar from '../components/SearchBar.jsx';
 
+import {
+  getAllProductsCategoriesImagesDiscounts,
+  getAllProductsCategoriesImagesDiscountsByNameAndFilter } from '../services/productsService.js';
+
 function ManagementBar({
-  handleMode,
-  isManaging,
-  handleFilterChange,
+  setIsLoading,
   filter,
+  handleFilterChange,
+  isManaging,
+  handleMode,
   categories,
-  originalProducts,
-  filteredProducts,
-  setFilteredProducts }) {
+  setProducts }) {
+
+  
+  
+
+  const getFilterName = (filter) => {
+    if (filter === 'all')
+      return 'Todos';
+    if (filter === 'discounts')
+      return 'Ofertas';
+    else {
+      return categories.find(category => category.id === filter).name;
+    }
+  };
+
+  
+
   return (
     <div className='scrollbar-none w-full h-20 flex items-center px-4 min-[900px]:px-0 min-[900px]:justify-center gap-10 overflow-x-scroll'>
       <div className='drop-shadow-md flex gap-8 text-purp-dark text-xs font-semibold'>
@@ -69,11 +90,9 @@ function ManagementBar({
             )}
         </select>
         <SearchBar
-          prefetchedDataSource={filter}
-          categories={categories}
-          originalProducts={originalProducts}
-          externalProducts={filteredProducts}
-          setExternalProducts={setFilteredProducts}
+          filter={filter}
+          getFilterName={() => getFilterName(filter)}
+          setExternalProducts={setProducts}
           hasDropdown={false}  
         />
       </div>

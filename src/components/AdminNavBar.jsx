@@ -21,9 +21,9 @@ function AdminNavBar() {
   return (
     <div className='flex flex-col'>
       <nav className='w-[100%] h-[60px] bg-purp-dark flex justify-between items-center'>
-        <button type='button' className='ml-4 hover:scale-110 transition'>
+        <Link to='/dashboard' className='ml-4 hover:scale-110 transition'>
           <IoHomeOutline color='white' size='2rem' />
-        </button>
+        </Link>
         <div className='hidden sm:flex text-white gap-x-8'>
           <Link to='/dashboard' className='hover:scale-110 transition'>Tablero</Link>
           <Link to='/inventory' className='hover:scale-110 transition'>Inventario</Link>
