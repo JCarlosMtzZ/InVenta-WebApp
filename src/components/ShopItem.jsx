@@ -12,16 +12,23 @@ function ShopItem({ product, onClick, showButtons, cart, setCart }) {
 
   return (
     <div className="w-[200px] flex flex-col">
-      <div onClick={handleOnClick} className="hover:cursor-pointer group w-full h-[270px] flex flex-col justify-evenly rounded-xl shadow-md scale-95 hover:scale-100 transition">
+      <div onClick={handleOnClick} className="hover:cursor-pointer group w-full h-[300px] flex flex-col justify-evenly rounded-xl shadow-md scale-95 hover:scale-100 transition">
         <div className="flex w-full items-center justify-center">
           <img
             src={uri + product.Images[0].url}
             alt=""
-            className="object-cover rounded-t-xl" />
+            className="w-full object-cover rounded-t-xl" />
         </div>
-        <PriceDisplay product={product} />
-        <div className="mb-3 group-hover:text-mag group-hover:font-semibold px-4 text-lg line-clamp-1">
+        <div className="px-4">
+          <PriceDisplay product={product} />
+        </div>
+        <div className="mb-1 group-hover:text-mag group-hover:font-semibold px-4 text-lg line-clamp-1">
           {product.name}
+        </div>
+        <div
+          className="px-4 text-sm mb-3 opacity-60"
+        >
+          {`${product.stock + (product.stock === 1 ? ' disponible' : ' disponibles')}`}
         </div>
       </div>
       {showButtons &&

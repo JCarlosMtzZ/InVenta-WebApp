@@ -23,7 +23,7 @@
   finalPrice = finalPrice.toFixed(2);
 
   return (
-    <div className="p-4 flex flex-col justify-center w-full h-[90px]">
+    <div className="px-0 py-4 flex flex-col justify-center w-full h-[90px]">
       {hasDiscount ? (
         <div className="flex flex-col justify-between">
           <div className="text-mag text-md font-semibold flex items-center">
