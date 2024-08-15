@@ -3,7 +3,7 @@ import FormFieldWarning from "./FormFieldWarning.jsx";
 import PasswordFormField from "./PasswordFormField.jsx";
 import FormSubmitButton from "./FormSubmitButton.jsx";
 
-function LoginForm({ className, isWaitingResponse, setIsWaitingResponse }) {
+function LoginForm({ checkAdmin, className, isWaitingResponse, setIsWaitingResponse }) {
 
   const [isResponseOk, setIsResponseOk] = useState(true);
 
@@ -67,6 +67,7 @@ function LoginForm({ className, isWaitingResponse, setIsWaitingResponse }) {
     })
     .finally(() => {
       setIsWaitingResponse(false);
+      checkAdmin();
     });
 
   };

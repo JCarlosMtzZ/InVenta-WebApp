@@ -5,10 +5,21 @@ import { IoHomeOutline } from 'react-icons/io5';
 import { IoIosLogOut } from 'react-icons/io';
 import { SlOptions } from 'react-icons/sl';
 
-function AdminNavBar() {
+import { logout } from '../services/adminsService.js';
+
+function AdminNavBar({ checkAdmin }) {
 
   const [isToggled, setIsToggled] = useState(false);
   const [animationClass, setAnimationClass] = useState("fade-down");
+
+  const handleLogout = async () => {
+    try {
+      await logout();
+      checkAdmin();
+    } catch (error) {
+      console.error('Error while logging out: ', error);
+    }
+  };
 
   const handleToggle = () => {
     setAnimationClass('fade-up');
@@ -29,7 +40,10 @@ function AdminNavBar() {
           <Link to='/inventory' className='hover:scale-110 transition'>Inventario</Link>
           <Link to='/discounts' className='hover:scale-110 transition'>Descuentos</Link>
         </div>
-        <button type='button' className='hidden sm:block mr-4 hover:scale-110 transition'>
+        <button
+          onClick={handleLogout}
+          className='hidden sm:block mr-4 hover:scale-110 transition'
+        >
           <IoIosLogOut color='white' size='2rem' />
         </button>
         <button type='button' onClick={handleToggle} className={`block sm:hidden mr-3 hover:scale-110 transition ${isToggled ? 'rotate-90' : 'rotate-0'}`}>

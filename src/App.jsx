@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { BrowserRouter, Link, Routes, Route } from 'react-router-dom';
 
 import Inventory from "./pages/Inventory.jsx";
@@ -10,11 +10,27 @@ import FormsContainer from './components/FormsContainer.jsx';
 import UserNavBar from './components/UserNavBar.jsx';
 import AdminNavBar from "./components/AdminNavBar.jsx";
 
+import { checkAdmin } from './services/adminsService.js';
+
 function App() {
 
-  const [isLoading, setIsLoading] = useState(false);
+  const [adminId, setAdminId] = useState('');
+  const [isLoading, setIsLoading] = useState(true);
 
-  const [isAdminLogged, setIsAdminLogged] = useState(true);
+  const fetchCheckAdmin = async () => {
+    try {
+      const result = await checkAdmin();
+      setAdminId(result.adminId);
+    } catch (error) {
+      setAdminId('');
+      console.error('Error checking admin: ', error);
+    }
+  };
+
+  useEffect(() => {
+    fetchCheckAdmin();
+  }, []);
+  
   const [isLogging, setIsLogging] = useState(false);
   const [cart, setCart] = useState([]);
   const [isCart, setIsCart] = useState(false);
@@ -26,12 +42,15 @@ function App() {
           <div className={`bg-black/70 absolute w-full min-h-[89.8%] top-[60px] flex items-center justify-center z-20`}>
             <FormsContainer
               setIsOpen={setIsLogging}
+              checkAdmin={fetchCheckAdmin}
             />
           </div>
       )}
       <BrowserRouter>
-        {isAdminLogged ? (
-          <AdminNavBar />
+        {adminId ? (
+          <AdminNavBar
+            checkAdmin={fetchCheckAdmin}
+          />
           ) : (
             <UserNavBar
               setIsLogging={setIsLogging}

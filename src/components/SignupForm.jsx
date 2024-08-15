@@ -3,7 +3,7 @@ import FormFieldWarning from "./FormFieldWarning.jsx";
 import PasswordFormField from "./PasswordFormField.jsx";
 import FormSubmitButton from "./FormSubmitButton.jsx";
 
-function SignupForm({ className, isWaitingResponse, setIsWaitingResponse }) {
+function SignupForm({ checkAdmin, className, isWaitingResponse, setIsWaitingResponse }) {
 
   const [formData, setFormData] = useState({
     firstName: '',
@@ -121,6 +121,7 @@ function SignupForm({ className, isWaitingResponse, setIsWaitingResponse }) {
     })
     .finally(() => {
       setIsWaitingResponse(false);
+      checkAdmin();
     });
   };
 

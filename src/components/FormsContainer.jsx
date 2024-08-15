@@ -3,7 +3,7 @@ import LoginForm from './LoginForm.jsx';
 import SignupForm from './SignupForm';
 import { IoCloseCircleOutline } from 'react-icons/io5';
 
-function FormsContainer({ setIsOpen }) {
+function FormsContainer({ setIsOpen, checkAdmin }) {
 
   const [hideLogin, setHideLogin] = useState(false);
   const [animationClass, setAnimationClass] = useState("fade-in");
@@ -48,12 +48,14 @@ function FormsContainer({ setIsOpen }) {
       <div>
         {hideLogin ? (
           <SignupForm
+            checkAdmin={checkAdmin}
             className={animationClass}
             isWaitingResponse={isWaitingResponse}
             setIsWaitingResponse={setIsWaitingResponse}
           />
         ) : (
           <LoginForm
+            checkAdmin={checkAdmin}
             className={animationClass}
             isWaitingResponse={isWaitingResponse}
             setIsWaitingResponse={setIsWaitingResponse}
