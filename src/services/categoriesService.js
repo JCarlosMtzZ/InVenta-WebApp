@@ -6,3 +6,10 @@ export const getAllCategories = async () => {
         throw new Error(await response.text());
     return response.json();
 };
+
+export const getCategoriesSummaries = async () => {
+    const response = await fetch(`${URL}/summaries`);
+    if (!response.ok)
+        throw new Error(await response.text());
+    return response.json();
+};

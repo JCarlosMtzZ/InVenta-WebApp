@@ -55,3 +55,10 @@ export const updateProduct = async (product) => {
         throw new Error(await response.text());
     return response.json();
 };
+
+export const getTopProducts = async (limit, order) => {
+    const response = await fetch(`${URL}/top?limit=${limit}&order=${order}`);
+    if (!response.ok)
+        throw new Error(await response.text());
+    return response.json();
+};
