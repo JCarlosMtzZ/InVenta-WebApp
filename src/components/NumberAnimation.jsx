@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 
-function NumberAnimation({ textSize, fontWeight, textColor, endValue, prefix, suffix, duration }) {
+function NumberAnimation({ textSize, textColor, fontWeight, endValue, prefix, suffix, duration }) {
   const [count, setCount] = useState(0);
 
   useEffect(() => {

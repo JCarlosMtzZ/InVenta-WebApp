@@ -1,41 +1,24 @@
 import { useState, useEffect, useRef } from "react";
 
-import {
-  AreaChart, 
-  Area, 
-  XAxis, 
-  YAxis, 
-  CartesianGrid, 
-  Tooltip,
-
-  RadialBarChart,
-  RadialBar,
-
-  LineChart,
-  Legend,
-  Line,
-
-  PieChart, Pie, Sector,
-
-  ResponsiveContainer } from 'recharts';
-
+import MetricCard from "../components/MetricCard.jsx";
 import DashboardTopBar from "../components/bars/DashboardTopBar.jsx";
-import SummariesAreaChart from "../components/charts/SummariesAreaChart.jsx";
+import SummariesAreaChart from "../components/charts/SummariesChart.jsx";
 import CategoriesPieChart from "../components/charts/CategoriesPieChart.jsx";
-import IncomeRadialBarChart from "../components/charts/IncomeRadialBarChart.jsx";
-
+  
+import { MdOutlineInventory } from 'react-icons/md';
 import { AiOutlineLoading } from "react-icons/ai";
+import { AiOutlineStock } from "react-icons/ai";
+import { FaMoneyBillTrendUp } from "react-icons/fa6";
+import { GiProfit } from "react-icons/gi";
 
 import { getOrderItemsSummary, getOrderItemsMonthlySummaries } from '../services/orderItemsService.js';
 import { getCategoriesSummaries } from "../services/categoriesService.js";
 import { getTopProducts } from "../services/productsService.js";
-import { getAdminsMonthlySummaries } from "../services/adminsService.js";
+import { checkAdmin, getAdminById, getAdminsSummaries, getAdminsMonthlySummaries } from "../services/adminsService.js";
+import { getOrdersDateRange } from "../services/ordersService.js";
 
-import { 
-  formatDatesToYearMonth,
-  formatDateToYearMonthDay
-  //getRandomHexColor 
-  } from "../utilities/dashboard.jsx";
+import { formatDatesToYearMonth } from "../utilities/dashboard.jsx";
+import TopProductsBarChart from "../components/charts/TopProductsBarChart.jsx";
 
 function Dashboard() {
 
@@ -43,9 +26,13 @@ function Dashboard() {
 
   const [dateFilter, setDateFilter] = useState('');
 
+  const [currentAdminData, setCurrentAdminData] = useState({})
+
   const [oiSummary, setOiSummary] = useState([]);
+  const [dateRange, setDateRange] = useState([]);
   const [oiSeparatedSummary, setOiSeparatedSummary] = useState([]);
   const [monthlySummaries, setMonthlySummaries] = useState([]);
+  const [adminsSummaries, setAdminSummaries] = useState([]);
   const [adminsMonthlySummaries, setAdminsMonthlySummaries] = useState([]);
   const [categoriesSummaries, setCategoriesSummaries] = useState([]);
   const [topFirstProducts, setTopFirstProducts] = useState([]);
@@ -58,16 +45,24 @@ function Dashboard() {
       if (!isMounted) return;
       setIsLoading(true);
       try {
+        const adminIdResult = await checkAdmin();
+
         const [ oiSummaryResult,
-         monthlySummariesResult,
-         adminsMonthlySummariesResult,
-         categoriesSummariesResult,
-         topFirstProductsResult,
-         topLastProductsResult 
+          dateRangeResult,
+          monthlySummariesResult,
+          adminsSummariesResult,
+          adminsMonthlySummariesResult,
+          currentAdminDataResult,
+          categoriesSummariesResult,
+          topFirstProductsResult,
+          topLastProductsResult 
         ] = await Promise.all([
           getOrderItemsSummary(),
+          getOrdersDateRange(),
           getOrderItemsMonthlySummaries(),
+          getAdminsSummaries(),
           getAdminsMonthlySummaries(),
+          getAdminById(adminIdResult.adminId),
           getCategoriesSummaries(),
           getTopProducts(5, 'DESC'),
           getTopProducts(5, 'ASC')
@@ -95,8 +90,11 @@ function Dashboard() {
             fill: "#d562be"
           }
         ]);
+        setDateRange(dateRangeResult);
         setMonthlySummaries(formattedMonthlySummaries);
+        setAdminSummaries(adminsSummariesResult);
         setAdminsMonthlySummaries(formattedAdminsMonthlySummaries);
+        setCurrentAdminData(currentAdminDataResult)
         setCategoriesSummaries(categoriesSummariesResult);
         setTopFirstProducts(topFirstProductsResult); 
         setTopLastProducts(topLastProductsResult);
@@ -118,46 +116,103 @@ function Dashboard() {
   
 
   return (
-    <div className={`bg-purp-dark/5 py-4 px-4 sm:px-14 flex ${isLoading && 'items-center'} justify-center w-full min-h-[89.8%]`}>
+    <div className={`bg-purp-dark/50 flex items-center justify-center w-full min-h-[89.8%]`}>
       {isLoading ? (
         <div className='w-fit h-fit animate-spin'>
           <AiOutlineLoading size='4rem' color='#605399' />
         </div>
       ) : (
-        <div className={`flex flex-col bg-white rounded-lg shadow-md w-full h-full`}>
-          <div className="flex flex-col">
+        <div className={`p-3 flex flex-col rounded-lg w-full h-full`}>
+          <div className="flex flex-col gap-3 w-full">
             <DashboardTopBar
-              data={oiSummary[0]}
+              adminData={currentAdminData}
+              dateData={dateRange[0]}
             />
-            <div className="flex">
-              <div className="flex flex-col">
+            <div className="flex gap-2 justify-center w-full">
+              <div className="flex flex-col gap-3">
+                <div className="flex gap-2">
+                  <MetricCard 
+                    bgColor='bg-mag/90'
+                    icon={<MdOutlineInventory size='3.5rem' color="white" className="self-end" />}
+                    text='Órdenes'
+                    data={oiSummary[0].ordersCount}
+                  />
+                  <MetricCard 
+                    bgColor='bg-purp-dark/90'
+                    icon={<AiOutlineStock size='3.75rem' color="white" className="self-end" />}
+                    text='Unidades'
+                    data={oiSummary[0].totalUnits}
+                  />
+                  <MetricCard 
+                    bgColor='bg-blue/90'
+                    icon={<FaMoneyBillTrendUp size='2.8rem' color="white" className="self-end" />}
+                    text='Ingresos brutos'
+                    data={oiSummary[0].subtotal}
+                  />
+                  <MetricCard 
+                    bgColor='bg-ok-green/90'
+                    icon={<GiProfit size='3.25rem' color="white" className="self-end" />}
+                    text='Ingresos netos'
+                    data={oiSummary[0].total}
+                  />
+                  
+                </div>
+                <div className="flex gap-3">
+                  <CategoriesPieChart
+                    absTotalUnits={oiSummary[0].totalUnits}
+                    data={categoriesSummaries}
+                    dataKey='totalUnits'
+                  />
+                  <TopProductsBarChart 
+                    firstData={topFirstProducts}
+                    lastData={topLastProducts}
+                  />
+                </div>
+                  
+              </div>
+              <div className="flex flex-col gap-3">
                 <SummariesAreaChart
                   data={monthlySummaries}
                   adminsData={adminsMonthlySummaries}
                 />
-              </div>
-              <div className="flex flex-col">
-                <CategoriesPieChart
-                  absTotalUnits={oiSummary[0].totalUnits}
-                  data={categoriesSummaries}
-                  dataKey='totalUnits'
-                />
+                <div className="bg-white p-2 rounded-lg shadow-md h-[250px] overflow-auto">
+                  <table>
+                    <thead>
+                      <tr className='border-b-2 border-purp-dark'>
+                        <th className='text-wrap text-left p-2'>Vendedor</th>
+                        <th className='text-wrap text-left p-2'>Unidades vendidas</th>
+                        <th className='text-wrap text-left p-2'>Ingresos brutos</th>
+                        <th className='text-wrap text-left p-2'>Ingresos netos</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {adminsSummaries.map(summary => (
+                        <tr key={summary.adminId} className='border-b-2 border-purp-dark/15'>
+                          <td className='p-4 text-left'>
+                            {summary.adminFullName}
+                          </td>
+                          <td className='p-4 text-center'>
+                            {summary.totalUnits}
+                          </td>
+                          <td className='p-4 text-right text-blue'>
+                            {`$${summary.subtotal}`}
+                          </td>
+                          <td className='p-4 text-right text-ok-green'>
+                            {`$${summary.total}`}
+                          </td>
+                        </tr>
+                      ))}
+                      
+                    </tbody>
+                  </table>
+                </div>
+                
 
               </div>
 
             </div>
           </div>
-          <div>
-            <div className="flex">
-              
-              
-            
-            </div>
-            <div>
-           
-              
-            </div>
-          </div>
+          
         </div>
       )}
     </div>

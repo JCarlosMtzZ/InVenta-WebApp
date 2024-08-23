@@ -22,6 +22,7 @@ function SummariesAreaChart({ data, adminsData }) {
         <div className="flex flex-col bg-white rounded-lg p-3 opacity-80 gap-1">
           <p className="font-semibold text-md">{`${payload[0].payload.month}`}</p>
           <p className="text-sm">{`Unidades vendidas: ${payload[0].payload.totalUnits}`}</p>
+          <p className="text-sm text-blue">{`Ingresos brutos: $${payload[0].payload.subtotal}`}</p>
           <p className="font-semibold text-sm text-ok-green">{`Ingresos netos: $${payload[0].payload.total}`}</p>
         </div>
       );
@@ -38,6 +39,7 @@ function SummariesAreaChart({ data, adminsData }) {
             <div key={index}>
               <p className='font-medium text-sm'>{admin.name}</p>
               <p className='font-normal text-sm'>{`Unidades vendidas: ${admin.payload.totalUnits}`}</p>
+              <p className='font-normal text-sm text-blue'>{`Ingresos brutos: $${admin.payload.subtotal}`}</p>
               <p className='font-normal text-sm text-ok-green'>{`Ingresos netos: $${admin.payload.total}`}</p>
             </div>
           ))}
@@ -48,14 +50,14 @@ function SummariesAreaChart({ data, adminsData }) {
   };
 
   return (
-    <div className='z-10 rounded-lg shadow-md flex flex-col p-2'>
-      <div className='border flex items-center justify-between py-1 px-2'>
+    <div className='z-10 rounded-lg shadow-md flex flex-col p-2 bg-white'>
+      <div className='flex items-center justify-between py-1 px-2'>
         <p className='text-lg font-semibold'>Ventas</p>
         <button
-        onClick={handleIsGlobal}
-          className='flex gap-1 hover:drop-shadow-lg transition'
+          onClick={handleIsGlobal}
+          className='flex gap-1 group hover:drop-shadow-lg transition'
         >
-          <CgArrowsExchange size='1.75rem' />
+          <CgArrowsExchange size='1.75rem' className='group-hover:rotate-180 transition' />
           <p>{isGlobal ? 'Globales' : 'Por vendedor'}</p>
         </button>
       </div>

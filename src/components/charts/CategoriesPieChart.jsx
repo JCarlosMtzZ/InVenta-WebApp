@@ -8,12 +8,13 @@ function CategoriesPieChart({ absTotalUnits, data, dataKey }) {
 
   const CustomTooltip = ({ active, payload }) => {
     if (active && payload && payload.length) {
-      const { categoryName, totalUnits, total } = payload[0].payload;
+      const { categoryName, totalUnits, subtotal, total } = payload[0].payload;
       const percent = (100 / absTotalUnits * totalUnits).toFixed(2);
       return (
-        <div className="flex flex-col bg-white rounded-lg p-3 opacity-80 gap-1">
+        <div className="flex flex-col bg-white rounded-lg p-3 opacity-90 gap-1">
           <p className="font-semibold text-md">{`${categoryName} (${percent}%)`}</p>
           <p className="text-sm">{`Unidades vendidas: ${totalUnits}`}</p>
+          <p className="font-semibold text-sm text-blue">{`Ingresos brutos: $${subtotal}`}</p>
           <p className="font-semibold text-sm text-ok-green">{`Ingresos netos: $${total}`}</p>
           </div>
       );
@@ -24,7 +25,7 @@ function CategoriesPieChart({ absTotalUnits, data, dataKey }) {
   const renderLegend = (props) => {
     const { payload } = props;
     return (
-      <ul className="absolute bottom-[25px] right-0 bg-ok-green w-[150px] h-[150px] flex flex-col justify-center gap-1">
+      <ul className="p-2 absolute bottom-0 w-full h-[120px] flex flex-col justify-center gap-1">
         {
           payload.map((entry, index) => (
             <li key={`item-${index}`} className="flex items-center gap-1">
@@ -40,15 +41,15 @@ function CategoriesPieChart({ absTotalUnits, data, dataKey }) {
   };
 
   return (
-    <div className="flex flex-col p-2 shadow-md rounded-lg">
-      <p className=" border font-semibold text-lg">Ventas por categoría</p>
-      <PieChart key={Math.random()} width={340} height={200} className='relative bg-purp-light'>
+    <div className="flex flex-col p-2 shadow-md rounded-lg bg-white">
+      <p className="font-semibold text-lg py-1 px-2">Ventas por categoría</p>
+      <PieChart key={Math.random()} width={250} height={320} className='relative'>
         <Tooltip content={<CustomTooltip />} />
         <Legend content={renderLegend} />
         <Pie
           data={data}
-          cx="26%"
-          cy="50%"
+          cx="50%"
+          cy="30%"
           innerRadius={50}
           outerRadius={80}
           dataKey={dataKey}

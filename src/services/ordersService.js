@@ -6,3 +6,10 @@ export const getOrdersGroupedByMonth = async () => {
         throw new Error(await response.text());
     return response.json();
 };
+
+export const getOrdersDateRange = async () => {
+    const response = await fetch(`${URL}/dateRange`);
+    if (!response.ok)
+        throw new Error(await response.text());
+    return response.json();
+};

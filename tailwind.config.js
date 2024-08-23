@@ -14,7 +14,8 @@ export default {
       'mag-light': '#ebc1ee',
       'mag': '#d562be',
       'warn-red': '#b80600',
-      'ok-green': '#138808'
+      'ok-green': '#138808',
+      'blue' : '#104abe'
 
     },
     extend: {
