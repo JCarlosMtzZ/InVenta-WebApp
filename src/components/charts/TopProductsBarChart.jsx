@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-import { BarChart, Bar, CartesianGrid, XAxis, YAxis, Tooltip, Legend } from "recharts";
+import { ResponsiveContainer, BarChart, Bar, CartesianGrid, XAxis, YAxis, Tooltip, Legend } from "recharts";
 
 import { CgArrowsExchange } from "react-icons/cg";
 
@@ -39,7 +39,7 @@ function TopProductsBarChart({ firstData, lastData }) {
   
 
   return (
-    <div className="flex flex-col p-2 rounded-lg shadow-md bg-white">
+    <div className="w-full min-[540px]:w-[60%] flex flex-col p-2 rounded-lg shadow-md bg-white">
       <div className="py-1 px-2 flex justify-between">
         <p className="font-semibold text-lg">{`${isFirst ? 'Mejores productos' : 'Peores productos'}`}</p>
         <button
@@ -49,27 +49,27 @@ function TopProductsBarChart({ firstData, lastData }) {
           <CgArrowsExchange size='1.75rem' />
         </button>
       </div>
-      <BarChart
-        layout="vertical"
-        width={370}
-        height={315}
-        data={isFirst ? formattedFirstData : formattedLastData}
-        margin={{
-          top: 15,
-          right: 15,
-          left: 35,
-          bottom: 20,
-        }}
-      >
-        <CartesianGrid strokeDasharray="3 3" />
-        <XAxis
-          type="number"
-          label={{ value: 'Unidades vendidas', position: 'insideRight', dy: 25, dx: 8 }}
-        />
-        <YAxis type="category" dataKey="shortProductName" />
-        <Tooltip content={<CustomTooltip />} />
-        <Bar barSize={25} dataKey="totalUnits" fill="#8884d8" />
-      </BarChart>
+      <ResponsiveContainer width='100%' height={350}>
+        <BarChart
+          layout="vertical"
+          data={isFirst ? formattedFirstData : formattedLastData}
+          margin={{
+            top: 10,
+            right: 15,
+            left: 35,
+            bottom: 25,
+          }}
+          >
+          <CartesianGrid strokeDasharray="3 3" />
+          <XAxis
+            type="number"
+            label={{ value: 'Unidades vendidas', position: 'insideRight', dy: 25, dx: 8 }}
+            />
+          <YAxis type="category" dataKey="shortProductName" />
+          <Tooltip content={<CustomTooltip />} />
+          <Bar barSize={25} dataKey="totalUnits" fill="#8884d8" />
+        </BarChart>
+      </ResponsiveContainer>
     </div>
 
   );

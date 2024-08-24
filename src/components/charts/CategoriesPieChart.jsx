@@ -1,4 +1,4 @@
-import { PieChart, Pie, Tooltip, Legend, Cell } from "recharts";
+import { ResponsiveContainer, PieChart, Pie, Tooltip, Legend, Cell } from "recharts";
 
 function CategoriesPieChart({ absTotalUnits, data, dataKey }) {
 
@@ -41,25 +41,27 @@ function CategoriesPieChart({ absTotalUnits, data, dataKey }) {
   };
 
   return (
-    <div className="flex flex-col p-2 shadow-md rounded-lg bg-white">
+    <div className="w-full min-[540px]:w-[40%] flex flex-col p-2 shadow-md rounded-lg bg-white">
       <p className="font-semibold text-lg py-1 px-2">Ventas por categoría</p>
-      <PieChart key={Math.random()} width={250} height={320} className='relative'>
-        <Tooltip content={<CustomTooltip />} />
-        <Legend content={renderLegend} />
-        <Pie
-          data={data}
-          cx="50%"
-          cy="30%"
-          innerRadius={50}
-          outerRadius={80}
-          dataKey={dataKey}
-          animationDuration={1500}
-        >
-          {data.map((entry, index) => (
-            <Cell key={`cell-${index}`} fill={COLORS[index]} stroke={COLORS[index]} />
-          ))}
-        </Pie>
-      </PieChart>
+      <ResponsiveContainer width='100%' height={350}>
+        <PieChart key={Math.random()} className='relative'>
+          <Tooltip content={<CustomTooltip />} />
+          <Legend content={renderLegend} />
+          <Pie
+            data={data}
+            cx="50%"
+            cy="30%"
+            innerRadius={60}
+            outerRadius={90}
+            dataKey={dataKey}
+            animationDuration={1500}
+            >
+            {data.map((entry, index) => (
+              <Cell key={`cell-${index}`} fill={COLORS[index]} stroke={COLORS[index]} />
+            ))}
+          </Pie>
+        </PieChart>
+      </ResponsiveContainer>
     </div>
   );
 };

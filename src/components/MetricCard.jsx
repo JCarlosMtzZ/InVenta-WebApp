@@ -4,7 +4,7 @@ import { roundToK } from "../utilities/dashboard";
 
 function MetricCard({ bgColor, icon, text, data }) {
   return (
-    <div className={`${bgColor} h-[140px] w-[160px] rounded-lg shadow-md flex flex-col gap-0.5 p-4 justify-between`}>
+    <div className={`${bgColor} h-[145px] w-[49%] min-[540px]:w-[25%] rounded-lg shadow-md flex flex-col gap-0.5 p-4 justify-between`}>
       {icon}
       <div>
         <NumberAnimation

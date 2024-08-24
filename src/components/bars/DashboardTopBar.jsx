@@ -29,12 +29,12 @@ function DashboardTopBar({ adminData, dateData }) {
   };
 
   return (
-    <div className="bg-white flex justify-between w-full rounded-lg shadow-lg">
+    <div className="bg-white flex flex-wrap justify-between w-full rounded-lg shadow-lg">
       <div className="drop-shadow-lg flex items-center gap-4 py-2 px-4">
         <FaUser size='1.5rem' color="#605399" />
         <p className="text-lg font-semibold">{`${adminData.firstName} ${adminData.lastName} (${adminData.email})`}</p>
       </div>
-      <div className="flex gap-2 py-2 px-4 items-center rounded-lg shadow-md">
+      <div className="flex flex-wrap gap-2 py-2 px-4 items-center">
         <p className="text-lg font-semibold">Reporte de</p>
         <div className="flex items-center gap-2 p-2 bg-purp-dark/10 rounded-lg">
           <input 

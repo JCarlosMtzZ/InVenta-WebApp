@@ -1,6 +1,6 @@
 import { useState } from 'react';
 
-import { AreaChart, Area, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip } from 'recharts';
+import { ResponsiveContainer, AreaChart, Area, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip } from 'recharts';
 
 import { getRandomHexColor } from '../../utilities/dashboard';
 
@@ -50,7 +50,7 @@ function SummariesAreaChart({ data, adminsData }) {
   };
 
   return (
-    <div className='z-10 rounded-lg shadow-md flex flex-col p-2 bg-white'>
+    <div className='w-full z-10 rounded-lg shadow-md flex flex-col p-2 bg-white'>
       <div className='flex items-center justify-between py-1 px-2'>
         <p className='text-lg font-semibold'>Ventas</p>
         <button
@@ -61,28 +61,29 @@ function SummariesAreaChart({ data, adminsData }) {
           <p>{isGlobal ? 'Globales' : 'Por vendedor'}</p>
         </button>
       </div>
-      <ChartComponent key={Math.random()} width={600} height={300} data={isGlobal ? data : null}
-        margin={{
-          top: 20,
-          right: 35,
-          left: 5,
-          bottom: 10,
-        }}
-      >
-        <CartesianGrid strokeDasharray="3 3" />
-        <XAxis dataKey="month" type="category" allowDuplicatedCategory={false} />
-        <YAxis
-          label={{ value: 'Unidades vendidas', angle: -90, position: 'insideLeft', dy: 50, dx: 10 }}
-          type="number"
-          dataKey="totalUnits"
-          domain={[0, (dataMax) => Math.ceil(dataMax / 1000 * 100) / 100 * 1000]}
-        />
-        <Tooltip content={isGlobal ? <GlobalTooltip /> : <AdminsTooltip /> } />
-        {isGlobal ? (
-          <Area animationDuration={1500} type="monotone" dataKey="totalUnits" stroke="#ada1e6" fill="#ada1e6" opacity={0.7} />
-        ) : (
-          adminsData.map((admin) => (
-            <Line
+      <ResponsiveContainer width='100%' height={270}>
+        <ChartComponent key={Math.random()} data={isGlobal ? data : null}
+          margin={{
+            top: 20,
+            right: 35,
+            left: 5,
+            bottom: 10,
+          }}
+          >
+          <CartesianGrid strokeDasharray="3 3" />
+          <XAxis dataKey="month" type="category" allowDuplicatedCategory={false} />
+          <YAxis
+            label={{ value: 'Unidades vendidas', angle: -90, position: 'insideLeft', dy: 50, dx: 10 }}
+            type="number"
+            dataKey="totalUnits"
+            domain={[0, (dataMax) => Math.ceil(dataMax / 1000 * 100) / 100 * 1000]}
+            />
+          <Tooltip content={isGlobal ? <GlobalTooltip /> : <AdminsTooltip /> } />
+          {isGlobal ? (
+            <Area animationDuration={1500} type="monotone" dataKey="totalUnits" stroke="#ada1e6" fill="#ada1e6" opacity={0.7} />
+          ) : (
+            adminsData.map((admin) => (
+              <Line
               key={admin.id}
               animationDuration={1500}
               strokeWidth={1.25}
@@ -90,10 +91,11 @@ function SummariesAreaChart({ data, adminsData }) {
               type="monotone" dataKey="totalUnits"
               data={admin.monthlySummary}
               name={admin.firstName + ' ' + admin.lastName}
-            />
-          ))
-        )}
-      </ChartComponent>
+              />
+            ))
+          )}
+        </ChartComponent>
+      </ResponsiveContainer>
     </div>
 
   );

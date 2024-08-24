@@ -116,7 +116,7 @@ function Dashboard() {
   
 
   return (
-    <div className={`bg-purp-dark/50 flex items-center justify-center w-full min-h-[89.8%]`}>
+    <div className={`${isLoading ? 'bg-white' : 'bg-purp-dark/50'} flex items-center justify-center w-full min-h-[89.8%]`}>
       {isLoading ? (
         <div className='w-fit h-fit animate-spin'>
           <AiOutlineLoading size='4rem' color='#605399' />
@@ -128,9 +128,9 @@ function Dashboard() {
               adminData={currentAdminData}
               dateData={dateRange[0]}
             />
-            <div className="flex gap-2 justify-center w-full">
-              <div className="flex flex-col gap-3">
-                <div className="flex gap-2">
+            <div className="flex flex-wrap gap-3 md:gap-0 justify-between w-full">
+              <div className="flex flex-col gap-3 w-full md:w-[49.5%]">
+                <div className="flex flex-wrap min-[540px]:flex-nowrap gap-y-2 min-[540px]:gap-2 justify-between w-full">
                   <MetricCard 
                     bgColor='bg-mag/90'
                     icon={<MdOutlineInventory size='3.5rem' color="white" className="self-end" />}
@@ -154,10 +154,9 @@ function Dashboard() {
                     icon={<GiProfit size='3.25rem' color="white" className="self-end" />}
                     text='Ingresos netos'
                     data={oiSummary[0].total}
-                  />
-                  
+                  />  
                 </div>
-                <div className="flex gap-3">
+                <div className="flex flex-wrap min-[540px]:flex-nowrap gap-3 w-full">
                   <CategoriesPieChart
                     absTotalUnits={oiSummary[0].totalUnits}
                     data={categoriesSummaries}
@@ -167,16 +166,15 @@ function Dashboard() {
                     firstData={topFirstProducts}
                     lastData={topLastProducts}
                   />
-                </div>
-                  
+                </div>   
               </div>
-              <div className="flex flex-col gap-3">
+              <div className="flex flex-col gap-3 w-full md:w-[49.5%]">
                 <SummariesAreaChart
                   data={monthlySummaries}
                   adminsData={adminsMonthlySummaries}
                 />
-                <div className="bg-white p-2 rounded-lg shadow-md h-[250px] overflow-auto">
-                  <table>
+                <div className="w-full bg-white p-2 rounded-lg shadow-md h-[225px] overflow-auto">
+                  <table className="w-full">
                     <thead>
                       <tr className='border-b-2 border-purp-dark'>
                         <th className='text-wrap text-left p-2'>Vendedor</th>
@@ -206,13 +204,9 @@ function Dashboard() {
                     </tbody>
                   </table>
                 </div>
-                
-
               </div>
-
             </div>
           </div>
-          
         </div>
       )}
     </div>
