@@ -7,8 +7,8 @@ export const getAllCategories = async () => {
     return response.json();
 };
 
-export const getCategoriesSummaries = async () => {
-    const response = await fetch(`${URL}/summaries`);
+export const getCategoriesSummaries = async (startDate, endDate) => {
+    const response = await fetch(`${URL}/summaries?startdate=${startDate}&enddate=${endDate}`);
     if (!response.ok)
         throw new Error(await response.text());
     return response.json();

@@ -56,8 +56,8 @@ export const updateProduct = async (product) => {
     return response.json();
 };
 
-export const getTopProducts = async (limit, order) => {
-    const response = await fetch(`${URL}/top?limit=${limit}&order=${order}`);
+export const getTopProducts = async (limit, order, startDate, endDate) => {
+    const response = await fetch(`${URL}/top?limit=${limit}&order=${order}&startdate=${startDate}&enddate=${endDate}`);
     if (!response.ok)
         throw new Error(await response.text());
     return response.json();

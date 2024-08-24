@@ -25,15 +25,15 @@ export const getAdminById = async (id) => {
     return response.json();
 };
 
-export const getAdminsSummaries = async () => {
-    const response = await fetch(`${URL}/summaries`);
+export const getAdminsSummaries = async (startDate, endDate) => {
+    const response = await fetch(`${URL}/summaries?startdate=${startDate}&enddate=${endDate}`);
     if (!response.ok)
         throw new Error(await response.text());
     return response.json();
 };
 
-export const getAdminsMonthlySummaries = async () => {
-    const response = await fetch(`${URL}/monthlySummaries`);
+export const getAdminsMonthlySummaries = async (startDate, endDate) => {
+    const response = await fetch(`${URL}/monthlySummaries?startdate=${startDate}&enddate=${endDate}`);
     if (!response.ok)
         throw new Error(await response.text());
     return response.json();

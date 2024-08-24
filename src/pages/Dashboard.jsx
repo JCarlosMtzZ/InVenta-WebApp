@@ -38,15 +38,65 @@ function Dashboard() {
   const [topFirstProducts, setTopFirstProducts] = useState([]);
   const [topLastProducts, setTopLastProducts] = useState([]);
 
+  const updateData = async (startDate = '', endDate = '') => {
+    setIsLoading(true);
+    try {
+
+      const [ oiSummaryResult,
+        monthlySummariesResult,
+        adminsSummariesResult,
+        adminsMonthlySummariesResult,
+        categoriesSummariesResult,
+        topFirstProductsResult,
+        topLastProductsResult 
+      ] = await Promise.all([
+        getOrderItemsSummary(startDate, endDate),
+        getOrderItemsMonthlySummaries(startDate, endDate),
+        getAdminsSummaries(startDate, endDate),
+        getAdminsMonthlySummaries(startDate, endDate),
+        getCategoriesSummaries(startDate, endDate),
+        getTopProducts(5, 'DESC', startDate, endDate),
+        getTopProducts(5, 'ASC', startDate, endDate)
+      ]);
+
+      const formattedMonthlySummaries = formatDatesToYearMonth(monthlySummariesResult, '2-digit', 'short');
+      
+      const formattedAdminsMonthlySummaries = adminsMonthlySummariesResult.map(adminSummary => ({
+        ...adminSummary,
+        monthlySummary: formatDatesToYearMonth(adminSummary.monthlySummary, '2-digit', 'short')
+      }));
+
+      setOiSummary(oiSummaryResult);
+      setDateRange([
+        {
+            minDate: startDate,
+            maxDate: endDate
+        }
+      ]);
+      setMonthlySummaries(formattedMonthlySummaries);
+      setAdminSummaries(adminsSummariesResult);
+      setAdminsMonthlySummaries(formattedAdminsMonthlySummaries);
+      setCategoriesSummaries(categoriesSummariesResult);
+      setTopFirstProducts(topFirstProductsResult); 
+      setTopLastProducts(topLastProductsResult);
+
+    } catch (error) {
+      console.error('Error while fetching orders', error);
+    } finally {
+      setIsLoading(false);
+    }
+  }
+
   useEffect(() => {
     let isMounted = true;
 
-    const fetchData = async () => {
+    const fetchData = async (startDate = '', endDate = '') => {
       if (!isMounted) return;
       setIsLoading(true);
       try {
+  
         const adminIdResult = await checkAdmin();
-
+  
         const [ oiSummaryResult,
           dateRangeResult,
           monthlySummariesResult,
@@ -57,17 +107,17 @@ function Dashboard() {
           topFirstProductsResult,
           topLastProductsResult 
         ] = await Promise.all([
-          getOrderItemsSummary(),
+          getOrderItemsSummary(startDate, endDate),
           getOrdersDateRange(),
-          getOrderItemsMonthlySummaries(),
-          getAdminsSummaries(),
-          getAdminsMonthlySummaries(),
+          getOrderItemsMonthlySummaries(startDate, endDate),
+          getAdminsSummaries(startDate, endDate),
+          getAdminsMonthlySummaries(startDate, endDate),
           getAdminById(adminIdResult.adminId),
-          getCategoriesSummaries(),
-          getTopProducts(5, 'DESC'),
-          getTopProducts(5, 'ASC')
+          getCategoriesSummaries(startDate, endDate),
+          getTopProducts(5, 'DESC', startDate, endDate),
+          getTopProducts(5, 'ASC', startDate, endDate)
         ]);
-
+  
         if (!isMounted) return;
   
         const formattedMonthlySummaries = formatDatesToYearMonth(monthlySummariesResult, '2-digit', 'short');
@@ -127,6 +177,7 @@ function Dashboard() {
             <DashboardTopBar
               adminData={currentAdminData}
               dateData={dateRange[0]}
+              updateData={updateData}
             />
             <div className="flex flex-wrap gap-3 md:gap-0 justify-between w-full">
               <div className="flex flex-col gap-3 w-full md:w-[49.5%]">
