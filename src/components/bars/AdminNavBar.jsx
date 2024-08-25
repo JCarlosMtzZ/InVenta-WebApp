@@ -5,7 +5,7 @@ import { IoHomeOutline } from 'react-icons/io5';
 import { IoIosLogOut } from 'react-icons/io';
 import { SlOptions } from 'react-icons/sl';
 
-import { logout } from '../services/adminsService.js';
+import { logout } from '../../services/adminsService.js';
 
 function AdminNavBar({ checkAdmin }) {
 

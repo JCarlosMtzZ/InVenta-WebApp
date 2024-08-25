@@ -1,6 +1,6 @@
-import NumberAnimation from "./NumberAnimation";
+import NumberAnimation from "../NumberAnimation";
 
-import { roundToK } from "../utilities/dashboard";
+import { roundToK } from "../../utilities/dashboard.jsx";
 
 function MetricCard({ bgColor, icon, text, data }) {
   return (

@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import LoginForm from './LoginForm.jsx';
-import SignupForm from './SignupForm';
+import SignupForm from './SignupForm.jsx';
 import { IoCloseCircleOutline } from 'react-icons/io5';
 
 function FormsContainer({ setIsOpen, checkAdmin }) {

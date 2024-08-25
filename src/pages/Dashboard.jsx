@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 
-import MetricCard from "../components/MetricCard.jsx";
+import MetricCard from "../components/cards/MetricCard.jsx";
 import DashboardTopBar from "../components/bars/DashboardTopBar.jsx";
 import SummariesAreaChart from "../components/charts/SummariesChart.jsx";
 import CategoriesPieChart from "../components/charts/CategoriesPieChart.jsx";

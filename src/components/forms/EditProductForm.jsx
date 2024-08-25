@@ -3,16 +3,21 @@ import { GiConfirmed } from 'react-icons/gi';
 import { MdOutlineCancel } from 'react-icons/md';
 import { AiOutlineLoading } from "react-icons/ai";
 
-import FormFieldWarning from './FormFieldWarning.jsx';
+import FormFieldWarning from '../FormFieldWarning.jsx';
 
-import PriceDisplay from './PriceDisplay.jsx';
+import { updateProduct } from '../../services/productsService.js';
+import { updateProductDiscount, deleteProductDiscount } from '../../services/productDiscountsService.js';
+import { addProductDiscount } from '../../services/productDiscountsService.js';
+import { getProductCategoryImagesDiscountsById } from '../../services/productsService.js';
 
-import { updateProduct } from '../services/productsService.js';
-import { updateProductDiscount, deleteProductDiscount } from '../services/productDiscountsService.js';
-import { addProductDiscount } from '../services/productDiscountsService.js';
-import { getProductCategoryImagesDiscountsById } from '../services/productsService.js';
-
-function EditProductForm({ product, setProduct, discounts, categories, handleClose }) {
+function EditProductForm({
+  product,
+  setProduct,
+  discounts,
+  categories,
+  handleClose,
+  isWaitingResponse,
+  setIsWaitingResponse }) {
 
   let discount;
   if (product.Discounts.length > 0)
@@ -32,7 +37,6 @@ function EditProductForm({ product, setProduct, discounts, categories, handleClo
   });
 
   const [isNewProductData, setIsNewProductData] = useState({
-    //id: true,
     isName: true,
     isDescription: true,
     isBrand: true,
@@ -44,11 +48,8 @@ function EditProductForm({ product, setProduct, discounts, categories, handleClo
 
   const [newDiscountId, setNewDiscountId] = useState(discount);
 
-  const [isWaitingResponse, setIsWaitingResponse] = useState(false);
-
   const [priceFieldMessage, setPriceFieldMessage] = useState("Requerido");
   const [stockFieldMessage, setStockFieldMessage] = useState("Requerido");
-
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -139,14 +140,12 @@ function EditProductForm({ product, setProduct, discounts, categories, handleClo
       setIsWaitingResponse(false);
       handleClose();
     }
-
-
   };
 
   return (
     <div className="flex flex-col w-full border-b border-mag mb-3 pb-2">
-      <div className="flex flex-col p-2 gap-4">
-        <div className="py-2 flex justify-between items-center">
+      <div className="flex flex-col p-2 gap-6">
+        <div className="flex justify-between items-center gap-2">
           <div className='flex flex-col'>
             <div className='flex items-center'>
               <label
@@ -162,13 +161,9 @@ function EditProductForm({ product, setProduct, discounts, categories, handleClo
                 type="text"
                 value={newProductData.name}
                 onChange={handleInputChange}
-                className='w-full p-1 focus:outline-none border-b-2'
+                className={`${!isNewProductData.isName && 'border-2 border-warn-red rounded-lg bg-warn-red/20'} w-full p-1 focus:outline-none border-b-2`}
               />
             </div>
-            <FormFieldWarning
-              isFormField={isNewProductData.isName}
-              message='Requerido'
-            />
           </div>
           <div className='flex gap-1'>
             <button
@@ -207,14 +202,9 @@ function EditProductForm({ product, setProduct, discounts, categories, handleClo
               type='text'
               value={newProductData.description}
               onChange={handleInputChange}
-              className='w-full resize-none text-md p-1 focus:outline-none border-b-2'
+              className={`${!isNewProductData.isDescription && 'border-2 border-warn-red rounded-lg bg-warn-red/20'} w-full resize-none text-md p-1 focus:outline-none border-b-2`}
             />
           </div>
-          <FormFieldWarning
-            isFormField={isNewProductData.isDescription}
-            message='Requerido'
-          />
-          
         </div>
         <div className='flex items-center'>
           <label
@@ -247,7 +237,7 @@ function EditProductForm({ product, setProduct, discounts, categories, handleClo
             )}
           </select>
         </div>
-        <div className='flex justify-between flex-wrap gap-4'>
+        <div className='mb-2 flex justify-between flex-wrap gap-4'>
           <div className='flex flex-col'>
             <div className='flex items-center'>
               <label htmlFor="unitPrice">
@@ -261,11 +251,12 @@ function EditProductForm({ product, setProduct, discounts, categories, handleClo
                 id='unitPrice'
                 value={newProductData.unitPrice}
                 onChange={handleInputChange}
-                className='text-center w-[60px] focus:outline-none border-b-2 p-1'
+                className={`${!isNewProductData.isUnitPrice && 'border-2 border-warn-red rounded-lg bg-warn-red/20'} text-center w-[60px] focus:outline-none border-b-2 p-1`}
               />
             </div>
             <FormFieldWarning
-              isFormField={isNewProductData.isUnitPrice}
+              hiddingDisplay='hidden'
+              isFormField={priceFieldMessage === 'Requerido' ? true : isNewProductData.isUnitPrice}
               message={priceFieldMessage}
             />
           </div>
@@ -282,12 +273,12 @@ function EditProductForm({ product, setProduct, discounts, categories, handleClo
                 id='stock'
                 value={newProductData.stock}
                 onChange={handleInputChange}
-                className='text-center w-[60px] focus:outline-none border-b-2 p-1'
+                className={`${!isNewProductData.isStock && 'border-2 border-warn-red rounded-lg bg-warn-red/20'} text-center w-[60px] focus:outline-none border-b-2 p-1`}
               />
             </div>
-            
             <FormFieldWarning
-              isFormField={isNewProductData.isStock}
+              hiddingDisplay='hidden'
+              isFormField={stockFieldMessage === 'Requerido' ? true : isNewProductData.isStock}
               message={stockFieldMessage}
             />
           </div>
@@ -301,13 +292,8 @@ function EditProductForm({ product, setProduct, discounts, categories, handleClo
             name='brand'
             value={newProductData.brand}
             onChange={handleInputChange}
-            className='text-center w-[75px] focus:outline-none border-b-2 p-1'
-          />
-          <FormFieldWarning
-            isFormField={isNewProductData.isBrand}
-            message='Requerido'
-          />
-          
+            className={`${!isNewProductData.isBrand && 'border-2 border-warn-red rounded-lg bg-warn-red/20 mt-1'} text-center w-[75px] focus:outline-none border-b-2 p-1`}
+          /> 
         </div>
         <div className="w-fit text-sm hover:border-mag border-dashed border rounded-lg p-2 flex flex-col items-center justify-center">
           <p>Tamaño:</p>
@@ -316,11 +302,7 @@ function EditProductForm({ product, setProduct, discounts, categories, handleClo
             name='size'
             value={newProductData.size}
             onChange={handleInputChange}
-            className='text-center w-[75px] focus:outline-none border-b-2 p-1'
-          />
-          <FormFieldWarning
-            isFormField={isNewProductData.isSize}
-            message='Requerido'
+            className={`${!isNewProductData.isSize && 'border-2 border-warn-red rounded-lg bg-warn-red/20 mt-1'} text-center w-[75px] focus:outline-none border-b-2 p-1`}
           />
         </div>
         <div className="w-fit text-sm hover:border-mag border-dashed border rounded-lg p-2 flex flex-col items-center justify-center">

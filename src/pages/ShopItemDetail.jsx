@@ -1,53 +1,39 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
+
 import { AiOutlineLoading } from "react-icons/ai";
-import { FaPlus } from "react-icons/fa";
-import { HiUpload } from "react-icons/hi";
 import { FaEdit } from 'react-icons/fa';
-import { RiDeleteBin2Line } from "react-icons/ri";
-
-import { deleteFromBucket } from '../services/filesService.js';
-import { deleteFromDB } from '../services/imagesService.js';
-
-import { getAllDiscounts, getDiscountsByValidity } from "../services/discountsService.js";
-import { getAllCategories } from "../services/categoriesService.js";
-
-import { getProductCategoryImagesDiscountsById } from "../services/productsService.js";
-
-import PriceDisplay from "./PriceDisplay";
-
 import { FaAngleLeft } from 'react-icons/fa';
 import { FaAngleRight } from "react-icons/fa";
 
-import img1 from '../assets/img1.jpeg';
-import img2 from '../assets/img2.jpeg';
-import img3 from '../assets/img3.jpeg';
+import { deleteFromDB} from '../services/imagesService.js';
+import { getAllDiscounts } from "../services/discountsService.js";
+import { getAllCategories } from "../services/categoriesService.js";
+import { getProductCategoryImagesDiscountsById } from "../services/productsService.js";
+import { bucketURL } from "../services/util.js";
 
-import EditProductForm from "./EditProductForm.jsx";
+import PriceDisplay from "../components/PriceDisplay";
+import EditProductForm from "../components/forms/EditProductForm.jsx";
+import DeleteImageButton from "../components/buttons/DeleteImageButton.jsx";
+import AddImageButton from "../components/buttons/AddImageButton.jsx";
 
-function ShopItemDetail() {
+function ShopItemDetail({
+  adminId,
+  isWaitingResponse,
+  setIsWaitingResponse }) {
 
-  const uri = 'https://axi88wcqsfqf.objectstorage.mx-queretaro-1.oci.customer-oci.com/n/axi88wcqsfqf/b/bucket-catalog-web-app/o/';
+  const [isLoading, setIsLoading] = useState(true);
 
   const [images, setImages] = useState([]);
   const [imageIndex, setImageIndex] = useState(0);
 
   const { id } = useParams();
   const [product, setProduct] = useState();
-  const [isLoading, setIsLoading] = useState(true);
 
   const [discounts, setDiscounts] = useState([]);
   const [categories, setCategories] = useState([]);
-
-  const [selectedFiles, setSelectedFiles] = useState([]);
-  const [isWaitingResponse, setIsWaitingResponse] = useState(false);
-
+  
   const [isEditingInfo, setIsEditingInfo] = useState(false);
-
-  const handleFileChange = (e) => {
-    const files = Array.from(e.target.files);
-    setSelectedFiles(files);
-  };
 
   const handleDeleteFile = async (file) => {
     setImages(images.map(image =>
@@ -61,58 +47,6 @@ function ShopItemDetail() {
       setImageIndex(0);
     } catch (error) {
       console.error('Error deleting Photo', error);
-    }
-  };
-
-  const handleSubmitFiles = async () => {
-    setIsWaitingResponse(true);
-    const form_Data = new FormData();
-    form_Data.append('prefix', product.id);
-    const currentSelectedFiles = selectedFiles;
-    for (let file of currentSelectedFiles)
-      form_Data.append('files', file);
-
-    try {
-      const uploadFilesResponse = await
-      fetch('http://localhost:3001/files/', {
-        method: 'POST',
-        body: form_Data
-      });
-      
-      if (!uploadFilesResponse.ok)
-        throw new Error('Error al subir archivos');
-
-      const uploadedFiles = await uploadFilesResponse.json();
-
-      const newImages = [];
-      for (let fileName of uploadedFiles) {
-        const newImageResponse = await
-          fetch('http://localhost:3001/images', {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json'
-            },
-            credentials: 'include',
-            body: JSON.stringify({
-              url: fileName,
-              productId: product.id
-            })
-          });
-        if (!newImageResponse.ok)
-          throw new Error('Error al subir imagen');
-        newImages.push(await newImageResponse.json());
-      }
-      const updatedNewImages = newImages.map(image => ({
-        ...image,
-        isDeleting: false,
-      }));
-      setImages([...images, ...updatedNewImages]);
-      setImageIndex(0);
-    } catch (error) {
-      console.log(error); 
-    } finally {
-      setIsWaitingResponse(false);
-      setSelectedFiles([]);
     }
   };
   
@@ -179,18 +113,22 @@ function ShopItemDetail() {
                 setProduct={setProduct}
                 discounts={discounts}
                 categories={categories}
+                isWaitingResponse={isWaitingResponse}
+                setIsWaitingResponse={setIsWaitingResponse}
               />
             ) : (
               <div className="flex flex-col w-full border-b border-mag mb-3">
                 <div className="p-2">
                   <div className="py-2 flex justify-between items-center">
                     <p className="font-bold text-lg">{product.name}</p>
-                    <button
+                    {adminId &&
+                      <button
                       onClick={handleIsEditingInfo}
                       className='scale-95 hover:scale-100 transition hover:opacity-70'    
-                    >
-                      <FaEdit size='2rem' color='#605399' />
-                    </button>
+                      >
+                        <FaEdit size='2rem' color='#605399' />
+                      </button>
+                    }
                   </div>
                     <p className="text-md mt-2 text-wrap break-words">{product.description}</p>
                 </div>
@@ -222,62 +160,32 @@ function ShopItemDetail() {
               <div key={index} className="relative group">
                 <img
                   onMouseOver={() => handleOnMouseOver(index)}
-                  src={uri + image.url}
+                  src={bucketURL + image.url}
                   className={`${imageIndex === index && 'ring-4 ring-mag'} object-cover w-[80px] h-[80px] scale-95 group-hover:scale-100 transition rounded-lg`}
                 />
-                {images.length > 1 &&
-                  <button
-                    disabled={image.isDeleting}
-                    onClick={() => handleDeleteFile(image)}
-                    className="transition p-1 top-0 right-0 rounded-lg bg-warn-red hover:bg-warn-red/50 absolute"
-                  >
-                    {image.isDeleting ?
-                      <div className="animate-spin">
-                        <AiOutlineLoading color="white" size='1.25rem' />
-                      </div>
-                      :
-                      <RiDeleteBin2Line color="white" size='1.25rem' />
-                    }
-                  </button>
+                {images.length > 1 && adminId && !isEditingInfo &&
+                  <DeleteImageButton
+                    image={image}
+                    handleDelete={handleDeleteFile}
+                  />
                 }
               </div>
             ))}
-            <div className={`flex ${selectedFiles.length > 0 ? 'w-[120px]' : 'w-[80px]'}  h-[80px]`}>
-              <label htmlFor="file-upload" className={`bg-purp-dark/10 scale-95 transition hover:scale-100 flex items-center justify-center  w-[80px] h-[80ox] cursor-pointer border-4 border-purp-dark border-dashed rounded-lg`}>
-                {selectedFiles.length > 0 ? (
-                  <p>{`${selectedFiles.length} foto(s)`}</p>
-                ) : (
-                  <FaPlus size='2.5rem' color="#605399" />
-                )}
-              </label>
-              <input
-                type="file"
-                id='file-upload'
-                multiple
-                accept=".jpeg,.jpg,.png,.gif"
-                onChange={handleFileChange}
-                className="hidden"
+            {adminId && !isEditingInfo &&
+              <AddImageButton
+                product={product}
+                images={images}
+                setImages={setImages}
+                setImageIndex={setImageIndex}
+                isWaitingResponse={isWaitingResponse}
+                setIsWaitingResponse={setIsWaitingResponse}
               />
-              {selectedFiles.length > 0 &&
-                <button
-                  type="button"
-                  onClick={handleSubmitFiles}
-                  disabled={isWaitingResponse}
-                  className={`flex items-center justify-center scale-95 transition hover:scale-100 bg-purp-dark w-[35px] h-full rounded-lg disabled:opacity-75 disabled:hover:scale-95`}
-                >
-                  {isWaitingResponse ? (
-                    <AiOutlineLoading color='white' size='1.4rem' className='animate-spin' />
-                  ) : (
-                    <HiUpload color="white" size='1.5rem' />
-                  )}
-                </button>
-              }
-            </div>
+            }
           </div>
 
           <div className="relative w-full lg:w-[60%] h-full flex items-center justify-center">
             <img
-              src={uri + images[imageIndex].url}
+              src={bucketURL + images[imageIndex].url}
               className="object-cover w-full h-full rounded-lg" />
             <button onClick={handleLeftClick} type="button" className="opacity-0 hover:opacity-70 transition flex items-center justify-center left-0 top-0 bottom-0 rounded-l-lg absolute w-12 bg-white">
               <FaAngleLeft size='3rem' color="black" />

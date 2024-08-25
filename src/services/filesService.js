@@ -8,3 +8,13 @@ export const deleteFromBucket = async (name) => {
         throw new Error(await response.text());
     return response.json();
 };
+
+export const uploadToBucket = async (files) => {
+    const response = await fetch(`${URL}`, {
+        method: 'POST',
+        body: files
+    });
+    if (!response.ok)
+        throw new Error(await response.text());
+    return response.json();
+};

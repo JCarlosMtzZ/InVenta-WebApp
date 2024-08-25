@@ -1,6 +1,6 @@
 import { useState } from "react";
-import PriceDisplay from "./PriceDisplay.jsx";
-import ShopItemButtons from "./ShopItemButtons.jsx";
+import PriceDisplay from "../PriceDisplay.jsx";
+import ShopItemButtons from "../ShopItemButtons.jsx";
 
 function ShopItem({ product, onClick, showButtons, cart, setCart }) {
 

@@ -1,7 +1,7 @@
 import { useState } from "react";
-import FormFieldWarning from "./FormFieldWarning.jsx";
-import PasswordFormField from "./PasswordFormField.jsx";
-import FormSubmitButton from "./FormSubmitButton.jsx";
+import FormFieldWarning from "../FormFieldWarning.jsx";
+import PasswordFormField from "../PasswordFormField.jsx";
+import FormSubmitButton from "../FormSubmitButton.jsx";
 
 function SignupForm({ checkAdmin, className, isWaitingResponse, setIsWaitingResponse }) {
 

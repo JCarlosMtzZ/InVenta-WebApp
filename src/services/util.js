@@ -1,0 +1,1 @@
+export const bucketURL = 'https://axi88wcqsfqf.objectstorage.mx-queretaro-1.oci.customer-oci.com/n/axi88wcqsfqf/b/bucket-catalog-web-app/o/';

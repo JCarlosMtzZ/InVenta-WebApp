@@ -2,8 +2,8 @@ import { useState, useEffect } from "react";
 import { MdOutlineCloudUpload } from "react-icons/md";
 import { AiOutlineLoading } from "react-icons/ai";
 import { IoCloseCircleOutline } from "react-icons/io5";
-import FormFieldWarning from "./FormFieldWarning";
-import FormSubmitButton from "./FormSubmitButton";
+import FormFieldWarning from "../FormFieldWarning.jsx";
+import FormSubmitButton from "../FormSubmitButton.jsx";
 
 function AddProductForm({ categories, isOpen, setIsOpen }) {
 

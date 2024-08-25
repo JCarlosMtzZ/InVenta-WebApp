@@ -7,7 +7,7 @@ import { useNavigate } from "react-router-dom";
 import {
   getProductsByNameFilter,
   getAllProductsCategoriesImagesDiscountsByNameAndFilter
-} from "../services/productsService";
+} from "../../services/productsService.js";
 
 
 function SearchBar({ setExternalProducts, hasDropdown, getFilterName, filter }) {

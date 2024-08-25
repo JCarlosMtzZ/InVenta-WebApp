@@ -2,11 +2,11 @@ import { useState } from 'react';
 
 import { MdOutlineInventory } from 'react-icons/md';
 import { AiOutlineStock } from 'react-icons/ai';
-import SearchBar from '../components/SearchBar.jsx';
+import SearchBar from './SearchBar.jsx';
 
 import {
   getAllProductsCategoriesImagesDiscounts,
-  getAllProductsCategoriesImagesDiscountsByNameAndFilter } from '../services/productsService.js';
+  getAllProductsCategoriesImagesDiscountsByNameAndFilter } from '../../services/productsService.js';
 
 function ManagementBar({
   setIsLoading,

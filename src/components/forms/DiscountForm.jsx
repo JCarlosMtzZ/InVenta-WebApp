@@ -1,13 +1,13 @@
 import { useEffect, useState } from 'react';
 
-import { addDiscount, updateDiscount } from '../services/discountsService.js';
+import { addDiscount, updateDiscount } from '../../services/discountsService.js';
 
 import { TbCirclePercentage } from 'react-icons/tb';
 import { AiOutlineDollarCircle } from 'react-icons/ai';
 import { GiConfirmed } from 'react-icons/gi';
 import { MdOutlineCancel } from 'react-icons/md';
 
-import FormFieldWarning from './FormFieldWarning.jsx';
+import FormFieldWarning from '../FormFieldWarning.jsx';
 
 function DiscountForm({ handleClose, isEditing, discount }) {
 

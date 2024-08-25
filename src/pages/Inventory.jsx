@@ -5,9 +5,9 @@ import { RiShoppingCartLine } from "react-icons/ri";
 import { FaPlus } from "react-icons/fa";
 import { useNavigate } from 'react-router-dom';
 
-import ShopItem from '../components/ShopItem.jsx';
-import AddProductForm from '../components/AddProductForm.jsx';
-import ManagementBar from '../components/ManagementBar.jsx';
+import ShopItem from '../components/cards/ShopItem.jsx';
+import AddProductForm from '../components/forms/AddProductForm.jsx';
+import ManagementBar from '../components/bars/ManagementBar.jsx';
 import ShoppingCart from "../components/ShoppingCart.jsx";
 
 import { 

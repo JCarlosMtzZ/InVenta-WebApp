@@ -4,7 +4,7 @@ import { getAllDiscounts, getDiscountsByValidity } from '../services/discountsSe
 
 import { AiOutlineLoading } from 'react-icons/ai';
 import { FaEdit } from 'react-icons/fa';
-import DiscountForm from '../components/DiscountForm';
+import DiscountForm from '../components/forms/DiscountForm';
 
 function Discounts() {
 

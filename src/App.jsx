@@ -4,18 +4,20 @@ import { BrowserRouter, Link, Routes, Route } from 'react-router-dom';
 import Inventory from "./pages/Inventory.jsx";
 import Dashboard from "./pages/Dashboard.jsx";
 import Discounts from "./pages/Discounts.jsx";
-import ShopItemDetail from "./components/ShopItemDetail.jsx";
-import FormsContainer from './components/FormsContainer.jsx';
+import ShopItemDetail from "./pages/ShopItemDetail.jsx";
+import FormsContainer from './components/forms/FormsContainer.jsx';
 
-import UserNavBar from './components/UserNavBar.jsx';
-import AdminNavBar from "./components/AdminNavBar.jsx";
+import UserNavBar from './components/bars/UserNavBar.jsx';
+import AdminNavBar from "./components/bars/AdminNavBar.jsx";
 
 import { checkAdmin } from './services/adminsService.js';
 
 function App() {
 
   const [adminId, setAdminId] = useState('');
+  
   const [isLoading, setIsLoading] = useState(true);
+  const [isWaitingResponse, setIsWaitingResponse] = useState(false);
 
   const fetchCheckAdmin = async () => {
     try {
@@ -77,7 +79,15 @@ function App() {
           />
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/discounts" element={<Discounts />} />
-          <Route path="/inventory/product/:id" element={<ShopItemDetail />} />
+          <Route path="/inventory/product/:id" element={
+            <ShopItemDetail
+              adminId={adminId}
+              isWaitingResponse={isWaitingResponse}
+              setIsWaitingResponse={setIsWaitingResponse}
+              isLoading={isLoading}
+              setIsLoading={setIsLoading}
+            />
+          } />
         </Routes>
       </BrowserRouter>
     </div>
