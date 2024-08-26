@@ -78,7 +78,12 @@ function App() {
               />}
           />
           <Route path="/dashboard" element={<Dashboard />} />
-          <Route path="/discounts" element={<Discounts />} />
+          <Route path="/discounts" element={
+            <Discounts
+              isWaitingResponse={isWaitingResponse}
+              setIsWaitingResponse={setIsWaitingResponse}
+            />}
+          />
           <Route path="/inventory/product/:id" element={
             <ShopItemDetail
               adminId={adminId}

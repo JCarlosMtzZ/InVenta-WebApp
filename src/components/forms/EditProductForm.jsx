@@ -9,6 +9,7 @@ import { updateProduct } from '../../services/productsService.js';
 import { updateProductDiscount, deleteProductDiscount } from '../../services/productDiscountsService.js';
 import { addProductDiscount } from '../../services/productDiscountsService.js';
 import { getProductCategoryImagesDiscountsById } from '../../services/productsService.js';
+import EditingFormButtons from '../buttons/EditingFormButtons.jsx';
 
 function EditProductForm({
   product,
@@ -165,27 +166,11 @@ function EditProductForm({
               />
             </div>
           </div>
-          <div className='flex gap-1'>
-            <button
-              disabled={isWaitingResponse}
-              onClick={handleSubmit}
-              className='flex items-center justify-center w-[40px] h-[40px] disabled:opacity-70 scale-95 hover:scale-100 transition hover:opacity-70 bg-purp-dark rounded-lg p-1'    
-            >
-              {isWaitingResponse ? (
-                <div className='animate-spin w-fit'>
-                  <AiOutlineLoading size='1.5rem' color='white' />
-                </div>
-              ) : (
-                <GiConfirmed size='2rem' color='white' />
-              )}
-            </button>
-            <button
-              onClick={handleClose}
-              className='w-[40px] h-[40px] scale-95 hover:scale-100 transition hover:opacity-70 bg-purp-dark rounded-lg p-1'    
-            >
-              <MdOutlineCancel size='2rem' color='white' />
-            </button>
-          </div>
+          <EditingFormButtons
+            isWaitingResponse={isWaitingResponse}
+            handleSubmit={handleSubmit}
+            handleClose={handleClose}
+          />
         </div>
         <div className='flex flex-col'>
           <div className='flex items-center'>

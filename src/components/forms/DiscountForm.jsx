@@ -1,56 +1,27 @@
 import { useEffect, useState } from 'react';
 
-import { addDiscount, updateDiscount } from '../../services/discountsService.js';
-
 import { TbCirclePercentage } from 'react-icons/tb';
 import { AiOutlineDollarCircle } from 'react-icons/ai';
-import { GiConfirmed } from 'react-icons/gi';
-import { MdOutlineCancel } from 'react-icons/md';
+
+import { addDiscount, updateDiscount } from '../../services/discountsService.js';
+
+import { isoToDateTimeLocal } from '../../utilities/discounts.jsx';
 
 import FormFieldWarning from '../FormFieldWarning.jsx';
+import DatetimeInput from '../inputs/DatetimeInput.jsx';
+import EditingFormButtons from '../buttons/EditingFormButtons.jsx';
 
-function DiscountForm({ handleClose, isEditing, discount }) {
+function DiscountForm({
+  isWaitingResponse,
+  setIsWaitingResponse,
+  handleClose,
+  isEditing,
+  discount,
+  setDiscounts }) {
 
   const [isPercentage, setIsPercentage] = useState(true);
   const [isReady, setIsReady] = useState(false);
-
-
-  const [valueFieldMessage, setValueFieldMessage] = useState('Requerido');
-  const [dateFieldMessage, setDateFieldMessage] = useState('Requerido');
-
-  const isoToDateTimeLocal = (isoString) => {
-    const date = new Date(isoString);
-
-    const year = date.getFullYear();
-    const month = String(date.getMonth() + 1).padStart(2, '0');
-    const day = String(date.getDate()).padStart(2, '0');
-    const hours = String(date.getHours()).padStart(2, '0');
-    const minutes = String(date.getMinutes()).padStart(2, '0');
-
-    return `${year}-${month}-${day}T${hours}:${minutes}`;
-  }
-
-  useEffect(() => {
-    if (isEditing) {
-      const currentDiscount = {
-        id: discount.id,
-        name: discount.name,
-        startDate: isoToDateTimeLocal(discount.startDate),
-        endDate: isoToDateTimeLocal(discount.endDate),
-        percentage: '',
-        amount: '',
-        value: ''
-      }
-      if (discount.percentage) {
-        setIsPercentage(true);
-        currentDiscount.value = discount.percentage * 100;
-      } else {
-        setIsPercentage(false);
-        currentDiscount.value = discount.amount;
-      }
-      setNewDiscountData(currentDiscount);
-    }
-  }, []);
+  const [warnMessage, setWarnMessage] = useState('Requerido');
 
   const [newDiscountData, setNewDiscountData] = useState({
     name: '',
@@ -68,6 +39,29 @@ function DiscountForm({ handleClose, isEditing, discount }) {
     isValue: true
   });
 
+  useEffect(() => {
+    if (isEditing) {
+      const currentDiscount = {
+        id: discount.id,
+        name: discount.name,
+        startDate: isoToDateTimeLocal(discount.startDate),
+        endDate: isoToDateTimeLocal(discount.endDate),
+        percentage: '',
+        amount: '',
+        value: '',
+        isEditing: discount.isEditing
+      }
+      if (discount.percentage) {
+        setIsPercentage(true);
+        currentDiscount.value = discount.percentage * 100;
+      } else {
+        setIsPercentage(false);
+        currentDiscount.value = discount.amount;
+      }
+      setNewDiscountData(currentDiscount);
+    }
+  }, []);
+
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setNewDiscountData({
@@ -80,10 +74,8 @@ function DiscountForm({ handleClose, isEditing, discount }) {
       [`is${name.charAt(0).toUpperCase() + name.slice(1)}`]: !!value
     })
 
-    if (name === 'value')
-      if (!value) setValueFieldMessage('Requerido');
-    if (name === 'startDate')
-      if (!value) setDateFieldMessage('Requerido');
+    if (name === 'value' || name === 'startDate')
+      if (!value) setWarnMessage('Requerido');
   };
 
   const handleDiscountValue = () => {
@@ -94,14 +86,25 @@ function DiscountForm({ handleClose, isEditing, discount }) {
     const processDiscount = async (discount) => {
       try {
         if (isEditing) {
-          const updatedDiscount = await updateDiscount(discount);
-          console.log(updatedDiscount);
-        } else {
-          const addedDiscount = await addDiscount(discount);
-          console.log(addedDiscount);
+          await updateDiscount(discount);
+          setDiscounts((currentDiscounts) =>
+            currentDiscounts.map(d =>
+            d.id === discount.id
+            ? { ...d, ...discount}
+            : d
+          ));
+        }
+        else {
+          const newDiscountResult = await addDiscount(discount);
+          discount.id = newDiscountResult.id;
+          setDiscounts((currentDiscounts) =>
+            [...currentDiscounts, discount]);
         }
       } catch (error) {
         console.error('Error processing Discount:', error);
+      } finally {
+        setIsWaitingResponse(false);
+        handleClose();
       }
     };
     if ((newDiscountData.percentage || newDiscountData.amount) && isReady) {
@@ -110,8 +113,8 @@ function DiscountForm({ handleClose, isEditing, discount }) {
     }
   }, [isReady, newDiscountData]);
 
-
   const handleSubmit = async () => {
+    setIsWaitingResponse(true);
 
     const currentIsNewDiscountData = {
       isName: !!newDiscountData.name,
@@ -122,31 +125,34 @@ function DiscountForm({ handleClose, isEditing, discount }) {
     
     if (Object.values(currentIsNewDiscountData).some(value => !value)) {
       setIsNewDiscountData(currentIsNewDiscountData);
-      //setIsWaitingResponse(false);
+      setIsWaitingResponse(false);
       return;
     }
     const startDate = new Date(newDiscountData.startDate);
     const endDate = new Date(newDiscountData.endDate);
     if (startDate >= endDate) {
-      setDateFieldMessage('Debe ser menor a la fecha fin');
+      setWarnMessage('La fecha de inicio debe ser menor a la final');
       setIsNewDiscountData({
         ...isNewDiscountData,
         isStartDate: false});
+        setIsWaitingResponse(false);
       return;
     }
     const currentDiscountValue = parseFloat(newDiscountData.value);
     if (currentDiscountValue <= 0) {
-      setValueFieldMessage('Mayor a 0');
+      setWarnMessage('El valor debe ser mayor a cero');
       setIsNewDiscountData({
         ...isNewDiscountData,
         isValue: false});
+      setIsWaitingResponse(false);
       return;
     }
     if (isPercentage && currentDiscountValue >= 100) {
-      setValueFieldMessage('Menor a 100');
+      setWarnMessage('El valor debe ser menor a 100');
       setIsNewDiscountData({
         ...isNewDiscountData,
       isValue: false});
+      setIsWaitingResponse(false);
       return;
     }
     if (isPercentage) {
@@ -166,48 +172,34 @@ function DiscountForm({ handleClose, isEditing, discount }) {
   };
 
   return (
-    <tr className='t-4 w-full border-b-2 border-purp-dark/15'>
-      <td className='p-4 pt-8'>
+    <tr className={`relative w-full border-b-2 border-purp-dark/15`}>
+      <td className={`${warnMessage != 'Requerido' && 'pb-7'} p-4`}>
         <input
           type="text" 
           placeholder='Nombre'
           name='name'
           value={newDiscountData.name}
           onChange={handleInputChange}
-          className='w-full p-1 border-b-2 border-black/50 focus:outline-none'
-        />
-        <FormFieldWarning
-          isFormField={isNewDiscountData.isName}
-          message='Requerido'
+          className={`${!isNewDiscountData.isName && 'border-2 border-warn-red rounded-lg bg-warn-red/20'} w-[250px] p-1 border-b-2 border-black/50 focus:outline-none`}
         />
       </td>
-      <td className='p-4 pt-8'>
-        <input
-          type="datetime-local"
+      <td className={`${warnMessage != 'Requerido' && 'pb-7'} p-4`}>
+        <DatetimeInput
+          isDatetime={isNewDiscountData.isStartDate}
           name='startDate'
           value={newDiscountData.startDate}
-          onChange={handleInputChange}
-          className='py-1 w-full border-b-2 border-black/50 focus:outline-none'
-        />
-        <FormFieldWarning
-          isFormField={isNewDiscountData.isStartDate}
-          message={dateFieldMessage}
+          handleInputChange={handleInputChange}
         />
       </td>
-      <td className='p-4 pt-8'>
-        <input
-          type="datetime-local"
+      <td className={`${warnMessage != 'Requerido' && 'pb-7'} p-4`}>
+        <DatetimeInput
+          isDatetime={isNewDiscountData.isEndDate}
           name='endDate'
           value={newDiscountData.endDate}
-          onChange={handleInputChange}
-          className='py-1 w-full border-b-2 border-black/50 focus:outline-none'
-        />
-        <FormFieldWarning
-          isFormField={isNewDiscountData.isEndDate}
-          message='Requerido'
+          handleInputChange={handleInputChange}
         />
       </td>
-      <td className='p-4 pt-8'>
+      <td className={`${warnMessage != 'Requerido' && 'pb-7'} p-4`}>
         <div className='flex justify-center items-center gap-1'>
           <button
             onClick={handleDiscountValue}
@@ -224,29 +216,23 @@ function DiscountForm({ handleClose, isEditing, discount }) {
             name='value'
             value={newDiscountData.value}
             onChange={handleInputChange}
-            className='text-center w-[60px] p-1 border-b-2 border-black/50 focus:outline-none'
+            className={`${!isNewDiscountData.isValue && 'border-2 border-warn-red rounded-lg bg-warn-red/20'} text-center w-[60px] p-1 border-b-2 border-black/50 focus:outline-none`}
           />
         </div>
-        <FormFieldWarning
-          isFormField={isNewDiscountData.isValue}
-          message={valueFieldMessage}
+      </td>
+      <td className={`${warnMessage != 'Requerido' && 'pb-7'} p-4`}>
+        <EditingFormButtons 
+          isWaitingResponse={isWaitingResponse}
+          handleSubmit={handleSubmit}
+          handleClose={handleClose}
         />
       </td>
-      <td className=''>
-        <div className='flex gap-1'>
-          <button
-            onClick={handleSubmit}
-            className='p-1 bg-purp-dark rounded-lg hover:opacity-70 transition'
-          >
-            <GiConfirmed color='white' size='1.75rem' />
-          </button>
-          <button
-            onClick={handleClose}
-            className='p-1 bg-purp-dark rounded-lg hover:opacity-70 transition'
-          >
-            <MdOutlineCancel color='white' size='1.75rem' />
-          </button>
-        </div>
+      <td className='-bottom-1 left-4 absolute'>
+        <FormFieldWarning
+          hiddingDisplay='hidden'
+          isFormField={warnMessage === 'Requerido' ? true : false}
+          message={warnMessage}
+        />
       </td>
     </tr>
   );
