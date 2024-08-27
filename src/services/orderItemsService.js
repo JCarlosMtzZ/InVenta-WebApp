@@ -1,4 +1,26 @@
+import { getFinalPrice } from "../utilities/discounts";
+
 const URL = 'http://localhost:3001/orderItems';
+
+export const addOrderItem = async (orderItem, orderId) => {
+    const response = await fetch(`${URL}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        credentials: 'include',
+        body: JSON.stringify({
+          quantity: orderItem.quantity,
+          orderId: orderId,
+          productId: orderItem.id,
+          unitPrice: orderItem.unitPrice,
+          netUnitPrice: getFinalPrice(orderItem).finalPrice
+        })
+    });
+    if (!response.ok)
+        throw new Error(await response.text());
+    return response.json();
+};
 
 export const getOrderItemsSummary = async (startDate, endDate) => {
     const response = await fetch(`${URL}/summary?startdate=${startDate}&enddate=${endDate}`);

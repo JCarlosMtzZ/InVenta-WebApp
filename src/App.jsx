@@ -66,6 +66,7 @@ function App() {
             path="/inventory"
             element={
               <Inventory
+                adminId={adminId}
                 isLoading={isLoading}
                 setIsLoading={setIsLoading}
                 isLogging={isLogging}
@@ -75,6 +76,8 @@ function App() {
                 setCart={setCart}
                 isCart={isCart}
                 setIsCart={setIsCart}
+                isWaitingResponse={isWaitingResponse}
+                setIsWaitingResponse={setIsWaitingResponse}
               />}
           />
           <Route path="/dashboard" element={<Dashboard />} />

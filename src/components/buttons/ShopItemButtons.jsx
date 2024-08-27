@@ -1,4 +1,5 @@
 import { useState } from "react";
+
 import { FaPlus } from "react-icons/fa";
 import { FaMinus } from "react-icons/fa";
 import { RiShoppingCartLine } from "react-icons/ri";
@@ -17,8 +18,7 @@ function ShopItemButtons({ product, cart, setCart, isOnCart }) {
       );
       setCart(updatedCart);
     } else {
-      const currentQuantity = quantity;
-      setQuantity(currentQuantity + 1);
+      setQuantity(quantity + 1);
     }
   };
 
@@ -31,9 +31,8 @@ function ShopItemButtons({ product, cart, setCart, isOnCart }) {
       );
       setCart(updatedCart);
     } else {
-      const currentQuantity = quantity;
-      if (currentQuantity > 1)
-        setQuantity(currentQuantity - 1);
+      if (quantity > 1)
+        setQuantity(quantity - 1);
     }
   };
 
@@ -43,18 +42,17 @@ function ShopItemButtons({ product, cart, setCart, isOnCart }) {
   };
 
   const handleAddToCart = () => {
-    const currentQuantity = quantity;
     const obj = cart.find(obj => obj.id === product.id);
     if (obj) {
       const updatedCart = cart.map(item =>
         item.id === product.id
-          ? { ...item, quantity: item.quantity + currentQuantity }
+          ? { ...item, quantity: item.quantity + quantity }
           : item
       );
       setCart(updatedCart);
     }
     else {
-      const newProduct = { ...product, quantity: currentQuantity };
+      const newProduct = { ...product, quantity: quantity };
       setCart([
         ...cart,
         newProduct

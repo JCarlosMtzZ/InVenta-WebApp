@@ -1,21 +1,24 @@
-import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+
 import PriceDisplay from "../PriceDisplay.jsx";
-import ShopItemButtons from "../ShopItemButtons.jsx";
+import ShopItemButtons from "../buttons/ShopItemButtons.jsx";
 
-function ShopItem({ product, onClick, showButtons, cart, setCart }) {
+import { bucketURL } from "../../services/util.js";
 
-  const uri = "https://axi88wcqsfqf.objectstorage.mx-queretaro-1.oci.customer-oci.com/n/axi88wcqsfqf/b/bucket-catalog-web-app/o/";
+function ShopItem({ product, showButtons, cart, setCart }) {
 
-  const handleOnClick = () => {
-    onClick(product.id);
-  }
+  const navigate = useNavigate();
+  
+  const handleOnClick = (id) => {
+    navigate(`/inventory/product/${id}`)
+  };
 
   return (
     <div className="w-[200px] flex flex-col">
-      <div onClick={handleOnClick} className="hover:cursor-pointer group w-full h-[300px] flex flex-col justify-evenly rounded-xl shadow-md scale-95 hover:scale-100 transition">
+      <div onClick={() => handleOnClick(product.id)} className="hover:cursor-pointer group w-full h-[300px] flex flex-col justify-evenly rounded-xl shadow-md scale-95 hover:scale-100 transition">
         <div className="flex w-full items-center justify-center">
           <img
-            src={uri + product.Images[0].url}
+            src={bucketURL + product.Images[0].url}
             alt=""
             className="w-full object-cover rounded-t-xl" />
         </div>

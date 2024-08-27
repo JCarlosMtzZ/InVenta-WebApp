@@ -1,24 +1,33 @@
 import { useState, useEffect, useRef} from "react";
-import debounce from "lodash.debounce";
-import { IoSearchSharp } from "react-icons/io5";
-
 import { useNavigate } from "react-router-dom";
+import debounce from "lodash.debounce";
+
+import { IoSearchSharp } from "react-icons/io5";
+import { AiOutlineLoading } from "react-icons/ai";
 
 import {
   getProductsByNameFilter,
   getAllProductsCategoriesImagesDiscountsByNameAndFilter
 } from "../../services/productsService.js";
 
-
 function SearchBar({ setExternalProducts, hasDropdown, getFilterName, filter }) {
 
+  const [isWaitingResponse, setIsWaitingResponse] = useState(false);
+  
   const [products, setProducts] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [isTyping, setIsTyping] = useState(false);
   const dropdownRef = useRef(null);
 
+  const navigate = useNavigate();
+
+  const handleProductNameClick = (id) => {
+    setIsTyping(false);
+    navigate(`/inventory/product/${id}`);
+  };
 
   const fetchProducts = async (term) => {
+    setIsWaitingResponse(true);
     try {
       let productsResult;
       if (hasDropdown) {
@@ -32,6 +41,7 @@ function SearchBar({ setExternalProducts, hasDropdown, getFilterName, filter }) 
         }
         setExternalProducts(productsResult);
       }
+      setIsWaitingResponse(false);
     } catch (error) {
       console.error('Error fetching products: ', error);
     }
@@ -40,8 +50,7 @@ function SearchBar({ setExternalProducts, hasDropdown, getFilterName, filter }) 
   const debouncedSearch = debounce(fetchProducts, 300);
 
   const handleInputChange = (e) => {
-    const term = e.target.value;
-    setSearchTerm(term);
+    setSearchTerm(e.target.value);
     setIsTyping(true);
   };
 
@@ -64,14 +73,6 @@ function SearchBar({ setExternalProducts, hasDropdown, getFilterName, filter }) 
     };
   }, []);
 
-  const navigate = useNavigate();
-
-  const handleProductNameClick = (id) => {
-    setIsTyping(false);
-    navigate(`/inventory/product/${id}`);
-    //window.location.reload();
-  };
-
   return (
     <div ref={dropdownRef} className={`relative ${hasDropdown && 'z-30'}`}>
       <div className="flex items-center w-fit rounded-lg shadow-md">
@@ -83,8 +84,14 @@ function SearchBar({ setExternalProducts, hasDropdown, getFilterName, filter }) 
           onClick={() => setIsTyping(true)}
           className={`text-black focus:outline-none p-3 h-[40px] w-[160px] sm:w-[300px] rounded-l-lg focus:border-0`}
         />
-        <button type="button" className="p-1 bg-white h-[40px] w-[40px] rounded-r-lg flex justify-center items-center">
-          <IoSearchSharp size='1.8rem' color="#605399" className="hover:scale-110 transition"/>
+        <button type="button" className={`p-1 bg-white h-[40px] w-[40px] rounded-r-lg flex justify-center items-center`}>
+          {isWaitingResponse ?
+            <div className="animate-spin">
+              <AiOutlineLoading size='1.5rem' color="#605399" />
+            </div>
+          :
+            <IoSearchSharp size='1.8rem' color="#605399" />
+          }
         </button>
       </div>
       {isTyping && hasDropdown &&
