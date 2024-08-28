@@ -1,9 +1,13 @@
 import { useState } from "react";
-import FormFieldWarning from "../FormFieldWarning.jsx";
-import PasswordFormField from "../PasswordFormField.jsx";
-import FormSubmitButton from "../FormSubmitButton.jsx";
 
-function LoginForm({ checkAdmin, className, isWaitingResponse, setIsWaitingResponse }) {
+import FormFieldWarning from "../FormFieldWarning.jsx";
+import PasswordFormField from "../inputs/PasswordFormField.jsx";
+import FormSubmitButton from "../buttons/FormSubmitButton.jsx";
+import InputWithWarning from "../inputs/InputWithWarning.jsx";
+
+import { login } from "../../services/adminsService.js";
+
+function LoginForm({ checkAdmin, handleClose, className, isWaitingResponse, setIsWaitingResponse }) {
 
   const [isResponseOk, setIsResponseOk] = useState(true);
 
@@ -29,7 +33,7 @@ function LoginForm({ checkAdmin, className, isWaitingResponse, setIsWaitingRespo
     })
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     setIsResponseOk(true);
     setIsWaitingResponse(true);
 
@@ -44,61 +48,46 @@ function LoginForm({ checkAdmin, className, isWaitingResponse, setIsWaitingRespo
       return;
     }
 
-    fetch('http://localhost:3001/admins/login', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      credentials: 'include',
-      body: JSON.stringify(formData)
-    })
-    .then(response => {
-      if (response.ok) return response.json();
-      if (response.status === 404 || response.status === 401) {
+    try {
+      const loginResult = await login(formData);
+      if (loginResult === 404 || loginResult === 401) {
         setIsResponseOk(false);
-        throw new Error('Correo electrónico o contraseña incorrectos');
+        throw new Error('Invalid email or password');
+      } else if (loginResult === 200) {
+        checkAdmin();
+        handleClose();
       }
-    })
-    .then(data => {
-      console.log('Success:', data);
-    })
-    .catch(error => {
-      console.error('Error:', error);
-    })
-    .finally(() => {
+    } catch (error) {
+      console.error('Error while logging in:', error); 
+    } finally {
       setIsWaitingResponse(false);
-      checkAdmin();
-    });
-
+    }
   };
 
   return (
     <div className={`w-[100%] h-[100%] p-8 flex flex-col justify-center relative ${className}`}>
-      <div className={`${isResponseOk ? 'hidden' : 'block'} mb-2`}>
-        <FormFieldWarning
-          isFormField={isResponseOk}
-          message='Correo o contraseña incorrectos'
-        />
-      </div>
-      <label htmlFor="email" className="mb-2">Correo electrónico</label>
-      <input
-        type="email"
-        id="email"
-        name="email"
-        placeholder="correo@ejemplo.com"
-        value={formData.email}
-        onChange={handleInputChange}
-        className={`p-2 h-10 border-solid border-2 ${isFormData.isEmail ? 'border-black' : 'border-warn-red'} border-opacity-45 rounded-lg`}
-      />
       <FormFieldWarning
-        isFormField={isFormData.isEmail}
+        hiddingDisplay='hidden'
+        isFormField={isResponseOk}
+        message='Correo o contraseña incorrectos'
+      />
+      <InputWithWarning
+        label='Correo electrónico'
+        type='email'
+        id='email'
+        name='email'
+        value={formData.email}
+        isValue={isFormData.isEmail}
+        onChange={handleInputChange}
         message='Requerido'
+        width='w-full'
       />
       <PasswordFormField
         value={formData.password}
         handleInputChange={handleInputChange}
         isValue={isFormData.isPassword} />
       <FormFieldWarning
+        hiddingDisplay='invisible'
         isFormField={isFormData.isPassword}
         message='Requerido'
       />
@@ -106,6 +95,7 @@ function LoginForm({ checkAdmin, className, isWaitingResponse, setIsWaitingRespo
         isWaitingResponse={isWaitingResponse}
         handleSubmit={handleSubmit}
         text='Enviar'
+        width='w-full'
       />
     </div>
   );

@@ -45,6 +45,8 @@ function App() {
             <FormsContainer
               setIsOpen={setIsLogging}
               checkAdmin={fetchCheckAdmin}
+              isWaitingResponse={isWaitingResponse}
+              setIsWaitingResponse={setIsWaitingResponse}
             />
           </div>
       )}

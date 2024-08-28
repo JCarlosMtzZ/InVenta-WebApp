@@ -1,5 +1,3 @@
-import { Sector } from "recharts";
-
 export const formatDatesToYearMonth = (items, yearFormat, monthFormat) => {
   return items.map(item => {
     const date = new Date(item.month);

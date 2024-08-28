@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 
 import ShopItemButtons from "./buttons/ShopItemButtons.jsx";
-import FormSubmitButton from "../components/FormSubmitButton.jsx";
+import FormSubmitButton from "./buttons/FormSubmitButton.jsx";
 import CommonButton from "./buttons/CommonButton.jsx";
 import CloseButton from "./buttons/CloseButton.jsx";
 

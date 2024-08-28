@@ -1,16 +1,16 @@
 import { useState } from 'react';
+
 import LoginForm from './LoginForm.jsx';
 import SignupForm from './SignupForm.jsx';
-import { IoCloseCircleOutline } from 'react-icons/io5';
+import HeaderButton from '../buttons/HeaderButton.jsx';
+import CloseButton from '../buttons/CloseButton.jsx';
 
-function FormsContainer({ setIsOpen, checkAdmin }) {
+function FormsContainer({ setIsOpen, checkAdmin, isWaitingResponse, setIsWaitingResponse }) {
 
   const [hideLogin, setHideLogin] = useState(false);
   const [animationClass, setAnimationClass] = useState("fade-in");
 
-  const [isWaitingResponse, setIsWaitingResponse] = useState(false);
-
-  const handleCLick = () => {
+  const handleClick = () => {
     setAnimationClass('fade-out');
     setTimeout(() => {
       setHideLogin(!hideLogin);
@@ -24,31 +24,28 @@ function FormsContainer({ setIsOpen, checkAdmin }) {
 
   return (
     <div className='bg-white w-full h-[89.8vh] sm:w-[500px] sm:h-[500px] sm:rounded-lg sm:shadow-lg flex flex-col'>
-      <div className='ml-2 mr-7 mt-5 flex justify-between items-center'>
-        <div className='flex'>
-          <button type='button' onClick={handleCLick} className='w-[150px] flex flex-col items-center text-lg font-semibold'>
-            Iniciar sesión
-            {!hideLogin && <p className='mt-1 w-[105px] border-b-4 border-b-purp-dark'></p>}
-          </button>
-          <button type='button' onClick={handleCLick} className='ml-1 w-[150px] flex flex-col items-center text-lg font-semibold'>
-            Crear Cuenta
-            {hideLogin && <p className='mt-1 w-[110px] border-b-4 border-b-purp-dark'></p>}
-          </button>
-        </div>
-        <div className='flex'>
-          <button
-            type="button"
+      <div className='ml-2 mr-7 mt-5 flex items-center'>
+        <HeaderButton
+          onClick={handleClick}
+          text='Iniciar sesión'
+          isSelected={!hideLogin}
+        />
+        <HeaderButton
+          onClick={handleClick}
+          text='Crear cuenta'
+          isSelected={hideLogin}
+        />
+        <div className='ml-auto'>
+          <CloseButton
             onClick={handleClose}
-            className="hover:scale-110 transition -mt-1"  
-          >
-            <IoCloseCircleOutline size="1.75rem" />
-          </button>
+          />
         </div>
       </div>
       <div>
         {hideLogin ? (
           <SignupForm
             checkAdmin={checkAdmin}
+            handleClose={handleClose}
             className={animationClass}
             isWaitingResponse={isWaitingResponse}
             setIsWaitingResponse={setIsWaitingResponse}
@@ -56,6 +53,7 @@ function FormsContainer({ setIsOpen, checkAdmin }) {
         ) : (
           <LoginForm
             checkAdmin={checkAdmin}
+            handleClose={handleClose}
             className={animationClass}
             isWaitingResponse={isWaitingResponse}
             setIsWaitingResponse={setIsWaitingResponse}

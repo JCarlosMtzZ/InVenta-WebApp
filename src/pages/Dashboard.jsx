@@ -4,6 +4,7 @@ import MetricCard from "../components/cards/MetricCard.jsx";
 import DashboardTopBar from "../components/bars/DashboardTopBar.jsx";
 import SummariesAreaChart from "../components/charts/SummariesChart.jsx";
 import CategoriesPieChart from "../components/charts/CategoriesPieChart.jsx";
+import TopProductsBarChart from "../components/charts/TopProductsBarChart.jsx";
   
 import { MdOutlineInventory } from 'react-icons/md';
 import { AiOutlineLoading } from "react-icons/ai";
@@ -18,7 +19,6 @@ import { checkAdmin, getAdminById, getAdminsSummaries, getAdminsMonthlySummaries
 import { getOrdersDateRange } from "../services/ordersService.js";
 
 import { formatDatesToYearMonth } from "../utilities/dashboard.jsx";
-import TopProductsBarChart from "../components/charts/TopProductsBarChart.jsx";
 
 function Dashboard() {
 

@@ -1,9 +1,15 @@
 import { useState } from "react";
-import FormFieldWarning from "../FormFieldWarning.jsx";
-import PasswordFormField from "../PasswordFormField.jsx";
-import FormSubmitButton from "../FormSubmitButton.jsx";
 
-function SignupForm({ checkAdmin, className, isWaitingResponse, setIsWaitingResponse }) {
+import FormFieldWarning from "../FormFieldWarning.jsx";
+import PasswordFormField from "../inputs/PasswordFormField.jsx";
+import FormSubmitButton from "../buttons/FormSubmitButton.jsx";
+import InputWithWarning from "../inputs/InputWithWarning.jsx";
+
+import { validateEmail, validatePassword } from "../../utilities/forms.jsx";
+
+import { signup } from "../../services/adminsService.js";
+
+function SignupForm({ checkAdmin, handleClose, className, isWaitingResponse, setIsWaitingResponse }) {
 
   const [formData, setFormData] = useState({
     firstName: '',
@@ -38,28 +44,7 @@ function SignupForm({ checkAdmin, className, isWaitingResponse, setIsWaitingResp
       if (!value) setPasswordFieldMessage("Requerido");
   };
 
-  const validateEmail = (email) => {
-    const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    return re.test(String(email).toLocaleLowerCase());
-  };
-
-  const validatePassword = (password) => {
-    const validationResult = {
-      minLength: password.length >= 8,
-      hasUppercase: /[A-Z]/.test(password),
-      hasLowercase: /[a-z]/.test(password),
-      hasDigit: /\d/.test(password),
-      hasSpecialChar: /[\W_]/.test(password),
-    };
-    if (!validationResult.minLength) return "8 caracteres";
-    if (!validationResult.hasUppercase) return "1 letra mayúscula";
-    if (!validationResult.hasLowercase) return "1 letra minúscula";
-    if (!validationResult.hasDigit) return "1 dígito";
-    if (!validationResult.hasSpecialChar) return "1 carácter especial";
-    return "";
-  };
-
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     setIsWaitingResponse(true);
 
     const currentIsFormData = {
@@ -74,8 +59,7 @@ function SignupForm({ checkAdmin, className, isWaitingResponse, setIsWaitingResp
       setIsWaitingResponse(false);
       return;
     }
-    const currentEmail = formData.email;
-    if (!validateEmail(currentEmail)) {
+    if (!validateEmail(formData.email)) {
       setEmailFieldMessage("Utiliza una dirección válida");
       setIsFormData({
         ...isFormData,
@@ -83,8 +67,7 @@ function SignupForm({ checkAdmin, className, isWaitingResponse, setIsWaitingResp
       setIsWaitingResponse(false);
       return;
     }
-    const currentPassword = formData.password;
-    const passwordWarnMsg = validatePassword(currentPassword);
+    const passwordWarnMsg = validatePassword(formData.password);
     if (passwordWarnMsg) {
       setPasswordFieldMessage("Utiliza al menos " + passwordWarnMsg);
       setIsFormData({
@@ -93,91 +76,66 @@ function SignupForm({ checkAdmin, className, isWaitingResponse, setIsWaitingResp
       setIsWaitingResponse(false);
       return;
     }
-    
-    fetch('http://localhost:3001/admins/signup', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      credentials: 'include',
-      body: JSON.stringify(formData)
-    })
-    .then(response => {
-      if (response.ok) return response.json();
-      if (response.status === 500) {
-        setEmailFieldMessage("Correo electrónico en uso");
-        setIsFormData({
-          ...isFormData,
-          isEmail: false,
-        });
-        throw new Error('Correo electrónico en uso');
-      }
-    })
-    .then(data => {
-      console.log('Success:', data);
-    })
-    .catch(error => {
-      console.error('Error:', error);
-    })
-    .finally(() => {
-      setIsWaitingResponse(false);
+
+    try {
+      await signup(formData);
       checkAdmin();
-    });
+      handleClose();
+    } catch (error) {
+      setEmailFieldMessage("Correo electrónico en uso");
+      setIsFormData({
+        ...isFormData,
+        isEmail: false,
+      });
+      console.error('Error while signing up:', error);
+    } finally {
+      setIsWaitingResponse(false);
+    }
   };
 
   return (
     <div className={`w-[100%] h-[100%] p-8 flex flex-col justify-center relative ${className}`}>
-      <div className='flex'>
-        <div className="flex flex-col w-[48%] mr-[4%]">
-          <label htmlFor="firstName" className="mb-2">Nombre(s)</label>
-          <input
-            type="text"
-            id="firstName"
-            name="firstName"
-            value={formData.firstName}
-            onChange={handleInputChange}
-            className={`p-2 h-10 border-solid border-2 ${isFormData.isFirstName ? 'border-black' : 'border-warn-red'} border-opacity-45 rounded-lg`}
-          />
-          <FormFieldWarning
-            isFormField={isFormData.isFirstName}
-            message='Requerido'
-          />
-        </div>
-        <div className="flex flex-col w-[48%]">
-          <label htmlFor="lastName" className="mb-2">Apellidos</label>
-          <input
-            type="text"
-            id="lastName"
-            name="lastName"
-            value={formData.lastName}
-            onChange={handleInputChange}
-            className={`p-2 h-10 border-solid border-2 ${isFormData.isLastName ? 'border-black' : 'border-warn-red'} border-opacity-45 rounded-lg`}
-          />
-          <FormFieldWarning
-            isFormField={isFormData.isLastName}
-            message='Requerido'
-          />
-        </div>
+      <div className='flex justify-between'>
+        <InputWithWarning
+          label='Nombre(s)'
+          type='text'
+          id='firstName'
+          name='firstName'
+          value={formData.firstName}
+          isValue={isFormData.isFirstName}
+          onChange={handleInputChange}
+          message='Requerido'
+          width='w-[48%]'
+        />
+        <InputWithWarning
+          label='Apellidos'
+          type='text'
+          id='lastName'
+          name='lastName'
+          value={formData.lastName}
+          isValue={isFormData.isLastName}
+          onChange={handleInputChange}
+          message='Requerido'
+          width='w-[48%]'
+        />
       </div>
-      <label htmlFor="email" className="mb-2">Correo electrónico</label>
-      <input
-        type="email"
-        id="email"
-        name="email"
-        placeholder="correo@ejemplo.com"
+      <InputWithWarning
+        label='Correo electrónico'
+        type='email'
+        id='email'
+        name='email'
         value={formData.email}
+        isValue={isFormData.isEmail}
         onChange={handleInputChange}
-        className={`mt-2 p-2 h-10 border-solid border-2 ${isFormData.isEmail ? 'border-black' : 'border-warn-red'} border-opacity-45 rounded-lg`}
-      />
-      <FormFieldWarning
-        isFormField={isFormData.isEmail}
         message={emailFieldMessage}
+        width='w-full'
       />
       <PasswordFormField
         value={formData.password}
         handleInputChange={handleInputChange}
         isValue={isFormData.isPassword} />
       <FormFieldWarning
+        hiddingDisplay='invisible'
         isFormField={isFormData.isPassword}
         message={passwordFieldMessage}
       />

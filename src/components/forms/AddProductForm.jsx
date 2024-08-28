@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-import FormSubmitButton from "../FormSubmitButton.jsx";
+import FormSubmitButton from "../buttons/FormSubmitButton.jsx";
 import CloseButton from "../buttons/CloseButton.jsx";
 import InputWithWarning from "../inputs/InputWithWarning.jsx";
 import DropdownButton from "../buttons/DropdownButton.jsx";

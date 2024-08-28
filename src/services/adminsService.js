@@ -1,5 +1,31 @@
 const URL = 'http://localhost:3001/admins';
 
+export const signup = async (adminData) => {
+    const response = await fetch(`${URL}/signup`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        credentials: 'include',
+        body: JSON.stringify(adminData)
+    });
+    if (!response.ok)
+        throw new Error(await response.text());
+    return response.json();
+};
+
+export const login = async (adminData) => {
+    const response = await fetch(`${URL}/login`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        credentials: 'include',
+        body: JSON.stringify(adminData)
+      })
+    return response.status;
+};
+
 export const logout = async () => {
     const response = await fetch(`${URL}/logout`, {
         credentials: 'include',
