@@ -1,6 +1,10 @@
 import { MdOutlineInventory } from 'react-icons/md';
 import { AiOutlineStock } from 'react-icons/ai';
+
 import SearchBar from './SearchBar.jsx';
+import InventoryModeButton from '../buttons/InventoryModeButton.jsx';
+import FilterButton from '../buttons/FilterButton.jsx';
+import DropdownButton from '../buttons/DropdownButton.jsx';
 
 function ManagementBar({
   adminId,
@@ -22,72 +26,52 @@ function ManagementBar({
   };
 
   return (
-    <div className='scrollbar-none overflow-x-scroll w-full h-20 flex items-center px-4 min-[900px]:px-0 min-[900px]:justify-center gap-10'>
+    <div className='p-4 w-full flex flex-wrap items-center justify-center gap-x-4 md:gap-x-10 gap-y-3'>
       {adminId &&
         <div className='drop-shadow-md flex gap-8 text-purp-dark text-xs font-semibold'>
-          <button
+          <InventoryModeButton
             onClick={handleMode}
-            className={`${isManaging ? 'opacity-100' : 'opacity-50'} flex flex-col items-center justify-center hover:scale-105 transition`}>
-            <MdOutlineInventory size='2.5rem' color='#605399' />
-            <p className=''>Inventario</p>
-          </button>
-          <button
+            isManaging={isManaging}
+            Icon={<MdOutlineInventory size='2.5rem' color='#605399' />}
+            text='Inventario'
+          />
+          <InventoryModeButton
             onClick={handleMode}
-            className={`${isManaging ? 'opacity-50' : 'opacity-100'} flex flex-col items-center justify-center hover:scale-105 transition`}>
-            <AiOutlineStock size='2.5rem' color='#605399' />
-            <p className=''>Venta</p>
-          </button>
+            isManaging={!isManaging}
+            Icon={<AiOutlineStock size='2.5rem' color='#605399' />}
+            text='Venta'
+          />
         </div>
       }
-      <div className='flex items-center justify-center gap-4'>
-        <button
-          type='button'
-          value='all'
-          onClick={handleFilterChange}
-          className={`${filter === 'all' ? 'bg-purp-dark/90 text-white' : 'bg-purp-dark/20'} h-10 w-fit px-4 rounded-lg hover:scale-105 transition`}
-        >
-          Todos
-        </button>
-        <button
-          type='button'
-          value='discounts'
-          onClick={handleFilterChange}
-          className={`${filter === 'discounts' ? 'bg-purp-dark/90 text-white' : 'bg-purp-dark/20'} h-10 w-fit px-4 rounded-lg hover:scale-105 transition`}
-        >
-          Ofertas
-        </button>
-        <select
-          name="categoryId"
-          id="categoryId"
-          value={`${filter === 'all' || filter === 'discounts' ? '' : filter}`}
-          onChange={handleFilterChange}
-          className={`${filter != 'all' && filter != 'discounts' ? 'bg-purp-dark/90 text-white' : 'bg-purp-dark/20'} h-10 w-fit px-4 rounded-lg hover:scale-105 transition cursor-pointer focus:outline-none`}
-        >
-          <option
-            value=""
-            disabled
-          >
-            Categorías
-          </option>
-            {categories.length > 0 && (
-              categories.map((category) => (
-                <option
-                  key={category.id}
-                  value={category.id}
-                >
-                  {category.name}
-                </option>
-              ))
-            )}
-        </select>
-        {adminId &&
-          <SearchBar
+      {adminId &&
+        <SearchBar
           filter={filter}
           getFilterName={() => getFilterName(filter)}
           setExternalProducts={setProducts}
           hasDropdown={false}  
-          />
-        }
+        />
+      }
+      <div className='flex items-center justify-center gap-4'>
+        <FilterButton
+          text='Todos'
+          value='all'
+          onClick={handleFilterChange}
+          filter={filter}
+        />
+        <FilterButton
+          text='Ofertas'
+          value='discounts'
+          onClick={handleFilterChange}
+          filter={filter}
+        />
+        <DropdownButton
+          filter={filter}
+          name='categoryId'
+          id='categoryId'
+          onChange={handleFilterChange}
+          defaultOption={<option value='' disabled>Categorías</option>}
+          data={categories}
+        />
       </div>
     </div>
   );

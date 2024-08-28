@@ -8,6 +8,7 @@ import ShopItem from '../components/cards/ShopItem.jsx';
 import AddProductForm from '../components/forms/AddProductForm.jsx';
 import ManagementBar from '../components/bars/ManagementBar.jsx';
 import ShoppingCart from "../components/ShoppingCart.jsx";
+import OpenModalButton from '../components/buttons/OpenModalButton.jsx';
 
 import { 
   getAllProductsCategoriesImagesDiscounts,
@@ -90,6 +91,7 @@ function Inventory({
         await addOrderItem(orderItem, newOrderResult.id);
       setIsWaitingResponse(false);
       setCart([]);
+      setIsCart(!isCart);
     } catch (error) {
       console.error('Error submitting cart', error);
     }
@@ -105,58 +107,47 @@ function Inventory({
         <div className={`relative w-full min-h-full max-h-[500px]  ${isAddingProduct && 'overflow-hidden'} ${isCart && 'overflow-hidden'} `}>
           {adminId && (
             <div>
-              <button
-                type="button"
+              <OpenModalButton
                 onClick={handleOpenCart}
-                className="p-3 hover:scale-105 transition fixed bottom-[100px] right-[20px] rounded-[50%] bg-purp-dark z-10"
-              >
-                {cart.length > 0 &&
-                  <div className="text-white text-sm font-semibold flex items-center justify-center p-1 w-[25px] h-[25px] absolute -top-[7px] -right-[7px] rounded-[50%] bg-mag">
-                    {cart.length}
-                  </div>
-                }
-                <RiShoppingCartLine color="white" size='2rem' />
-              </button>
-              <button
+                items={cart}
+                Icon={<RiShoppingCartLine color="white" size='2rem' />}
+                style='bottom-[100px] right-[20px]'
+              />
+              <OpenModalButton
                 onClick={handlePlusButtonClick}
-                type="button"
-                className="bg-purp-dark p-3 rounded-[50%] hover:scale-105 transition fixed right-[20px] bottom-[30px] z-10"
-              >
-                <FaPlus color="white" size='2rem' />
-              </button>
+                Icon={<FaPlus color="white" size='2rem' />}
+                style='bottom-[30px] right-[20px]'
+              />
             </div>
           )}
           {isCart &&
-            <div className="absolute w-full h-full z-20">
-              <ShoppingCart
-                cart={cart}
-                setCart={setCart}
-                handleClose={handleOpenCart}
-                handleSubmit={handleSubmitCart}
-                isWaitingResponse={isWaitingResponse}
-              />
-            </div>
+            <ShoppingCart
+              cart={cart}
+              setCart={setCart}
+              handleClose={handleOpenCart}
+              handleSubmit={handleSubmitCart}
+              isWaitingResponse={isWaitingResponse}
+            />
           }
           {isAddingProduct && (
-            <div className='absolute w-full h-full flex items-center justify-center z-20'>
-              <AddProductForm
-                categories={categories}
-                isOpen={isAddingProduct}
-                setIsOpen={setIsAddingProduct}
-              />
-            </div>
-          )}
-          <div className='w-full'>
-            <ManagementBar
-              adminId={adminId}
-              filter={filter}
-              handleFilterChange={handleFilterChange}
-              isManaging={isManaging}
-              handleMode={handleMode}
+            <AddProductForm
               categories={categories}
+              products={products}
               setProducts={setProducts}
+              handleClose={handlePlusButtonClick}
+              isWaitingResponse={isWaitingResponse}
+              setIsWaitingResponse={setIsWaitingResponse}
             />
-          </div>
+          )}
+          <ManagementBar
+            adminId={adminId}
+            filter={filter}
+            handleFilterChange={handleFilterChange}
+            isManaging={isManaging}
+            handleMode={handleMode}
+            categories={categories}
+            setProducts={setProducts}
+          />
           <div className='w-full h-full'>
             <div className='pb-4 w-full flex flex-wrap justify-center gap-4'>
               {products.length > 0 && (

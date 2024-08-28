@@ -1,9 +1,9 @@
 import { useState, useEffect } from "react";
 
-import { IoCloseCircleOutline } from "react-icons/io5";
-
 import ShopItemButtons from "./buttons/ShopItemButtons.jsx";
 import FormSubmitButton from "../components/FormSubmitButton.jsx";
+import CommonButton from "./buttons/CommonButton.jsx";
+import CloseButton from "./buttons/CloseButton.jsx";
 
 import { bucketURL } from "../services/util.js";
 import { getSubtotal, getTotal, getFinalPrice } from "../utilities/discounts.jsx";
@@ -28,7 +28,7 @@ function ShoppingCart({
   };
 
   return (
-    <div className="w-full h-full bg-black/70">
+    <div className="absolute z-20 w-full h-full bg-black/70">
       <div className="bg-white flex flex-col sm:rounded-lg h-full w-full sm:w-[500px]">
         <div className="px-4 py-4 flex justify-between items-center shadow-lg">
           <div className="flex flex-col">
@@ -39,13 +39,9 @@ function ShoppingCart({
               {cart.length > 0 ? 'Carrito de venta' : 'Carrito vacío'}
             </p>
           </div>
-          <button
-            type="button"
+          <CloseButton
             onClick={handleClose}
-            className="hover:scale-105 transition"
-          >
-            <IoCloseCircleOutline size='2rem' />
-          </button>
+          />
         </div>
         <div className="flex flex-col w-full overflow-auto flex-grow">
           {cart.length > 0 &&
@@ -96,20 +92,17 @@ function ShoppingCart({
             <p className="font-semibold">{`$ ${total}`}</p>
           </div>
           <div className="mt-1 flex gap-2">
-            <div className="w-[150px]">
-              <FormSubmitButton
-                isWaitingResponse={isWaitingResponse}
-                handleSubmit={handleSubmit}
-                text='Confirmar venta'
-              />
-            </div>
-            <button
-              type="button"
+            <FormSubmitButton
+              isWaitingResponse={isWaitingResponse}
+              handleSubmit={handleSubmit}
+              text='Confirmar venta'
+              width='w-[150px]'
+            />
+            <CommonButton
               onClick={handleEmptyCart}
-              className="bg-purp-dark text-white hover:text-black hover:bg-white hover:border-2 transition h-10 w-fit px-4 rounded-lg"
-            >
-              Vaciar carrito
-            </button>
+              width='w-[150px]'
+              text='Vaciar carrito'
+            />
           </div>
         </div>
       </div>

@@ -10,6 +10,7 @@ import { isoToDateTimeLocal } from '../../utilities/discounts.jsx';
 import FormFieldWarning from '../FormFieldWarning.jsx';
 import DatetimeInput from '../inputs/DatetimeInput.jsx';
 import EditingFormButtons from '../buttons/EditingFormButtons.jsx';
+import EditFormInput from '../inputs/EditFormInput.jsx';
 
 function DiscountForm({
   isWaitingResponse,
@@ -174,13 +175,14 @@ function DiscountForm({
   return (
     <tr className={`relative w-full border-b-2 border-purp-dark/15`}>
       <td className={`${warnMessage != 'Requerido' && 'pb-7'} p-4`}>
-        <input
+        <EditFormInput
           type="text" 
           placeholder='Nombre'
           name='name'
           value={newDiscountData.name}
+          isValue={isNewDiscountData.isName}
           onChange={handleInputChange}
-          className={`${!isNewDiscountData.isName && 'border-2 border-warn-red rounded-lg bg-warn-red/20'} w-[250px] p-1 border-b-2 border-black/50 focus:outline-none`}
+          style='w-[250px]'
         />
       </td>
       <td className={`${warnMessage != 'Requerido' && 'pb-7'} p-4`}>
@@ -211,12 +213,13 @@ function DiscountForm({
               <AiOutlineDollarCircle size='1.75rem' color='#605399' />
             }
           </button>
-          <input
+          <EditFormInput
             type="number"
             name='value'
             value={newDiscountData.value}
+            isValue={isNewDiscountData.isValue}
             onChange={handleInputChange}
-            className={`${!isNewDiscountData.isValue && 'border-2 border-warn-red rounded-lg bg-warn-red/20'} text-center w-[60px] p-1 border-b-2 border-black/50 focus:outline-none`}
+            style='text-center w-[60px]'
           />
         </div>
       </td>

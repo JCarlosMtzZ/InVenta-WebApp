@@ -5,6 +5,8 @@ import { AiOutlineLoading } from 'react-icons/ai';
 import { getAllDiscounts, getDiscountsByValidity } from '../services/discountsService';
 
 import DiscountsTable from '../components/tables/DiscountsTable.jsx';
+import FilterButton from '../components/buttons/FilterButton.jsx';
+import CommonButton from '../components/buttons/CommonButton.jsx';
 
 function Discounts({
   isWaitingResponse,
@@ -78,43 +80,36 @@ function Discounts({
         </div>
       ) : (
         <div className=" w-full h-full">
-          <div className='px-6 scrollbar-none overflow-x-auto mb-8 flex gap-4 justify-between'>
-            <div className='flex gap-4 items-center justify-center'>
-              <button
-                value='all'
-                onClick={handleOnFilterClick}
-                className={`${filter === 'all' ? 'bg-purp-dark/90 text-white' : 'bg-purp-dark/20'} h-10 w-fit px-4 rounded-lg hover:scale-105 transition`}
-              >
-                Todos
-              </button>
-              <button
-                value='previous'
-                onClick={handleOnFilterClick}
-                className={`${filter === 'previous' ? 'bg-purp-dark/90 text-white' : 'bg-purp-dark/20'} h-10 w-fit px-4 rounded-lg hover:scale-105 transition`}
-              >
-                Anteriores
-              </button>
-              <button
-                value='current'
-                onClick={handleOnFilterClick}
-                className={`${filter === 'current' ? 'bg-purp-dark/90 text-white' : 'bg-purp-dark/20'} h-10 w-fit px-4 rounded-lg hover:scale-105 transition`}
-              >
-                Vigentes
-              </button>
-              <button
-                value='next'
-                onClick={handleOnFilterClick}
-                className={`${filter === 'next' ? 'bg-purp-dark/90 text-white' : 'bg-purp-dark/20'} h-10 w-fit px-4 rounded-lg hover:scale-105 transition`}
-              >
-                Próximos
-              </button>
-            </div>
-            <button
+          <div className='py-2 mb-4 w-full flex flex-wrap gap-4 items-center justify-between'>
+            <FilterButton
+              text='Todos'
+              value='all'
+              onClick={handleOnFilterClick}
+              filter={filter}
+            />
+            <FilterButton
+              text='Anteriores'
+              value='previous'
+              onClick={handleOnFilterClick}
+              filter={filter}
+            />
+            <FilterButton
+              text='Vigentes'
+              value='current'
+              onClick={handleOnFilterClick}
+              filter={filter}
+            />
+            <FilterButton
+              text='Próximos'
+              value='next'
+              onClick={handleOnFilterClick}
+              filter={filter}
+            />
+            <CommonButton
               onClick={handleIsAdding}
-              className={`bg-purp-dark text-white h-10 w-fit px-4 rounded-lg hover:bg-white hover:text-black hover:border-2 hover:border-black transition`}
-            >
-              Agregar
-            </button>
+              width='ml-auto w-[100px]'
+              text='Agregar'
+            />
           </div>
           <DiscountsTable
             isWaitingResponse={isWaitingResponse}

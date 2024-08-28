@@ -1,15 +1,14 @@
 import { useState } from 'react';
-import { GiConfirmed } from 'react-icons/gi';
-import { MdOutlineCancel } from 'react-icons/md';
-import { AiOutlineLoading } from "react-icons/ai";
 
 import FormFieldWarning from '../FormFieldWarning.jsx';
+import EditingFormButtons from '../buttons/EditingFormButtons.jsx';
+import DropdownButton from '../buttons/DropdownButton.jsx';
+import EditFormInput from '../inputs/EditFormInput.jsx';
 
 import { updateProduct } from '../../services/productsService.js';
 import { updateProductDiscount, deleteProductDiscount } from '../../services/productDiscountsService.js';
 import { addProductDiscount } from '../../services/productDiscountsService.js';
 import { getProductCategoryImagesDiscountsById } from '../../services/productsService.js';
-import EditingFormButtons from '../buttons/EditingFormButtons.jsx';
 
 function EditProductForm({
   product,
@@ -156,13 +155,14 @@ function EditProductForm({
                   Nombre:
                 </p>
               </label>
-              <input
+              <EditFormInput
                 name='name'
                 id='name'
-                type="text"
+                type='text'
                 value={newProductData.name}
+                isValue={isNewProductData.isName}
                 onChange={handleInputChange}
-                className={`${!isNewProductData.isName && 'border-2 border-warn-red rounded-lg bg-warn-red/20'} w-full p-1 focus:outline-none border-b-2`}
+                style='w-full'
               />
             </div>
           </div>
@@ -181,13 +181,14 @@ function EditProductForm({
                 Descripción:
               </p>
             </label>
-            <input
+            <EditFormInput
               name="description"
               id='description'
               type='text'
               value={newProductData.description}
+              isValue={isNewProductData.isDescription}
               onChange={handleInputChange}
-              className={`${!isNewProductData.isDescription && 'border-2 border-warn-red rounded-lg bg-warn-red/20'} w-full resize-none text-md p-1 focus:outline-none border-b-2`}
+              style='w-full'
             />
           </div>
         </div>
@@ -199,28 +200,16 @@ function EditProductForm({
               Descuento:
             </p>
           </label>
-          <select
-            name="newDiscountId"
+          <DropdownButton
+            name='newDiscountId'
+            id='newDiscountId'
             value={newDiscountId}
+            isValue={true}
             onChange={handleDiscountChange}
-            className='p-1 rounded-lg border-2 border-black w-full'
-          >
-            <option
-              value="none"
-            >
-              Ninguno
-            </option>
-            {discounts.length > 0 && (
-              discounts.map((discount) => (
-                <option
-                  key={discount.id}
-                  value={discount.id}
-                >
-                  {`${discount.name} (${discount.percentage ? discount.percentage * 100 + '%' : '$' + discount.amount})`}
-                </option>
-              ))
-            )}
-          </select>
+            defaultOption={<option value='none'>Ninguno</option>}
+            data={discounts}
+            isDiscountsData={true}
+          />
         </div>
         <div className='mb-2 flex justify-between flex-wrap gap-4'>
           <div className='flex flex-col'>
@@ -230,13 +219,14 @@ function EditProductForm({
                   Precio: $
                 </p>
               </label>
-              <input
+              <EditFormInput
                 type="number"
                 name='unitPrice'
                 id='unitPrice'
                 value={newProductData.unitPrice}
+                isValue={isNewProductData.isUnitPrice}
                 onChange={handleInputChange}
-                className={`${!isNewProductData.isUnitPrice && 'border-2 border-warn-red rounded-lg bg-warn-red/20'} text-center w-[60px] focus:outline-none border-b-2 p-1`}
+                style='text-center w-[60px]'
               />
             </div>
             <FormFieldWarning
@@ -252,13 +242,14 @@ function EditProductForm({
                   Inventario:
                 </p>
               </label>
-              <input
+              <EditFormInput
                 type="number"
                 name='stock'
                 id='stock'
                 value={newProductData.stock}
+                isValue={isNewProductData.isStock}
                 onChange={handleInputChange}
-                className={`${!isNewProductData.isStock && 'border-2 border-warn-red rounded-lg bg-warn-red/20'} text-center w-[60px] focus:outline-none border-b-2 p-1`}
+                style='text-center w-[60px]'
               />
             </div>
             <FormFieldWarning
@@ -272,43 +263,36 @@ function EditProductForm({
       <div className="flex flex-wrap gap-2 p-2">
         <div className="w-fit text-sm hover:border-mag border-dashed border rounded-lg p-2 flex flex-col items-center justify-center">
           <p>Marca:</p>
-          <input
+          <EditFormInput
             type="text"
             name='brand'
             value={newProductData.brand}
+            isValue={isNewProductData.isBrand}
             onChange={handleInputChange}
-            className={`${!isNewProductData.isBrand && 'border-2 border-warn-red rounded-lg bg-warn-red/20 mt-1'} text-center w-[75px] focus:outline-none border-b-2 p-1`}
+            style='text-center w-[75px]'
           /> 
         </div>
         <div className="w-fit text-sm hover:border-mag border-dashed border rounded-lg p-2 flex flex-col items-center justify-center">
           <p>Tamaño:</p>
-          <input
+          <EditFormInput
             type="text"
             name='size'
             value={newProductData.size}
+            isValue={isNewProductData.isSize}
             onChange={handleInputChange}
-            className={`${!isNewProductData.isSize && 'border-2 border-warn-red rounded-lg bg-warn-red/20 mt-1'} text-center w-[75px] focus:outline-none border-b-2 p-1`}
+            style='text-center w-[75px]'
           />
         </div>
         <div className="w-fit text-sm hover:border-mag border-dashed border rounded-lg p-2 flex flex-col items-center justify-center">
           <p className='mb-1'>Categoría:</p>
-          <select
-            name="categoryId"
+          <DropdownButton
+            name='categoryId'
+            id='categoryId'
             value={newProductData.categoryId}
+            isValue={true}
             onChange={handleInputChange}
-            className='w-[80px] rounded-lg border-2 border-black p-1'
-          >
-          {categories.length > 0 && (
-            categories.map((category) => (
-              <option
-                key={category.id}
-                value={category.id}
-              >
-                {category.name}
-              </option>
-            ))
-          )}
-        </select>
+            data={categories}
+          />
         </div>
       </div>
     </div>

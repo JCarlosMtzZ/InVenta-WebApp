@@ -1,4 +1,11 @@
-const URL = 'http://localhost:3001/files'
+const URL = 'http://localhost:3001/files';
+
+export const getFilesByPrefix = async (prefix) => {
+    const response = await fetch(`${URL}/${prefix}`);
+    if (!response.ok)
+        throw new Error(await response.text());
+    return response.json();
+};
 
 export const deleteFromBucket = async (name) => {
     const response = await fetch(`${URL}/${name}`, {

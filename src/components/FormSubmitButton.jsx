@@ -1,12 +1,12 @@
 import { AiOutlineLoading } from 'react-icons/ai';
 
-function FormSubmitButton({ isWaitingResponse, handleSubmit, text }) {
+function FormSubmitButton({ isWaitingResponse, handleSubmit, text, width }) {
   return (
     <button
       disabled={isWaitingResponse}
       type="button"
       onClick={handleSubmit}
-      className={`h-10 w-full bg-purp-dark text-white rounded-lg disabled:opacity-75
+      className={`h-10 ${width ? width : 'w-full'} bg-purp-dark text-white rounded-lg disabled:opacity-75
         enabled:hover:bg-white enabled:hover:text-black enabled:hover:border-black enabled:hover:border-2
         transition`}
     >

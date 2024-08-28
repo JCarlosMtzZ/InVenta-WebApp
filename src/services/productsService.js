@@ -1,5 +1,19 @@
 const URL = 'http://localhost:3001/products';
 
+export const addProduct = async (product) => {
+    const response = await fetch(`${URL}`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      credentials: 'include',
+      body: JSON.stringify(product)
+    });
+    if (!response.ok)
+        throw new Error(await response.text());
+    return response.json();
+};
+
 export const getAllProducts = async () => {
     const response = await fetch(URL);
     if (!response.ok)
