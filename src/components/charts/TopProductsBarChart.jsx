@@ -1,8 +1,10 @@
 import { useState } from "react";
 
-import { ResponsiveContainer, BarChart, Bar, CartesianGrid, XAxis, YAxis, Tooltip, Legend } from "recharts";
+import { ResponsiveContainer, BarChart, Bar, CartesianGrid, XAxis, YAxis, Tooltip } from "recharts";
 
-import { CgArrowsExchange } from "react-icons/cg";
+import SwitchArrowsButton from "../buttons/SwitchArrowsButton";
+
+import { addShortProductName } from "../../utilities/dashboard";
 
 function TopProductsBarChart({ firstData, lastData }) {
 
@@ -12,15 +14,8 @@ function TopProductsBarChart({ firstData, lastData }) {
     setIsFirst(!isFirst);
   };
 
-  const formattedFirstData = firstData.map(product => ({
-    ...product,
-    shortProductName: product.productName.split(' ')[0] + '...',
-  }));
-
-  const formattedLastData = lastData.map(product => ({
-    ...product,
-    shortProductName: product.productName.split(' ')[0] + '...',
-  }));
+  const formattedFirstData = addShortProductName(firstData);
+  const formattedLastData = addShortProductName(lastData);
 
   const CustomTooltip = ({ active, payload }) => {
     if (active && payload && payload.length) {
@@ -36,18 +31,13 @@ function TopProductsBarChart({ firstData, lastData }) {
     return null;
   };
 
-  
-
   return (
     <div className="w-full min-[540px]:w-[60%] flex flex-col p-2 rounded-lg shadow-md bg-white">
       <div className="py-1 px-2 flex justify-between">
         <p className="font-semibold text-lg">{`${isFirst ? 'Mejores productos' : 'Peores productos'}`}</p>
-        <button
+        <SwitchArrowsButton
           onClick={handleIsFirst}
-          className="hover:drop-shadow-lg hover:rotate-180 transition"
-        >
-          <CgArrowsExchange size='1.75rem' />
-        </button>
+        />
       </div>
       <ResponsiveContainer width='100%' height={350}>
         <BarChart
@@ -59,7 +49,7 @@ function TopProductsBarChart({ firstData, lastData }) {
             left: 35,
             bottom: 25,
           }}
-          >
+        >
           <CartesianGrid strokeDasharray="3 3" />
           <XAxis
             type="number"
@@ -71,9 +61,7 @@ function TopProductsBarChart({ firstData, lastData }) {
         </BarChart>
       </ResponsiveContainer>
     </div>
-
   );
-
 };
 
 export default TopProductsBarChart;

@@ -2,11 +2,11 @@ import { useState } from 'react';
 
 import { ResponsiveContainer, AreaChart, Area, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip } from 'recharts';
 
+import SwitchArrowsButton from '../buttons/SwitchArrowsButton';
+
 import { getRandomHexColor } from '../../utilities/dashboard';
 
-import { CgArrowsExchange } from "react-icons/cg";
-
-function SummariesAreaChart({ data, adminsData }) {
+function SummariesChart({ data, adminsData }) {
 
   const [isGlobal, setIsGlobal] = useState(true);
 
@@ -53,13 +53,10 @@ function SummariesAreaChart({ data, adminsData }) {
     <div className='w-full z-10 rounded-lg shadow-md flex flex-col p-2 bg-white'>
       <div className='flex items-center justify-between py-1 px-2'>
         <p className='text-lg font-semibold'>Ventas</p>
-        <button
+        <SwitchArrowsButton
           onClick={handleIsGlobal}
-          className='flex gap-1 group hover:drop-shadow-lg transition'
-        >
-          <CgArrowsExchange size='1.75rem' className='group-hover:rotate-180 transition' />
-          <p>{isGlobal ? 'Globales' : 'Por vendedor'}</p>
-        </button>
+          text={isGlobal ? 'Globales' : 'Por vendedor'}
+        />
       </div>
       <ResponsiveContainer width='100%' height={270}>
         <ChartComponent key={Math.random()} data={isGlobal ? data : null}
@@ -80,25 +77,31 @@ function SummariesAreaChart({ data, adminsData }) {
             />
           <Tooltip content={isGlobal ? <GlobalTooltip /> : <AdminsTooltip /> } />
           {isGlobal ? (
-            <Area animationDuration={1500} type="monotone" dataKey="totalUnits" stroke="#ada1e6" fill="#ada1e6" opacity={0.7} />
+            <Area
+              animationDuration={1500}
+              type="monotone"
+              dataKey="totalUnits"
+              stroke="#ada1e6"
+              fill="#ada1e6"
+              opacity={0.7}
+            />
           ) : (
             adminsData.map((admin) => (
               <Line
-              key={admin.id}
-              animationDuration={1500}
-              strokeWidth={1.25}
-              stroke={getRandomHexColor()}
-              type="monotone" dataKey="totalUnits"
-              data={admin.monthlySummary}
-              name={admin.firstName + ' ' + admin.lastName}
+                key={admin.id}
+                animationDuration={1500}
+                strokeWidth={1.25}
+                stroke={getRandomHexColor()}
+                type="monotone" dataKey="totalUnits"
+                data={admin.monthlySummary}
+                name={admin.firstName + ' ' + admin.lastName}
               />
             ))
           )}
         </ChartComponent>
       </ResponsiveContainer>
     </div>
-
   );
 };
 
-export default SummariesAreaChart;
+export default SummariesChart;

@@ -1,3 +1,7 @@
+export const COLORS = [
+  '#605399', '#ada1e6', '#e4def9', '#ebc1ee', '#d562be'
+];
+
 export const formatDatesToYearMonth = (items, yearFormat, monthFormat) => {
   return items.map(item => {
     const date = new Date(item.month);
@@ -38,4 +42,11 @@ export const getRandomHexColor = () => {
   const g = Math.floor(Math.random() * 128) + 96;
   const b = Math.floor(Math.random() * 128) + 96;
   return '#' + r.toString(16).padStart(2, '0') + g.toString(16).padStart(2, '0') + b.toString(16).padStart(2, '0');
+};
+
+export const addShortProductName = (products) => {
+  return products.map(product => ({
+    ...product,
+    shortProductName: product.productName.split(' ')[0] + '...',
+  }));
 };

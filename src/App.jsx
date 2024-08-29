@@ -1,12 +1,13 @@
 import { useState, useEffect } from 'react';
-import { BrowserRouter, Link, Routes, Route } from 'react-router-dom';
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
+
+import { AiOutlineLoading } from 'react-icons/ai';
 
 import Inventory from "./pages/Inventory.jsx";
 import Dashboard from "./pages/Dashboard.jsx";
 import Discounts from "./pages/Discounts.jsx";
 import ShopItemDetail from "./pages/ShopItemDetail.jsx";
 import FormsContainer from './components/forms/FormsContainer.jsx';
-
 import UserNavBar from './components/bars/UserNavBar.jsx';
 import AdminNavBar from "./components/bars/AdminNavBar.jsx";
 
@@ -14,10 +15,14 @@ import { checkAdmin } from './services/adminsService.js';
 
 function App() {
 
-  const [adminId, setAdminId] = useState('');
-  
   const [isLoading, setIsLoading] = useState(true);
+  
+  const [adminId, setAdminId] = useState('');
+  const [cart, setCart] = useState([]);
+  const [isCart, setIsCart] = useState(false);
   const [isWaitingResponse, setIsWaitingResponse] = useState(false);
+  const [isLogging, setIsLogging] = useState(false);
+  const [isAddingProduct, setIsAddingProduct] = useState(false);
 
   const fetchCheckAdmin = async () => {
     try {
@@ -25,81 +30,86 @@ function App() {
       setAdminId(result.adminId);
     } catch (error) {
       setAdminId('');
-      console.error('Error checking admin: ', error);
+    } finally {
+      setIsLoading(false);
     }
   };
 
   useEffect(() => {
     fetchCheckAdmin();
   }, []);
-  
-  const [isLogging, setIsLogging] = useState(false);
-  const [cart, setCart] = useState([]);
-  const [isCart, setIsCart] = useState(false);
-  const [isAddingProduct, setIsAddingProduct] = useState(false);
 
   return (
-    <div className={`w-full h-screen ${isLogging && 'overflow-hidden'}`}>
-      {isLogging && (
-          <div className={`bg-black/70 absolute w-full min-h-[89.8%] top-[60px] flex items-center justify-center z-20`}>
-            <FormsContainer
-              setIsOpen={setIsLogging}
-              checkAdmin={fetchCheckAdmin}
-              isWaitingResponse={isWaitingResponse}
-              setIsWaitingResponse={setIsWaitingResponse}
-            />
-          </div>
-      )}
-      <BrowserRouter>
-        {adminId ? (
-          <AdminNavBar
-            checkAdmin={fetchCheckAdmin}
-          />
-          ) : (
-            <UserNavBar
-              setIsLogging={setIsLogging}
-              setIsAddingProduct={setIsAddingProduct}
-              setIsCart={setIsCart}
-            />
-          )}
-        <Routes>
-          <Route path="/" element={<Dashboard />} />
-          <Route
-            path="/inventory"
-            element={
-              <Inventory
-                adminId={adminId}
-                isLoading={isLoading}
-                setIsLoading={setIsLoading}
-                isLogging={isLogging}
-                isAddingProduct={isAddingProduct}
+    <div className={`w-full h-screen ${isLogging && 'overflow-hidden'} flex items-center justify-center`}>
+      {isLoading ? (
+        <div className='w-fit h-fit animate-spin'>
+          <AiOutlineLoading size='4rem' color='#605399' />
+        </div>
+      ) : (
+        <div className='w-full h-full'>
+          <BrowserRouter>
+            {isLogging && (
+              <div className={`bg-black/70 absolute w-full min-h-[89.8%] top-[60px] flex items-center justify-center z-20`}>
+                <FormsContainer
+                  setIsOpen={setIsLogging}
+                  checkAdmin={fetchCheckAdmin}
+                  isWaitingResponse={isWaitingResponse}
+                  setIsWaitingResponse={setIsWaitingResponse}
+                />
+              </div>
+            )}
+            {adminId ? (
+              <AdminNavBar
+                checkAdmin={fetchCheckAdmin}
+              />
+            ) : (
+              <UserNavBar
+                setIsLogging={setIsLogging}
                 setIsAddingProduct={setIsAddingProduct}
-                cart={cart}
-                setCart={setCart}
-                isCart={isCart}
                 setIsCart={setIsCart}
-                isWaitingResponse={isWaitingResponse}
-                setIsWaitingResponse={setIsWaitingResponse}
-              />}
-          />
-          <Route path="/dashboard" element={<Dashboard />} />
-          <Route path="/discounts" element={
-            <Discounts
-              isWaitingResponse={isWaitingResponse}
-              setIsWaitingResponse={setIsWaitingResponse}
-            />}
-          />
-          <Route path="/inventory/product/:id" element={
-            <ShopItemDetail
-              adminId={adminId}
-              isWaitingResponse={isWaitingResponse}
-              setIsWaitingResponse={setIsWaitingResponse}
-              isLoading={isLoading}
-              setIsLoading={setIsLoading}
-            />
-          } />
-        </Routes>
-      </BrowserRouter>
+              />
+            )}
+            <Routes>
+              <Route
+                path="/inventory"
+                element={
+                  <Inventory
+                    adminId={adminId}
+                    isAddingProduct={isAddingProduct}
+                    setIsAddingProduct={setIsAddingProduct}
+                    cart={cart}
+                    setCart={setCart}
+                    isCart={isCart}
+                    setIsCart={setIsCart}
+                    isWaitingResponse={isWaitingResponse}
+                    setIsWaitingResponse={setIsWaitingResponse}
+                  />}
+              />
+              <Route
+                path="/dashboard"
+                element={
+                  <Dashboard
+                    adminId={adminId}
+                  />}
+              />
+              <Route path="/discounts" element={
+                <Discounts
+                  adminId={adminId}
+                  isWaitingResponse={isWaitingResponse}
+                  setIsWaitingResponse={setIsWaitingResponse}
+                />}
+              />
+              <Route path="/inventory/product/:id" element={
+                <ShopItemDetail
+                  adminId={adminId}
+                  isWaitingResponse={isWaitingResponse}
+                  setIsWaitingResponse={setIsWaitingResponse}
+                />}
+              />
+            </Routes>
+          </BrowserRouter>
+        </div>
+      )}
     </div>
   );
 };

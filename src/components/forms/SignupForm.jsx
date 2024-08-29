@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useNavigate } from "react-router";
 
 import FormFieldWarning from "../FormFieldWarning.jsx";
 import PasswordFormField from "../inputs/PasswordFormField.jsx";
@@ -10,6 +11,8 @@ import { validateEmail, validatePassword } from "../../utilities/forms.jsx";
 import { signup } from "../../services/adminsService.js";
 
 function SignupForm({ checkAdmin, handleClose, className, isWaitingResponse, setIsWaitingResponse }) {
+
+  const navigate = useNavigate();
 
   const [formData, setFormData] = useState({
     firstName: '',
@@ -79,7 +82,8 @@ function SignupForm({ checkAdmin, handleClose, className, isWaitingResponse, set
 
     try {
       await signup(formData);
-      checkAdmin();
+      await checkAdmin();
+      navigate('/dashboard');
       handleClose();
     } catch (error) {
       setEmailFieldMessage("Correo electrónico en uso");

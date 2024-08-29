@@ -1,10 +1,8 @@
 import { ResponsiveContainer, PieChart, Pie, Tooltip, Legend, Cell } from "recharts";
 
-function CategoriesPieChart({ absTotalUnits, data, dataKey }) {
+import { COLORS } from '../../utilities/dashboard.jsx';
 
-  const COLORS = [
-    '#605399', '#ada1e6', '#e4def9', '#ebc1ee', '#d562be'
-  ];
+function CategoriesPieChart({ absTotalUnits, data, dataKey }) {
 
   const CustomTooltip = ({ active, payload }) => {
     if (active && payload && payload.length) {
@@ -16,7 +14,7 @@ function CategoriesPieChart({ absTotalUnits, data, dataKey }) {
           <p className="text-sm">{`Unidades vendidas: ${totalUnits}`}</p>
           <p className="font-semibold text-sm text-blue">{`Ingresos brutos: $${subtotal}`}</p>
           <p className="font-semibold text-sm text-ok-green">{`Ingresos netos: $${total}`}</p>
-          </div>
+        </div>
       );
     }
     return null;
@@ -55,7 +53,7 @@ function CategoriesPieChart({ absTotalUnits, data, dataKey }) {
             outerRadius={90}
             dataKey={dataKey}
             animationDuration={1500}
-            >
+          >
             {data.map((entry, index) => (
               <Cell key={`cell-${index}`} fill={COLORS[index]} stroke={COLORS[index]} />
             ))}

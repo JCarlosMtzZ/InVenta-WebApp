@@ -1,10 +1,12 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useCallback } from "react";
+import { useNavigate } from "react-router-dom";
 
 import MetricCard from "../components/cards/MetricCard.jsx";
 import DashboardTopBar from "../components/bars/DashboardTopBar.jsx";
-import SummariesAreaChart from "../components/charts/SummariesChart.jsx";
+import SummariesChart from "../components/charts/SummariesChart.jsx";
 import CategoriesPieChart from "../components/charts/CategoriesPieChart.jsx";
 import TopProductsBarChart from "../components/charts/TopProductsBarChart.jsx";
+import AdminsTable from "../components/tables/AdminsTable.jsx";
   
 import { MdOutlineInventory } from 'react-icons/md';
 import { AiOutlineLoading } from "react-icons/ai";
@@ -15,22 +17,20 @@ import { GiProfit } from "react-icons/gi";
 import { getOrderItemsSummary, getOrderItemsMonthlySummaries } from '../services/orderItemsService.js';
 import { getCategoriesSummaries } from "../services/categoriesService.js";
 import { getTopProducts } from "../services/productsService.js";
-import { checkAdmin, getAdminById, getAdminsSummaries, getAdminsMonthlySummaries } from "../services/adminsService.js";
+import { getAdminById, getAdminsSummaries, getAdminsMonthlySummaries } from "../services/adminsService.js";
 import { getOrdersDateRange } from "../services/ordersService.js";
 
 import { formatDatesToYearMonth } from "../utilities/dashboard.jsx";
 
-function Dashboard() {
+function Dashboard({ adminId }) {
 
   const [isLoading, setIsLoading] = useState(true);
-
-  const [dateFilter, setDateFilter] = useState('');
+  const navigate = useNavigate();
 
   const [currentAdminData, setCurrentAdminData] = useState({})
 
   const [oiSummary, setOiSummary] = useState([]);
   const [dateRange, setDateRange] = useState([]);
-  const [oiSeparatedSummary, setOiSeparatedSummary] = useState([]);
   const [monthlySummaries, setMonthlySummaries] = useState([]);
   const [adminsSummaries, setAdminSummaries] = useState([]);
   const [adminsMonthlySummaries, setAdminsMonthlySummaries] = useState([]);
@@ -38,132 +38,89 @@ function Dashboard() {
   const [topFirstProducts, setTopFirstProducts] = useState([]);
   const [topLastProducts, setTopLastProducts] = useState([]);
 
-  const updateData = async (startDate = '', endDate = '') => {
+  const fetchData = useCallback(async (abortController, hasDateFilter = false, startDate = '', endDate = '') => {
     setIsLoading(true);
-    try {
+    
+    const promises = [
+      getOrderItemsSummary(startDate, endDate),
+      getOrderItemsMonthlySummaries(startDate, endDate),
+      getAdminsSummaries(startDate, endDate),
+      getAdminsMonthlySummaries(startDate, endDate),
+      getCategoriesSummaries(startDate, endDate),
+      getTopProducts(5, 'DESC', startDate, endDate),
+      getTopProducts(5, 'ASC', startDate, endDate),
+    ];
 
-      const [ oiSummaryResult,
+    try {
+      let results;
+      if (hasDateFilter) {
+        results = await Promise.all(promises);
+      } else {
+        promises.push(getAdminById(adminId), getOrdersDateRange());
+        results = await Promise.all(promises);
+      }
+      const [
+        oiSummaryResult,
         monthlySummariesResult,
         adminsSummariesResult,
         adminsMonthlySummariesResult,
         categoriesSummariesResult,
         topFirstProductsResult,
-        topLastProductsResult 
-      ] = await Promise.all([
-        getOrderItemsSummary(startDate, endDate),
-        getOrderItemsMonthlySummaries(startDate, endDate),
-        getAdminsSummaries(startDate, endDate),
-        getAdminsMonthlySummaries(startDate, endDate),
-        getCategoriesSummaries(startDate, endDate),
-        getTopProducts(5, 'DESC', startDate, endDate),
-        getTopProducts(5, 'ASC', startDate, endDate)
-      ]);
+        topLastProductsResult,
+        currentAdminDataResult,
+        dateRangeResult
+      ] = results;
 
       const formattedMonthlySummaries = formatDatesToYearMonth(monthlySummariesResult, '2-digit', 'short');
-      
-      const formattedAdminsMonthlySummaries = adminsMonthlySummariesResult.map(adminSummary => ({
+
+      const formattedAdminsMonthlySummaries = adminsMonthlySummariesResult.map((adminSummary) => ({
         ...adminSummary,
-        monthlySummary: formatDatesToYearMonth(adminSummary.monthlySummary, '2-digit', 'short')
+        monthlySummary: formatDatesToYearMonth(adminSummary.monthlySummary, '2-digit', 'short'),
       }));
 
-      setOiSummary(oiSummaryResult);
-      setDateRange([
-        {
-            minDate: startDate,
-            maxDate: endDate
-        }
-      ]);
-      setMonthlySummaries(formattedMonthlySummaries);
-      setAdminSummaries(adminsSummariesResult);
-      setAdminsMonthlySummaries(formattedAdminsMonthlySummaries);
-      setCategoriesSummaries(categoriesSummariesResult);
-      setTopFirstProducts(topFirstProductsResult); 
-      setTopLastProducts(topLastProductsResult);
-
-    } catch (error) {
-      console.error('Error while fetching orders', error);
-    } finally {
-      setIsLoading(false);
-    }
-  }
-
-  useEffect(() => {
-    let isMounted = true;
-
-    const fetchData = async (startDate = '', endDate = '') => {
-      if (!isMounted) return;
-      setIsLoading(true);
-      try {
-  
-        const adminIdResult = await checkAdmin();
-  
-        const [ oiSummaryResult,
-          dateRangeResult,
-          monthlySummariesResult,
-          adminsSummariesResult,
-          adminsMonthlySummariesResult,
-          currentAdminDataResult,
-          categoriesSummariesResult,
-          topFirstProductsResult,
-          topLastProductsResult 
-        ] = await Promise.all([
-          getOrderItemsSummary(startDate, endDate),
-          getOrdersDateRange(),
-          getOrderItemsMonthlySummaries(startDate, endDate),
-          getAdminsSummaries(startDate, endDate),
-          getAdminsMonthlySummaries(startDate, endDate),
-          getAdminById(adminIdResult.adminId),
-          getCategoriesSummaries(startDate, endDate),
-          getTopProducts(5, 'DESC', startDate, endDate),
-          getTopProducts(5, 'ASC', startDate, endDate)
-        ]);
-  
-        if (!isMounted) return;
-  
-        const formattedMonthlySummaries = formatDatesToYearMonth(monthlySummariesResult, '2-digit', 'short');
-        
-        const formattedAdminsMonthlySummaries = adminsMonthlySummariesResult.map(adminSummary => ({
-          ...adminSummary,
-          monthlySummary: formatDatesToYearMonth(adminSummary.monthlySummary, '2-digit', 'short')
-        }));
-  
+      if (!abortController.signal.aborted) {
         setOiSummary(oiSummaryResult);
-        setOiSeparatedSummary([
-          {
-            name: "subtotal",
-            value: oiSummaryResult[0].subtotal,
-            fill: "#605399"
-          },
-          {
-            name: "total",
-            value: oiSummaryResult[0].total,
-            fill: "#d562be"
-          }
-        ]);
-        setDateRange(dateRangeResult);
         setMonthlySummaries(formattedMonthlySummaries);
         setAdminSummaries(adminsSummariesResult);
         setAdminsMonthlySummaries(formattedAdminsMonthlySummaries);
-        setCurrentAdminData(currentAdminDataResult)
         setCategoriesSummaries(categoriesSummariesResult);
-        setTopFirstProducts(topFirstProductsResult); 
+        setTopFirstProducts(topFirstProductsResult);
         setTopLastProducts(topLastProductsResult);
-  
-      } catch (error) {
-        console.error('Error while fetching orders', error);
-      } finally {
-        if (isMounted) setIsLoading(false);
+
+        if (hasDateFilter) {
+          setDateRange([
+            {
+              minDate: startDate,
+              maxDate: endDate
+            }
+          ]);
+        } else {
+          setDateRange(dateRangeResult);
+          setCurrentAdminData(currentAdminDataResult);
+        }
+      }
+      if (!abortController.signal.aborted) {
+        setIsLoading(false);
+      }
+    } catch (error) {
+      if (!abortController.signal.aborted) {
+        console.error('Error while fetching data', error);
       }
     }
+  }, []);
 
-    fetchData();
+  useEffect(() => {
+    if (!adminId)
+      navigate(`/inventory`);
+
+    const abortController = new AbortController();
+
+    fetchData(abortController);
 
     return () => {
-      isMounted = false;
+      abortController.abort();
     };
-  }, [])
-
-  
+  }, []);
 
   return (
     <div className={`${isLoading ? 'bg-white' : 'bg-purp-dark/50'} flex items-center justify-center w-full min-h-[89.8%]`}>
@@ -177,10 +134,10 @@ function Dashboard() {
             <DashboardTopBar
               adminData={currentAdminData}
               dateData={dateRange[0]}
-              updateData={updateData}
+              fetchData={fetchData}
             />
-            <div className="flex flex-wrap gap-3 md:gap-0 justify-between w-full">
-              <div className="flex flex-col gap-3 w-full md:w-[49.5%]">
+            <div className="flex flex-wrap gap-3 lg:gap-0 justify-between w-full">
+              <div className="flex flex-col gap-3 w-full lg:w-[49.5%]">
                 <div className="flex flex-wrap min-[540px]:flex-nowrap gap-y-2 min-[540px]:gap-2 justify-between w-full">
                   <MetricCard 
                     bgColor='bg-mag/90'
@@ -219,42 +176,14 @@ function Dashboard() {
                   />
                 </div>   
               </div>
-              <div className="flex flex-col gap-3 w-full md:w-[49.5%]">
-                <SummariesAreaChart
+              <div className="flex flex-col gap-3 w-full lg:w-[49.5%]">
+                <SummariesChart
                   data={monthlySummaries}
                   adminsData={adminsMonthlySummaries}
                 />
-                <div className="w-full bg-white p-2 rounded-lg shadow-md h-[225px] overflow-auto">
-                  <table className="w-full">
-                    <thead>
-                      <tr className='border-b-2 border-purp-dark'>
-                        <th className='text-wrap text-left p-2'>Vendedor</th>
-                        <th className='text-wrap text-left p-2'>Unidades vendidas</th>
-                        <th className='text-wrap text-left p-2'>Ingresos brutos</th>
-                        <th className='text-wrap text-left p-2'>Ingresos netos</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {adminsSummaries.map(summary => (
-                        <tr key={summary.adminId} className='border-b-2 border-purp-dark/15'>
-                          <td className='p-4 text-left'>
-                            {summary.adminFullName}
-                          </td>
-                          <td className='p-4 text-center'>
-                            {summary.totalUnits}
-                          </td>
-                          <td className='p-4 text-right text-blue'>
-                            {`$${summary.subtotal}`}
-                          </td>
-                          <td className='p-4 text-right text-ok-green'>
-                            {`$${summary.total}`}
-                          </td>
-                        </tr>
-                      ))}
-                      
-                    </tbody>
-                  </table>
-                </div>
+                <AdminsTable
+                  data={adminsSummaries}
+                />
               </div>
             </div>
           </div>

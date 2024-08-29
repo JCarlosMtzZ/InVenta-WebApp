@@ -1,18 +1,12 @@
-import { useState, useRef } from "react";
+import { useState } from "react";
 
 import { FaUser } from "react-icons/fa";
-
-import FormFieldWarning from '../FormFieldWarning.jsx';
-
-import { MdOutlineDateRange } from "react-icons/md";
 import { IoSearchSharp } from "react-icons/io5";
 
-import { roundToK, formatDateToYearMonthDay } from "../../utilities/dashboard.jsx";
+import FormFieldWarning from '../FormFieldWarning.jsx';
+import DateInput from "../inputs/DateInput.jsx";
 
-function DashboardTopBar({ updateData, adminData, dateData }) {
-
-  const startDateInputRef = useRef(null);
-  const endDateInputRef = useRef(null);
+function DashboardTopBar({ fetchData, adminData, dateData }) {
   
   const [selectedStartDate, setSelectedStartDate] = useState(dateData.minDate);
   const [selectedEndDate, setSelectedEndDate] = useState(dateData.maxDate);
@@ -21,12 +15,6 @@ function DashboardTopBar({ updateData, adminData, dateData }) {
 
   const [hideDateRangeError, setHideDateRangeError] = useState(true);
 
-  const handleStartIconClick = () => {
-    startDateInputRef.current.showPicker();
-  };
-  const handleEndIconClick = () => {
-    endDateInputRef.current.showPicker();
-  };
   const handleStartDateChange = (e) => {
     setSelectedStartDate(e.target.value);
     setIsStartDate(!!e.target.value);
@@ -39,10 +27,8 @@ function DashboardTopBar({ updateData, adminData, dateData }) {
   };
 
   const handleSubmit = async () => {
-    const isCurrentStartDate = isStartDate;
-    const isCurrentEndDate = isEndDate;
 
-    if (!isCurrentStartDate || !isCurrentEndDate)
+    if (!isStartDate || !isEndDate)
       return;
     
     const formattedStartDate = new Date(selectedStartDate);
@@ -53,10 +39,8 @@ function DashboardTopBar({ updateData, adminData, dateData }) {
       return;
     }
     
-    //formattedStartDate.setDate(formattedStartDate.getDate() + 1);
-    //formattedEndDate.setDate(formattedEndDate.getDate() + 1);
-    
-    await updateData(formattedStartDate, formattedEndDate);
+    const abortController = new AbortController();
+    await fetchData(abortController, true, formattedStartDate, formattedEndDate);
   };
 
   return (
@@ -68,43 +52,25 @@ function DashboardTopBar({ updateData, adminData, dateData }) {
       <div className="flex flex-col px-4">
         <div className="flex flex-wrap gap-2 py-2 items-center">
           <p className="text-lg font-semibold">Reporte de</p>
-          <div className={`${!isStartDate && 'border-2 border-warn-red'} flex items-center gap-2 p-2 bg-purp-dark/10 rounded-lg`}>
-            <input 
-              type="date" 
-              ref={startDateInputRef}
-              onChange={handleStartDateChange}
-              className="opacity-0 absolute pointer-events-none w-0 h-0"
-            />
-            <p className="text-lg">{selectedStartDate && formatDateToYearMonthDay(new Date(selectedStartDate))}</p>
-            <button
-              onClick={handleStartIconClick}
-              className="hover:scale-110 transition"
-              >
-              <MdOutlineDateRange size='1.5rem' />
-            </button>
-          </div>
+          <DateInput
+            isDate={isStartDate}
+            value={selectedStartDate}
+            handleInputChange={handleStartDateChange}
+          />
           <p className="text-lg font-semibold">a</p>
-          <div className={`${!isEndDate && 'border-2 border-warn-red'} flex items-center gap-2 p-2 bg-purp-dark/10 rounded-lg`}>
-            <input 
-              type="date" 
-              ref={endDateInputRef}
-              onChange={handleEndDateChange}
-              className="opacity-0 absolute pointer-events-none w-0 h-0"
+          <div className="flex gap-2">
+            <DateInput
+              isDate={isEndDate}
+              value={selectedEndDate}
+              handleInputChange={handleEndDateChange}
             />
-            <p className="text-lg">{selectedEndDate && formatDateToYearMonthDay(new Date(selectedEndDate))}</p>
             <button
-              onClick={handleEndIconClick}
+              onClick={handleSubmit}
               className="hover:scale-110 transition"
             >
-              <MdOutlineDateRange size='1.5rem' />
+              <IoSearchSharp size='1.5rem' />
             </button>
           </div>
-          <button
-            onClick={handleSubmit}
-            className="hover:scale-110 transition"
-          >
-            <IoSearchSharp size='1.5rem' />
-          </button>
         </div>
         <FormFieldWarning
           hiddingDisplay='hidden'

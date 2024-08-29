@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 import FormFieldWarning from "../FormFieldWarning.jsx";
 import PasswordFormField from "../inputs/PasswordFormField.jsx";
@@ -10,6 +11,7 @@ import { login } from "../../services/adminsService.js";
 function LoginForm({ checkAdmin, handleClose, className, isWaitingResponse, setIsWaitingResponse }) {
 
   const [isResponseOk, setIsResponseOk] = useState(true);
+  const navigate = useNavigate();
 
   const [formData, setFormData] = useState({
     email: '',
@@ -54,7 +56,8 @@ function LoginForm({ checkAdmin, handleClose, className, isWaitingResponse, setI
         setIsResponseOk(false);
         throw new Error('Invalid email or password');
       } else if (loginResult === 200) {
-        checkAdmin();
+        await checkAdmin();
+        navigate('/dashboard');
         handleClose();
       }
     } catch (error) {

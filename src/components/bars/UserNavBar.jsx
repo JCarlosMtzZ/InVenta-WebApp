@@ -1,7 +1,9 @@
+import { Link } from "react-router-dom";
+
 import { IoHomeOutline } from "react-icons/io5";
 import { FaRegUserCircle } from "react-icons/fa";
+
 import SearchBar from "./SearchBar";
-import { Link } from "react-router-dom";
 
 function UserNavBar({ setIsLogging, setIsAddingProduct, setIsCart }) {
 
@@ -12,10 +14,10 @@ function UserNavBar({ setIsLogging, setIsAddingProduct, setIsCart }) {
   }
 
   return (
-    <nav className='w-[100%] h-[60px] bg-purp-dark flex justify-between items-center'>
-      <button type='button' className='ml-4 hover:scale-110 transition'>
+    <nav className='w-full h-[65px] bg-purp-dark flex justify-between items-center'>
+      <Link to='/inventory' className='ml-4 hover:scale-110 transition'>
         <IoHomeOutline color='white' size='2rem' />
-      </button>
+      </Link>
       <SearchBar
         hasDropdown={true}
       />  

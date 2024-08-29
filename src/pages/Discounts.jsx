@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 import { AiOutlineLoading } from 'react-icons/ai';
 
@@ -9,17 +10,21 @@ import FilterButton from '../components/buttons/FilterButton.jsx';
 import CommonButton from '../components/buttons/CommonButton.jsx';
 
 function Discounts({
+  adminId,
   isWaitingResponse,
   setIsWaitingResponse
 }) {
 
   const [isLoading, setIsLoading] = useState(true);
+  const navigate = useNavigate();
 
   const [discounts, setDiscounts] = useState([]);
   const [isAdding, setIsAdding] = useState(false);
   const [filter, setFilter] = useState('all');
 
   useEffect(() => {
+    if (!adminId)
+      navigate(`/inventory`);
     fetchDiscounts();
   }, []);
 
