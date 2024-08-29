@@ -123,7 +123,7 @@ function Dashboard({ adminId }) {
   }, []);
 
   return (
-    <div className={`${isLoading ? 'bg-white' : 'bg-purp-dark/50'} flex items-center justify-center w-full min-h-[89.8%]`}>
+    <div className={`${isLoading ? 'bg-white' : 'bg-purp-dark/10'} flex items-center justify-center w-full min-h-[calc(100%-65px)]`}>
       {isLoading ? (
         <div className='w-fit h-fit animate-spin'>
           <AiOutlineLoading size='4rem' color='#605399' />

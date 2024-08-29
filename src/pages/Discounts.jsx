@@ -78,7 +78,7 @@ function Discounts({
   };
 
   return (
-    <div className={`py-4 px-4 sm:px-14 flex ${isLoading && 'items-center'} justify-center w-full min-h-[89.8%]`}>
+    <div className={`py-4 px-4 sm:px-14 flex ${isLoading && 'items-center'} justify-center w-full min-h-[calc(100%-65px)]`}>
       {isLoading ? (
         <div className='w-fit h-fit animate-spin'>
           <AiOutlineLoading size='4rem' color='#605399' />

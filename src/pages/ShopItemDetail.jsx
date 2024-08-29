@@ -98,7 +98,7 @@ function ShopItemDetail({
   };
 
   return (
-    <div className={`w-full px-8 py-4 items-center min-h-[89.8%] flex justify-center`}>
+    <div className={`w-full px-8 py-4 items-center min-h-[calc(100%-65px)] flex justify-center`}>
       {isLoading ? (
         <div className='w-fit h-fit animate-spin'>
           <AiOutlineLoading size='4rem' color='#605399' />

@@ -40,9 +40,9 @@ function AdminNavBar({ checkAdmin }) {
           <IoHomeOutline color='white' size='2rem' />
         </Link>
         <div className='hidden sm:flex text-white gap-x-8'>
-          <Link to='/dashboard' className={`${location.pathname === '/dashboard' && 'border-b-2 border-white'} hover:scale-110 transition`}>Tablero</Link>
-          <Link to='/inventory' className={`${location.pathname === '/inventory' && 'border-b-2 border-white'} hover:scale-110 transition`}>Inventario</Link>
-          <Link to='/discounts' className={`${location.pathname === '/discounts' && 'border-b-2 border-white'} hover:scale-110 transition`}>Descuentos</Link>
+          <Link to='/dashboard' className={`${location.pathname === '/dashboard' ? 'font-semibold' : 'opacity-90'} hover:scale-110 transition`}>Tablero</Link>
+          <Link to='/inventory' className={`${location.pathname === '/inventory' ? 'font-semibold' : 'opacity-90'} hover:scale-110 transition`}>Inventario</Link>
+          <Link to='/discounts' className={`${location.pathname === '/discounts' ? 'font-semibold' : 'opacity-90'} hover:scale-110 transition`}>Descuentos</Link>
         </div>
         <button
           onClick={handleLogout}
@@ -54,11 +54,11 @@ function AdminNavBar({ checkAdmin }) {
           <SlOptions color='white' size='1.5rem' />
         </button>
       </nav>
-      <div className={`sm:hidden w-[100%] flex-col gap-y-3 p-3 text-white bg-purp-dark ${isToggled ? 'flex' : 'hidden'} ${animationClass}`}>
-        <Link to='/dashboard' onClick={handleToggle} className='scale-95 hover:scale-100 transition'>Tablero</Link>
-        <Link to='/inventory' onClick={handleToggle} className='scale-95 hover:scale-100 transition'>Inventario</Link>
-        <Link to='/discounts' onClick={handleToggle} className='scale-95 hover:scale-100 transition'>Descuentos</Link>
-        <button onClick={handleLogout} className='scale-95 hover:scale-100 transition'>Cerrar sesión</button>
+      <div className={`sm:hidden w-full flex-col gap-y-3 p-3 text-white bg-purp-dark ${isToggled ? 'flex' : 'hidden'} ${animationClass}`}>
+        <Link to='/dashboard' onClick={handleToggle} className={`${location.pathname === '/dashboard' ? 'font-semibold' : 'opacity-90'} text-left scale-95 hover:scale-100 transition`}>Tablero</Link>
+        <Link to='/inventory' onClick={handleToggle} className={`${location.pathname === '/inventory' ? 'font-semibold' : 'opacity-90'} text-left scale-95 hover:scale-100 transition`}>Inventario</Link>
+        <Link to='/discounts' onClick={handleToggle} className={`${location.pathname === '/discounts' ? 'font-semibold' : 'opacity-90'} text-left scale-95 hover:scale-100 transition`}>Descuentos</Link>
+        <button onClick={handleLogout} className={`text-left scale-95 hover:scale-100 transition`}>Cerrar sesión</button>
       </div>
     </div>    
   );

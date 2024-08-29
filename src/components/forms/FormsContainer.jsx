@@ -23,44 +23,46 @@ function FormsContainer({ setIsOpen, checkAdmin, isWaitingResponse, setIsWaiting
   };
 
   return (
-    <div className='bg-white w-full h-[89.8vh] sm:w-[500px] sm:h-[500px] sm:rounded-lg sm:shadow-lg flex flex-col'>
-      <div className='ml-2 mr-7 mt-5 flex items-center'>
-        <HeaderButton
-          onClick={handleClick}
-          text='Iniciar sesión'
-          isSelected={!hideLogin}
-        />
-        <HeaderButton
-          onClick={handleClick}
-          text='Crear cuenta'
-          isSelected={hideLogin}
-        />
-        <div className='ml-auto'>
-          <CloseButton
-            onClick={handleClose}
+    <div className={`bg-black/70 absolute w-full min-h-[calc(100%-65px)] top-[65px] flex items-center justify-center z-20`}>
+      <div className='bg-white w-full h-[calc(100vh-65px)] sm:w-[500px] sm:h-[500px] sm:rounded-lg sm:shadow-lg flex flex-col'>
+        <div className='ml-2 mr-7 mt-5 flex items-center'>
+          <HeaderButton
+            onClick={handleClick}
+            text='Iniciar sesión'
+            isSelected={!hideLogin}
           />
+          <HeaderButton
+            onClick={handleClick}
+            text='Crear cuenta'
+            isSelected={hideLogin}
+          />
+          <div className='ml-auto'>
+            <CloseButton
+              onClick={handleClose}
+            />
+          </div>
         </div>
-      </div>
-      <div>
-        {hideLogin ? (
-          <SignupForm
-            checkAdmin={checkAdmin}
-            handleClose={handleClose}
-            className={animationClass}
-            isWaitingResponse={isWaitingResponse}
-            setIsWaitingResponse={setIsWaitingResponse}
-          />
-        ) : (
-          <LoginForm
-            checkAdmin={checkAdmin}
-            handleClose={handleClose}
-            className={animationClass}
-            isWaitingResponse={isWaitingResponse}
-            setIsWaitingResponse={setIsWaitingResponse}
-          />
-        )}
-      </div>
-    </div>   
+        <div>
+          {hideLogin ? (
+            <SignupForm
+              checkAdmin={checkAdmin}
+              handleClose={handleClose}
+              className={animationClass}
+              isWaitingResponse={isWaitingResponse}
+              setIsWaitingResponse={setIsWaitingResponse}
+            />
+          ) : (
+            <LoginForm
+              checkAdmin={checkAdmin}
+              handleClose={handleClose}
+              className={animationClass}
+              isWaitingResponse={isWaitingResponse}
+              setIsWaitingResponse={setIsWaitingResponse}
+            />
+          )}
+        </div>
+      </div>  
+    </div> 
   );
 };
 

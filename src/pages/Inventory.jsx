@@ -98,7 +98,7 @@ function Inventory({
   };
 
   return (
-    <div className={`w-full h-[89.8%] ${isLoading && 'flex justify-center items-center'}`}>
+    <div className={`w-full h-[calc(100%-65px)] ${isLoading && 'flex justify-center items-center'}`}>
       {isLoading ? (
         <div className='w-fit h-fit animate-spin'>
           <AiOutlineLoading size='4rem' color='#605399' />
@@ -148,19 +148,17 @@ function Inventory({
             categories={categories}
             setProducts={setProducts}
           />
-          <div className='w-full h-full'>
-            <div className='pb-4 w-full flex flex-wrap justify-center gap-4'>
-              {products.length > 0 && (
-                products.map((product) => (
-                  <ShopItem
-                    key={product.id}
-                    product={product}
-                    showButtons={!isManaging && adminId}
-                    cart={cart}
-                    setCart={setCart}
-                  />
-                )))}
-            </div>
+          <div className='pb-4 w-full flex flex-wrap justify-center gap-4'>
+            {products.length > 0 && (
+              products.map((product) => (
+                <ShopItem
+                  key={product.id}
+                  product={product}
+                  showButtons={!isManaging && adminId}
+                  cart={cart}
+                  setCart={setCart}
+                />
+              )))}
           </div>
         </div>
       )}

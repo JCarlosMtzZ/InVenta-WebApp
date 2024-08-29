@@ -48,16 +48,6 @@ function App() {
       ) : (
         <div className='w-full h-full'>
           <BrowserRouter>
-            {isLogging && (
-              <div className={`bg-black/70 absolute w-full min-h-[89.8%] top-[60px] flex items-center justify-center z-20`}>
-                <FormsContainer
-                  setIsOpen={setIsLogging}
-                  checkAdmin={fetchCheckAdmin}
-                  isWaitingResponse={isWaitingResponse}
-                  setIsWaitingResponse={setIsWaitingResponse}
-                />
-              </div>
-            )}
             {adminId ? (
               <AdminNavBar
                 checkAdmin={fetchCheckAdmin}
@@ -67,6 +57,14 @@ function App() {
                 setIsLogging={setIsLogging}
                 setIsAddingProduct={setIsAddingProduct}
                 setIsCart={setIsCart}
+              />
+            )}
+            {isLogging && (
+              <FormsContainer
+                setIsOpen={setIsLogging}
+                checkAdmin={fetchCheckAdmin}
+                isWaitingResponse={isWaitingResponse}
+                setIsWaitingResponse={setIsWaitingResponse}
               />
             )}
             <Routes>
