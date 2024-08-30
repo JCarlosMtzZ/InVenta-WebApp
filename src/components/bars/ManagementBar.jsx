@@ -48,7 +48,7 @@ function ManagementBar({
           filter={filter}
           getFilterName={() => getFilterName(filter)}
           setExternalProducts={setProducts}
-          hasDropdown={false}  
+          hasDropdown={false} 
         />
       }
       <div className='flex items-center justify-center gap-4'>

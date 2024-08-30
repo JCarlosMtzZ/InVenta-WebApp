@@ -5,10 +5,7 @@ import debounce from "lodash.debounce";
 import { IoSearchSharp } from "react-icons/io5";
 import { AiOutlineLoading } from "react-icons/ai";
 
-import {
-  getProductsByNameFilter,
-  getAllProductsCategoriesImagesDiscountsByNameAndFilter
-} from "../../services/productsService.js";
+import { getProductsByNameFilter, getAllProductsCategoriesImagesByNameAndFilter } from "../../services/productsService.js";
 
 function SearchBar({ setExternalProducts, hasDropdown, getFilterName, filter }) {
 
@@ -34,12 +31,8 @@ function SearchBar({ setExternalProducts, hasDropdown, getFilterName, filter }) 
         productsResult = await getProductsByNameFilter(term);
         setProducts(productsResult);
       } else {
-        if (filter === 'all') {
-          productsResult = await getAllProductsCategoriesImagesDiscountsByNameAndFilter(term, '');
-        } else {
-          productsResult = await getAllProductsCategoriesImagesDiscountsByNameAndFilter(term, filter);
-        }
-        setExternalProducts(productsResult);
+        productsResult = await getAllProductsCategoriesImagesByNameAndFilter(1, 10, term, filter === 'all' ? '' : filter);
+        setExternalProducts(productsResult.products);
       }
       setIsWaitingResponse(false);
     } catch (error) {

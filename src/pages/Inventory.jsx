@@ -9,11 +9,9 @@ import AddProductForm from '../components/forms/AddProductForm.jsx';
 import ManagementBar from '../components/bars/ManagementBar.jsx';
 import ShoppingCart from "../components/ShoppingCart.jsx";
 import OpenModalButton from '../components/buttons/OpenModalButton.jsx';
+import PaginationBar from '../components/bars/PaginationBar.jsx';
 
-import { 
-  getAllProductsCategoriesImagesDiscounts,
-  getAllProductsCategoriesImagesDiscountsByNameAndFilter
- } from '../services/productsService.js';
+import { getAllProductsCategoriesImagesByNameAndFilter } from '../services/productsService.js';
 import { getAllCategories } from '../services/categoriesService.js';
 import { addOrder } from "../services/ordersService.js";
 import { addOrderItem } from "../services/orderItemsService.js";
@@ -31,6 +29,8 @@ function Inventory({
  }) {
 
   const [isLoading, setIsLoading] = useState(true);
+  const [page, setPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
 
   const [products, setProducts] = useState([]);
   const [categories, setCategories] = useState([]);
@@ -38,12 +38,14 @@ function Inventory({
   const [filter, setFilter] = useState('all');
   const [isManaging, setIsManaging] = useState(true);
 
-  const fetchData = async () => {
+  const fetchData = async (page = 1, pageSize = 10, name = '', filter = '') => {
     try {
       const categoriesResult = await getAllCategories();
-      const productsResult = await getAllProductsCategoriesImagesDiscounts();
+      const productsResult = await getAllProductsCategoriesImagesByNameAndFilter(page, pageSize, name, filter === 'all' ? '' : filter);
       setCategories(categoriesResult);
-      setProducts(productsResult);
+      setProducts(productsResult.products);
+      setPage(productsResult.page);
+      setTotalPages(productsResult.totalPages);
       setIsLoading(false);
     } catch (error) {
       console.error('Error fetching data', error);
@@ -52,21 +54,23 @@ function Inventory({
 
   useEffect(() => {
     setIsLoading(true);
-    fetchData();
-  }, []);
+    fetchData(page, 10, '', filter);
+  }, [page]);
 
   const handleFilterChange = async (e) => {
     setIsLoading(true);
-    const filter = e.target.value;
-    if (filter === 'all') {
-      const productsResult = await getAllProductsCategoriesImagesDiscounts();
-      setProducts(productsResult);
-    } else {
-      const productsResult = await getAllProductsCategoriesImagesDiscountsByNameAndFilter('', filter);
-      setProducts(productsResult);
-    }
-    setFilter(filter);
-    setIsLoading(false);
+    setFilter(e.target.value);
+    await fetchData(1, 10, '', e.target.value);
+  };
+
+  const handlePreviousPage = () => {
+    if (page > 1)
+      setPage(page - 1)
+  };
+
+  const handleNextPage = () => {
+    if (page < totalPages)
+      setPage(page + 1)
   };
 
   const handleMode = () => {
@@ -158,8 +162,14 @@ function Inventory({
                   cart={cart}
                   setCart={setCart}
                 />
-              )))}
+            )))}
           </div>
+          <PaginationBar
+            handleLeftClick={handlePreviousPage}
+            handleRightClick={handleNextPage}
+            page={page}
+            totalPages={totalPages}
+          />
         </div>
       )}
     </div>

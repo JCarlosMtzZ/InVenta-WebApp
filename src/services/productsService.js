@@ -28,15 +28,8 @@ export const getProductsByNameFilter = async (name) => {
     return response.json();
 };
 
-export const getAllProductsCategoriesImagesDiscounts = async () => {
-    const response = await fetch(`${URL}/category/images/discounts`);
-    if (!response.ok)
-        throw new Error(await response.text());
-    return response.json();
-};
-
-export const getAllProductsCategoriesImagesDiscountsByNameAndFilter = async (name, filter) => {
-    const response = await fetch(`${URL}/category/images/discounts?name=${name}&filter=${filter}`);
+export const getAllProductsCategoriesImagesByNameAndFilter = async (page = 1, pageSize = 10, name = '', filter = '') => {
+    const response = await fetch(`${URL}/category/images/discounts?page=${page}&pageSize=${pageSize}&name=${name}&filter=${filter}`);
     if (!response.ok)
         throw new Error(await response.text());
     return response.json();
