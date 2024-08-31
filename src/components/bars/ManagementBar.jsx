@@ -11,7 +11,8 @@ function ManagementBar({
   filter,
   handleFilterChange,
   isManaging,
-  handleMode,
+  handleInventoryMode,
+  handleSellingMode,
   categories,
   setProducts }) {
 
@@ -30,13 +31,13 @@ function ManagementBar({
       {adminId &&
         <div className='drop-shadow-md flex gap-8 text-purp-dark text-xs font-semibold'>
           <InventoryModeButton
-            onClick={handleMode}
+            onClick={handleInventoryMode}
             isManaging={isManaging}
             Icon={<MdOutlineInventory size='2.5rem' color='#605399' />}
             text='Inventario'
           />
           <InventoryModeButton
-            onClick={handleMode}
+            onClick={handleSellingMode}
             isManaging={!isManaging}
             Icon={<AiOutlineStock size='2.5rem' color='#605399' />}
             text='Venta'

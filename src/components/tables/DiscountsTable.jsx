@@ -1,3 +1,5 @@
+import { useState } from 'react';
+
 import { FaEdit } from 'react-icons/fa';
 
 import { getDiscountValue, formatDatetime } from '../../utilities/discounts.jsx';
@@ -5,25 +7,46 @@ import { getDiscountValue, formatDatetime } from '../../utilities/discounts.jsx'
 import DiscountForm from '../forms/DiscountForm.jsx';
 
 function DiscountsTable({
+  formAnimation,
   isWaitingResponse,
   setIsWaitingResponse,
   discounts,
   setDiscounts,
   isAdding,
-  setIsAdding,
-  handleIsAdding
+  handleIsNotAdding
 }) {
 
+  const [editFormAnimation, setEditFormAnimation] = useState('');
+
   const handleIsEditing = (id) => {
-    setIsAdding(false);
+    handleIsNotAdding();
+    setEditFormAnimation('animate-fadeInRight');
     setDiscounts((currentDiscounts) => 
       currentDiscounts.map(discount => {
         if (discount.id === id) {
-          return { ...discount, isEditing: !discount.isEditing, value: '' };
+          return { ...discount, isEditing: true, value: '' };
         }
-        return discount;
+        return { ...discount, isEditing: false, value: '' };
       })
     );
+    setTimeout(() => {
+      setEditFormAnimation('');
+    }, 200);
+  };
+
+  const handleIsNotEditing = (id) => {
+    setEditFormAnimation('animate-fadeOutRight');
+    setTimeout(() => {
+      setDiscounts((currentDiscounts) => 
+        currentDiscounts.map(discount => {
+          if (discount.id === id) {
+            return { ...discount, isEditing: false, value: '' };
+          }
+          return discount;
+        })
+      );
+      setEditFormAnimation('');
+    }, 180);
   };
 
   return(
@@ -41,9 +64,10 @@ function DiscountsTable({
         <tbody>
           {isAdding && (
             <DiscountForm 
+              animationClass={formAnimation}
               isWaitingResponse={isWaitingResponse}
               setIsWaitingResponse={setIsWaitingResponse}
-              handleClose={handleIsAdding}
+              handleClose={handleIsNotAdding}
               isEditing={false}
               setDiscounts={setDiscounts}
             />
@@ -52,9 +76,10 @@ function DiscountsTable({
             discount.isEditing ? (
               <DiscountForm 
                 key={discount.id}
+                animationClass={editFormAnimation}
                 isWaitingResponse={isWaitingResponse}
                 setIsWaitingResponse={setIsWaitingResponse}
-                handleClose={() => handleIsEditing(discount.id)}
+                handleClose={() => handleIsNotEditing(discount.id)}
                 isEditing={true}
                 discount={discount}
                 setDiscounts={setDiscounts}

@@ -5,7 +5,7 @@ import { FaMinus } from "react-icons/fa";
 import { RiShoppingCartLine } from "react-icons/ri";
 import { RiDeleteBin2Line } from "react-icons/ri";
 
-function ShopItemButtons({ product, cart, setCart, isOnCart }) {
+function ShopItemButtons({ setCartItemAnimation, animationClass, product, cart, setCart, isOnCart }) {
 
   const [quantity, setQuantity] = useState(1);
 
@@ -38,7 +38,11 @@ function ShopItemButtons({ product, cart, setCart, isOnCart }) {
 
   const handleDeleteFromCart = () => {
     const updatedCart = cart.filter(item => item.id !== product.id);
-    setCart(updatedCart);
+    setCartItemAnimation('animate-fadeOutRight');
+    setTimeout(() => {
+      setCart(updatedCart);
+      setCartItemAnimation('');
+    }, 180);
   };
 
   const handleAddToCart = () => {
@@ -61,7 +65,7 @@ function ShopItemButtons({ product, cart, setCart, isOnCart }) {
   };
 
   return (
-    <div className="flex justify-center w-full h-[40px] gap-1">
+    <div className={`${animationClass} flex justify-center w-full h-[40px] gap-1`}>
       <button
         type="button"
         onClick={handleRemove}

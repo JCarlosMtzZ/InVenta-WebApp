@@ -13,6 +13,8 @@ import AdminNavBar from "./components/bars/AdminNavBar.jsx";
 
 import { checkAdmin } from './services/adminsService.js';
 
+import { handleOpenModal, handleCloseModal } from './utilities/animation.jsx';
+
 function App() {
 
   const [isLoading, setIsLoading] = useState(true);
@@ -22,7 +24,9 @@ function App() {
   const [isCart, setIsCart] = useState(false);
   const [isWaitingResponse, setIsWaitingResponse] = useState(false);
   const [isLogging, setIsLogging] = useState(false);
-  const [isAddingProduct, setIsAddingProduct] = useState(false);
+
+  const [modalAnimation, setModalAnimation] = useState('');
+  const [slideAnimation, setSlideAnimation] = useState('');
 
   const fetchCheckAdmin = async () => {
     try {
@@ -54,14 +58,15 @@ function App() {
               />
             ) : (
               <UserNavBar
-                setIsLogging={setIsLogging}
-                setIsAddingProduct={setIsAddingProduct}
-                setIsCart={setIsCart}
+                handleOpen={() => handleOpenModal(setIsLogging, setModalAnimation)}
               />
             )}
             {isLogging && (
               <FormsContainer
-                setIsOpen={setIsLogging}
+                animationClass={modalAnimation}
+                formAnimation={slideAnimation}
+                setFormAnimation={setSlideAnimation}
+                handleClose={() => handleCloseModal(setIsLogging, setModalAnimation)}
                 checkAdmin={fetchCheckAdmin}
                 isWaitingResponse={isWaitingResponse}
                 setIsWaitingResponse={setIsWaitingResponse}
@@ -73,8 +78,6 @@ function App() {
                 element={
                   <Inventory
                     adminId={adminId}
-                    isAddingProduct={isAddingProduct}
-                    setIsAddingProduct={setIsAddingProduct}
                     cart={cart}
                     setCart={setCart}
                     isCart={isCart}

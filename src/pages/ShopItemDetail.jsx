@@ -17,12 +17,16 @@ import EditProductForm from "../components/forms/EditProductForm.jsx";
 import DeleteImageButton from "../components/buttons/DeleteImageButton.jsx";
 import AddImageButton from "../components/buttons/AddImageButton.jsx";
 
+import { handleOpenModal, handleSlideAnimation } from "../utilities/animation.jsx";
+
 function ShopItemDetail({
   adminId,
   isWaitingResponse,
   setIsWaitingResponse }) {
 
   const [isLoading, setIsLoading] = useState(true);
+  const [imageAnimation, setImageAnimation] = useState('animate-fadeIn');
+  const [formAnimation, setFormAnimation] = useState('');
 
   const [images, setImages] = useState([]);
   const [imageIndex, setImageIndex] = useState(0);
@@ -76,25 +80,22 @@ function ShopItemDetail({
   }, [id]);
 
   const handleRightClick = () => {
-    if (imageIndex >= images.length - 1)
-      setImageIndex(0);
-    else
-      setImageIndex(imageIndex + 1);
+    const newIndex = imageIndex >= images.length - 1 ? 0 : imageIndex + 1;
+    handleSlideAnimation(setImageAnimation, 'fadeOutLeft', 'fadeInLeft', newIndex, setImageIndex);
   };
 
   const handleLeftClick = () => {
-    if (imageIndex <= 0)
-      setImageIndex(images.length - 1);
-    else
-      setImageIndex(imageIndex - 1);
+    const newIndex = imageIndex <= 0 ? images.length - 1 : imageIndex - 1;
+    handleSlideAnimation(setImageAnimation, 'fadeOutRight', 'fadeInRight', newIndex, setImageIndex);
   };
 
   const handleOnMouseOver = (index) => {
-    setImageIndex(index);
+    if (index !== imageIndex)
+      handleSlideAnimation(setImageAnimation, 'fadeOut', 'fadeIn', index, setImageIndex);
   };
 
   const handleIsEditingInfo = () => {
-    setIsEditingInfo(!isEditingInfo);
+    handleSlideAnimation(setFormAnimation, 'fadeOutDown', 'fadeInDown', !isEditingInfo, setIsEditingInfo);
   };
 
   return (
@@ -108,6 +109,7 @@ function ShopItemDetail({
           <div className="w-full lg:w-[40%] h-fit flex flex-wrap justify-center gap-2 p-4">
             {isEditingInfo ? (
               <EditProductForm
+                animationClass={formAnimation}
                 handleClose={handleIsEditingInfo}
                 product={product}
                 setProduct={setProduct}
@@ -117,7 +119,7 @@ function ShopItemDetail({
                 setIsWaitingResponse={setIsWaitingResponse}
               />
             ) : (
-              <div className="flex flex-col w-full border-b border-mag mb-3">
+              <div className={`${formAnimation} flex flex-col w-full border-b border-mag mb-3`}>
                 <div className="p-2">
                   <div className="py-2 flex justify-between items-center">
                     <p className="font-bold text-lg">{product.name}</p>
@@ -183,10 +185,10 @@ function ShopItemDetail({
             }
           </div>
 
-          <div className="relative w-full lg:w-[60%] h-full flex items-center justify-center">
+          <div className={`${imageAnimation} relative w-full lg:w-[60%] h-full flex items-center justify-center`}>
             <img
               src={bucketURL + images[imageIndex].url}
-              className="object-cover w-full h-full rounded-lg" />
+              className={` object-cover w-full h-full rounded-lg`} />
             <button onClick={handleLeftClick} type="button" className="opacity-0 hover:opacity-70 transition flex items-center justify-center left-0 top-0 bottom-0 rounded-l-lg absolute w-12 bg-white">
               <FaAngleLeft size='3rem' color="black" />
             </button>

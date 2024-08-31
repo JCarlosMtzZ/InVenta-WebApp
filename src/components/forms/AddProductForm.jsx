@@ -12,6 +12,7 @@ import { getFilesByPrefix, uploadToBucket } from "../../services/filesService.js
 import { uploadImage } from "../../services/imagesService.js";
 
 function AddProductForm({
+  animationClass,
   categories,
   products,
   setProducts,
@@ -44,6 +45,9 @@ function AddProductForm({
   
   const [priceFieldMessage, setPriceFieldMessage] = useState("Requerido");
   const [stockFieldMessage, setStockFieldMessage] = useState("Requerido");
+
+  const [firstPageAnimation, setFirstPageAnimation] = useState('');
+  const [secondPageAnimation, setSecondPageAnimation] = useState('');
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -81,11 +85,24 @@ function AddProductForm({
       setAreFiles(false)
       return;
     }
-    setIsFirstPage(false);
+
+    setSecondPageAnimation('animate-fadeInLeft');
+    setFirstPageAnimation('animate-fadeOutLeft');
+    setTimeout(() => {
+      setIsFirstPage(false);
+      setFirstPageAnimation('');
+      setSecondPageAnimation('');
+    }, 180);
   };
 
   const handlePreviousPage = () => {
-    setIsFirstPage(true);
+    setSecondPageAnimation('animate-fadeOutRight');
+    setFirstPageAnimation('animate-fadeInRight');
+    setTimeout(() => {
+      setIsFirstPage(true);
+      setFirstPageAnimation('');
+      setSecondPageAnimation('');
+    }, 180);
   };
 
   const handleSubmit = async () => {
@@ -160,7 +177,7 @@ function AddProductForm({
   };
 
   return(
-    <div className={`absolute z-20 w-full h-full flex justify-center items-center bg-black/70`}>
+    <div className={`${animationClass} absolute z-20 w-full h-full flex justify-center items-center bg-black/70`}>
       <div className='relative bg-white w-full h-full sm:w-[500px] sm:h-[500px] sm:rounded-lg sm:shadow-lg flex flex-col items-center'>
         <div className="mt-4 mb-2 w-[90%] flex justify-between items-center">
           <p className="text-lg font-semibold">Agregar un nuevo producto</p>
@@ -168,8 +185,8 @@ function AddProductForm({
             onClick={handleClose}
           />
         </div>
-        <div className={`ml-[5%] self-start border-b-4 border-purp-dark rounded-lg transition-all duration-300 ${isFirstPage ? 'w-[45%]' : 'w-[90%]'}`} />
-        <div className={`${isFirstPage ? 'opacity-100 z-10' : 'opacity-0'} absolute top-20 w-[90%] flex flex-col`}>
+        <div className={`ml-[5%] self-start border-b-4 border-purp-dark rounded-lg transition-all duration-200 ${isFirstPage ? 'w-[45%]' : 'w-[90%]'}`} />
+        <div className={`${isFirstPage ? 'opacity-100 z-10' : 'opacity-0'} ${firstPageAnimation} absolute top-20 w-[90%] flex flex-col`}>
           <InputWithWarning
             label='Nombre del producto'
             type='text'
@@ -223,7 +240,7 @@ function AddProductForm({
           />
         </div>
             
-        <div className={`${isFirstPage ? 'opacity-0' : 'opacity-100 z-10'} absolute top-20 w-[90%] h-full flex flex-col`}>
+        <div className={`${isFirstPage ? 'opacity-0' : 'opacity-100 z-10'} ${secondPageAnimation} absolute top-20 w-[90%] h-full flex flex-col`}>
           <div className="flex w-full justify-between">
             <InputWithWarning
               label='Precio unitario'

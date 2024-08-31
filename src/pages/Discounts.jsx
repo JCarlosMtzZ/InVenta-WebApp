@@ -9,6 +9,8 @@ import DiscountsTable from '../components/tables/DiscountsTable.jsx';
 import FilterButton from '../components/buttons/FilterButton.jsx';
 import CommonButton from '../components/buttons/CommonButton.jsx';
 
+import { handleOpenModal, handleCloseModal } from '../utilities/animation.jsx';
+
 function Discounts({
   adminId,
   isWaitingResponse,
@@ -17,6 +19,7 @@ function Discounts({
 
   const [isLoading, setIsLoading] = useState(true);
   const navigate = useNavigate();
+  const [addFormAnimation, setAddFormAnimation] = useState('');
 
   const [discounts, setDiscounts] = useState([]);
   const [isAdding, setIsAdding] = useState(false);
@@ -64,13 +67,18 @@ function Discounts({
   }
 
   const handleIsAdding = () => {
-    setIsAdding(!isAdding);
+    if (!isAdding)
+      handleOpenModal(setIsAdding, setAddFormAnimation, 'fadeInRight');
 
     setDiscounts((currentDiscounts) =>
       currentDiscounts.map(discount => ({
         ...discount,
         isEditing: false
     })));
+  };
+
+  const handleIsNotAdding = () => {
+    handleCloseModal(setIsAdding, setAddFormAnimation, 'fadeOutRight');
   };
 
   const handleOnFilterClick = (e) => {
@@ -117,6 +125,7 @@ function Discounts({
             />
           </div>
           <DiscountsTable
+            formAnimation={addFormAnimation}
             isWaitingResponse={isWaitingResponse}
             setIsWaitingResponse={setIsWaitingResponse}
             discounts={discounts}
@@ -124,6 +133,7 @@ function Discounts({
             isAdding={isAdding}
             setIsAdding={setIsAdding}
             handleIsAdding={handleIsAdding}
+            handleIsNotAdding={handleIsNotAdding}
           />
         </div>
       )}

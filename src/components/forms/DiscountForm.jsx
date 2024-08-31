@@ -13,6 +13,7 @@ import EditingFormButtons from '../buttons/EditingFormButtons.jsx';
 import EditFormInput from '../inputs/EditFormInput.jsx';
 
 function DiscountForm({
+  animationClass,
   isWaitingResponse,
   setIsWaitingResponse,
   handleClose,
@@ -173,7 +174,7 @@ function DiscountForm({
   };
 
   return (
-    <tr className={`relative w-full border-b-2 border-purp-dark/15`}>
+    <tr className={`${animationClass} relative w-full border-b-2 border-purp-dark/15`}>
       <td className={`${warnMessage != 'Requerido' && 'pb-7'} p-4`}>
         <EditFormInput
           type="text" 

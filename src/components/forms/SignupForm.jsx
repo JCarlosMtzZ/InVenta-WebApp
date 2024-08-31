@@ -10,7 +10,7 @@ import { validateEmail, validatePassword } from "../../utilities/forms.jsx";
 
 import { signup } from "../../services/adminsService.js";
 
-function SignupForm({ checkAdmin, handleClose, className, isWaitingResponse, setIsWaitingResponse }) {
+function SignupForm({ animationClass, checkAdmin, handleClose, isWaitingResponse, setIsWaitingResponse }) {
 
   const navigate = useNavigate();
 
@@ -98,7 +98,7 @@ function SignupForm({ checkAdmin, handleClose, className, isWaitingResponse, set
   };
 
   return (
-    <div className={`w-[100%] h-[100%] p-8 flex flex-col justify-center relative ${className}`}>
+    <div className={`${animationClass} w-[100%] h-[100%] p-8 flex flex-col justify-center relative`}>
       <div className='flex justify-between'>
         <InputWithWarning
           label='Nombre(s)'

@@ -1,19 +1,21 @@
 import { useState, useEffect } from "react";
 
-import ShopItemButtons from "./buttons/ShopItemButtons.jsx";
 import FormSubmitButton from "./buttons/FormSubmitButton.jsx";
 import CommonButton from "./buttons/CommonButton.jsx";
 import CloseButton from "./buttons/CloseButton.jsx";
+import CartItem from "./cards/CartItem.jsx";
 
-import { bucketURL } from "../services/util.js";
-import { getSubtotal, getTotal, getFinalPrice } from "../utilities/discounts.jsx";
+import { getSubtotal, getTotal } from "../utilities/discounts.jsx";
 
 function ShoppingCart({
+  animationClass,
   cart,
   setCart,
   handleClose,
   handleSubmit,
   isWaitingResponse }) {
+
+  const [cartListAnimation, setCartListAnimation] = useState('');
 
   const [subtotal, setSubtotal] = useState(0);
   const [total, setTotal] = useState(0);
@@ -24,11 +26,14 @@ function ShoppingCart({
   }, [cart]);
 
   const handleEmptyCart = () => {
-    setCart([]);
+    setCartListAnimation('animate-fadeOutRight');
+    setTimeout(() => {
+      setCart([]);
+    }, 180);
   };
 
   return (
-    <div className="absolute z-20 w-full h-full bg-black/70">
+    <div className={`${animationClass} absolute z-20 w-full h-full bg-black/70`}>
       <div className="bg-white flex flex-col sm:rounded-lg h-full w-full sm:w-[500px]">
         <div className="px-4 py-4 flex justify-between items-center shadow-lg">
           <div className="flex flex-col">
@@ -43,42 +48,15 @@ function ShoppingCart({
             onClick={handleClose}
           />
         </div>
-        <div className="flex flex-col w-full overflow-auto flex-grow">
+        <div className={`${cartListAnimation} flex flex-col w-full overflow-y-auto overflow-x-hidden flex-grow`}>
           {cart.length > 0 &&
             cart.map((cartItem) => (
-              <div
+              <CartItem
                 key={cartItem.id}
-                className='px-2 py-4 w-full flex items-center justify-evenly shadow-md'
-              >
-                <img
-                  src={bucketURL + cartItem.Images[0].url}
-                  alt=""
-                  className='shadow-lg object-cover w-[50px] h-[50px] rounded-[50%]'
-                />
-                <div className="flex flex-col">
-                  <p className='line-clamp-1 ml-[9px]'>
-                    {cartItem.name}
-                  </p>
-                  <div className="scale-90">
-                    <ShopItemButtons
-                      product={cartItem}
-                      cart={cart}
-                      setCart={setCart}
-                      isOnCart={true}
-                    />
-                  </div>
-                </div>
-                <div className="flex flex-col">
-                  {cartItem.unitPrice.toFixed(2) != getFinalPrice(cartItem).finalPrice &&
-                    <p className="line-through opacity-60 text-md">
-                      {'$ ' + (cartItem.unitPrice * cartItem.quantity).toFixed(2)}
-                    </p>
-                  }
-                  <p className="font-semibold text-lg">
-                    {'$ ' + (getFinalPrice(cartItem).finalPrice * cartItem.quantity).toFixed(2)}
-                  </p>
-                </div>
-              </div>
+                data={cartItem}
+                cart={cart}
+                setCart={setCart}
+              />
             ))
           }
         </div>

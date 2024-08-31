@@ -7,13 +7,15 @@ import { SlOptions } from 'react-icons/sl';
 
 import { logout } from '../../services/adminsService.js';
 
+import { handleOpenModal, handleCloseModal } from '../../utilities/animation.jsx';
+
 function AdminNavBar({ checkAdmin }) {
 
   const navigate = useNavigate();
   const location = useLocation();
+  const [animationClass, setAnimationClass] = useState('');
 
   const [isToggled, setIsToggled] = useState(false);
-  const [animationClass, setAnimationClass] = useState("fade-down");
 
   const handleLogout = async () => {
     try {
@@ -26,11 +28,11 @@ function AdminNavBar({ checkAdmin }) {
   };
 
   const handleToggle = () => {
-    setAnimationClass('fade-up');
-    setTimeout(() => {
-      setIsToggled(!isToggled);
-      setAnimationClass('fade-down');
-    }, 100);
+    handleOpenModal(setIsToggled, setAnimationClass);
+  }
+
+  const handleUntoggle = () => {
+    handleCloseModal(setIsToggled, setAnimationClass);
   };
 
   return (
@@ -50,14 +52,14 @@ function AdminNavBar({ checkAdmin }) {
         >
           <IoIosLogOut color='white' size='2rem' />
         </button>
-        <button type='button' onClick={handleToggle} className={`block sm:hidden mr-3 hover:scale-110 transition ${isToggled ? 'rotate-90' : 'rotate-0'}`}>
+        <button type='button' onClick={isToggled ? handleUntoggle : handleToggle} className={`block sm:hidden mr-3 hover:scale-110 transition ${isToggled ? 'rotate-90' : 'rotate-0'}`}>
           <SlOptions color='white' size='1.5rem' />
         </button>
       </nav>
       <div className={`sm:hidden w-full flex-col gap-y-3 p-3 text-white bg-purp-dark ${isToggled ? 'flex' : 'hidden'} ${animationClass}`}>
-        <Link to='/dashboard' onClick={handleToggle} className={`${location.pathname === '/dashboard' ? 'font-semibold' : 'opacity-90'} text-left scale-95 hover:scale-100 transition`}>Tablero</Link>
-        <Link to='/inventory' onClick={handleToggle} className={`${location.pathname === '/inventory' ? 'font-semibold' : 'opacity-90'} text-left scale-95 hover:scale-100 transition`}>Inventario</Link>
-        <Link to='/discounts' onClick={handleToggle} className={`${location.pathname === '/discounts' ? 'font-semibold' : 'opacity-90'} text-left scale-95 hover:scale-100 transition`}>Descuentos</Link>
+        <Link to='/dashboard' onClick={handleUntoggle} className={`${location.pathname === '/dashboard' ? 'font-semibold' : 'opacity-90'} text-left scale-95 hover:scale-100 transition`}>Tablero</Link>
+        <Link to='/inventory' onClick={handleUntoggle} className={`${location.pathname === '/inventory' ? 'font-semibold' : 'opacity-90'} text-left scale-95 hover:scale-100 transition`}>Inventario</Link>
+        <Link to='/discounts' onClick={handleUntoggle} className={`${location.pathname === '/discounts' ? 'font-semibold' : 'opacity-90'} text-left scale-95 hover:scale-100 transition`}>Descuentos</Link>
         <button onClick={handleLogout} className={`text-left scale-95 hover:scale-100 transition`}>Cerrar sesión</button>
       </div>
     </div>    

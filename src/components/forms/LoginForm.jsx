@@ -8,7 +8,7 @@ import InputWithWarning from "../inputs/InputWithWarning.jsx";
 
 import { login } from "../../services/adminsService.js";
 
-function LoginForm({ checkAdmin, handleClose, className, isWaitingResponse, setIsWaitingResponse }) {
+function LoginForm({ animationClass, checkAdmin, handleClose, isWaitingResponse, setIsWaitingResponse }) {
 
   const [isResponseOk, setIsResponseOk] = useState(true);
   const navigate = useNavigate();
@@ -68,7 +68,7 @@ function LoginForm({ checkAdmin, handleClose, className, isWaitingResponse, setI
   };
 
   return (
-    <div className={`w-[100%] h-[100%] p-8 flex flex-col justify-center relative ${className}`}>
+    <div className={`${animationClass} w-[100%] h-[100%] p-8 flex flex-col justify-center relative`}>
       <FormFieldWarning
         hiddingDisplay='hidden'
         isFormField={isResponseOk}

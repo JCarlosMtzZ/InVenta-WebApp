@@ -5,7 +5,7 @@ import ShopItemButtons from "../buttons/ShopItemButtons.jsx";
 
 import { bucketURL } from "../../services/util.js";
 
-function ShopItem({ product, showButtons, cart, setCart }) {
+function ShopItem({ buttonsAnimation, product, showButtons, cart, setCart }) {
 
   const navigate = useNavigate();
   
@@ -37,6 +37,7 @@ function ShopItem({ product, showButtons, cart, setCart }) {
       {showButtons &&
         <div className="scale-95 mt-1">
           <ShopItemButtons
+            animationClass={buttonsAnimation}
             product={product}
             cart={cart}
             setCart={setCart}

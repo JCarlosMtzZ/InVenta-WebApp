@@ -5,13 +5,7 @@ import { FaRegUserCircle } from "react-icons/fa";
 
 import SearchBar from "./SearchBar";
 
-function UserNavBar({ setIsLogging, setIsAddingProduct, setIsCart }) {
-
-  const handleOpen = () => {
-    setIsCart(false);
-    setIsAddingProduct(false);
-    setIsLogging(true);
-  }
+function UserNavBar({ handleOpen }) {
 
   return (
     <nav className='w-full h-[65px] bg-purp-dark flex justify-between items-center'>

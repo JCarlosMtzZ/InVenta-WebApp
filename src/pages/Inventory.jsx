@@ -16,10 +16,10 @@ import { getAllCategories } from '../services/categoriesService.js';
 import { addOrder } from "../services/ordersService.js";
 import { addOrderItem } from "../services/orderItemsService.js";
 
+import { handleOpenModal, handleCloseModal } from '../utilities/animation.jsx';
+
 function Inventory({
   adminId,
-  isAddingProduct,
-  setIsAddingProduct,
   cart,
   setCart,
   isCart,
@@ -32,11 +32,16 @@ function Inventory({
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
 
+  const [shopItemButtonsAnimation, setShopItemButtonsAnimation] = useState('');
+  const [modalAnimation, setModalAnimation] = useState('')
+  const [cartAnimation, setCartAnimation] = useState('');
+
   const [products, setProducts] = useState([]);
   const [categories, setCategories] = useState([]);
 
   const [filter, setFilter] = useState('all');
-  const [isManaging, setIsManaging] = useState(true);
+  const [isSelling, setIsSelling] = useState(false);
+  const [isAddingProduct, setIsAddingProduct] = useState(false);
 
   const fetchData = async (page = 1, pageSize = 10, name = '', filter = '') => {
     try {
@@ -73,16 +78,30 @@ function Inventory({
       setPage(page + 1)
   };
 
-  const handleMode = () => {
-    setIsManaging(!isManaging);
+  const handleInventoryMode = () => {
+    if (isSelling)
+      handleCloseModal(setIsSelling, setShopItemButtonsAnimation);
   };
+
+  const handleSellingMode = () => {
+    if (!isSelling)
+      handleOpenModal(setIsSelling, setShopItemButtonsAnimation);
+  };
+
+  const handleIsAddingProduct = () => {
+    handleOpenModal(setIsAddingProduct, setModalAnimation);
+  }
+
+  const handleIsNotAddingProduct = () => {
+    handleCloseModal(setIsAddingProduct, setModalAnimation);
+  }
 
   const handleOpenCart = () => {
-    setIsCart(!isCart);
+    handleOpenModal(setIsCart, setCartAnimation, 'fadeInLeft');
   };
 
-  const handlePlusButtonClick = () => {
-    setIsAddingProduct(!isAddingProduct);
+  const handleCloseCart = () => {
+    handleCloseModal(setIsCart, setCartAnimation, 'fadeOutRight');
   };
 
   const handleSubmitCart = async () => {
@@ -109,7 +128,7 @@ function Inventory({
         </div>
       ) : (
         <div className={`relative w-full min-h-full max-h-[500px]  ${isAddingProduct && 'overflow-hidden'} ${isCart && 'overflow-hidden'} `}>
-          {adminId && (
+          {adminId && !isAddingProduct && !isCart && (
             <div>
               <OpenModalButton
                 onClick={handleOpenCart}
@@ -118,7 +137,7 @@ function Inventory({
                 style='bottom-[100px] right-[20px]'
               />
               <OpenModalButton
-                onClick={handlePlusButtonClick}
+                onClick={handleIsAddingProduct}
                 Icon={<FaPlus color="white" size='2rem' />}
                 style='bottom-[30px] right-[20px]'
               />
@@ -126,19 +145,21 @@ function Inventory({
           )}
           {isCart &&
             <ShoppingCart
+              animationClass={cartAnimation}
               cart={cart}
               setCart={setCart}
-              handleClose={handleOpenCart}
+              handleClose={handleCloseCart}
               handleSubmit={handleSubmitCart}
               isWaitingResponse={isWaitingResponse}
             />
           }
           {isAddingProduct && (
             <AddProductForm
+              animationClass={modalAnimation}
               categories={categories}
               products={products}
               setProducts={setProducts}
-              handleClose={handlePlusButtonClick}
+              handleClose={handleIsNotAddingProduct}
               isWaitingResponse={isWaitingResponse}
               setIsWaitingResponse={setIsWaitingResponse}
             />
@@ -147,8 +168,9 @@ function Inventory({
             adminId={adminId}
             filter={filter}
             handleFilterChange={handleFilterChange}
-            isManaging={isManaging}
-            handleMode={handleMode}
+            isManaging={!isSelling}
+            handleInventoryMode={handleInventoryMode}
+            handleSellingMode={handleSellingMode}
             categories={categories}
             setProducts={setProducts}
           />
@@ -158,7 +180,8 @@ function Inventory({
                 <ShopItem
                   key={product.id}
                   product={product}
-                  showButtons={!isManaging && adminId}
+                  buttonsAnimation={shopItemButtonsAnimation}
+                  showButtons={isSelling && adminId}
                   cart={cart}
                   setCart={setCart}
                 />

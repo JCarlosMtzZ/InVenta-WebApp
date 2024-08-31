@@ -11,6 +11,7 @@ import { addProductDiscount } from '../../services/productDiscountsService.js';
 import { getProductCategoryImagesDiscountsById } from '../../services/productsService.js';
 
 function EditProductForm({
+  animationClass,
   product,
   setProduct,
   discounts,
@@ -143,7 +144,7 @@ function EditProductForm({
   };
 
   return (
-    <div className="flex flex-col w-full border-b border-mag mb-3 pb-2">
+    <div className={`${animationClass} flex flex-col w-full border-b border-mag mb-3 pb-2`}>
       <div className="flex flex-col p-2 gap-6">
         <div className="flex justify-between items-center gap-2">
           <div className='flex flex-col'>
