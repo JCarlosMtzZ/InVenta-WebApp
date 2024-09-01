@@ -22,6 +22,9 @@ function App() {
   const [adminId, setAdminId] = useState('');
   const [cart, setCart] = useState([]);
   const [isCart, setIsCart] = useState(false);
+  const [page, setPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const [filter, setFilter] = useState('all');
   const [isWaitingResponse, setIsWaitingResponse] = useState(false);
   const [isLogging, setIsLogging] = useState(false);
 
@@ -82,6 +85,12 @@ function App() {
                     setCart={setCart}
                     isCart={isCart}
                     setIsCart={setIsCart}
+                    page={page}
+                    setPage={setPage}
+                    totalPages={totalPages}
+                    setTotalPages={setTotalPages}
+                    filter={filter}
+                    setFilter={setFilter}
                     isWaitingResponse={isWaitingResponse}
                     setIsWaitingResponse={setIsWaitingResponse}
                   />}

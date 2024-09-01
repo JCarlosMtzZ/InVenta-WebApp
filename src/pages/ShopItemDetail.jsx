@@ -106,7 +106,7 @@ function ShopItemDetail({
         </div>
       ) : (
         <div className="w-full flex flex-col lg:flex-row shadow-lg rounded-lg">
-          <div className="w-full lg:w-[40%] h-fit flex flex-wrap justify-center gap-2 p-4">
+          <div className={`${formAnimation} w-full lg:w-[40%] h-fit flex flex-wrap justify-center gap-2 p-4`}>
             {isEditingInfo ? (
               <EditProductForm
                 animationClass={formAnimation}
@@ -119,7 +119,7 @@ function ShopItemDetail({
                 setIsWaitingResponse={setIsWaitingResponse}
               />
             ) : (
-              <div className={`${formAnimation} flex flex-col w-full border-b border-mag mb-3`}>
+              <div className={`flex flex-col w-full border-b border-mag mb-3`}>
                 <div className="p-2">
                   <div className="py-2 flex justify-between items-center">
                     <p className="font-bold text-lg">{product.name}</p>
@@ -165,7 +165,7 @@ function ShopItemDetail({
                   src={bucketURL + image.url}
                   className={`${imageIndex === index && 'ring-4 ring-mag'} object-cover w-[80px] h-[80px] scale-95 group-hover:scale-100 transition rounded-lg`}
                 />
-                {images.length > 1 && adminId && !isEditingInfo &&
+                {images.length > 1 && adminId && isEditingInfo &&
                   <DeleteImageButton
                     image={image}
                     handleDelete={handleDeleteFile}
@@ -173,7 +173,7 @@ function ShopItemDetail({
                 }
               </div>
             ))}
-            {adminId && !isEditingInfo &&
+            {adminId && isEditingInfo &&
               <AddImageButton
                 product={product}
                 images={images}

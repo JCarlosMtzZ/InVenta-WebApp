@@ -9,3 +9,64 @@
     @apply scrollbar-thin;
   }
 }
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0px); }
+}
+
+@keyframes fadeInDown {
+  from { opacity: 0; transform: translateY(-20px); }
+  to { opacity: 1; transform: translateY(0px); }
+}
+
+@keyframes fadeInLeft {
+  from { opacity: 0; transform: translateX(20px); }
+  to { opacity: 1; transform: translateX(0px); }
+}
+
+@keyframes fadeInRight {
+  from { opacity: 0; transform: translateX(-20px); }
+  to { opacity: 1; transform: translateX(0px); }
+}
+
+@keyframes fadeOut {
+  from { opacity: 1; }
+  to { opacity: 0; }
+}
+
+@keyframes fadeOutUp {
+  from { opacity: 1; transform: translateY(0px); }
+  to { opacity: 0; transform: translateY(-20px); }
+}
+
+@keyframes fadeOutDown {
+  from { opacity: 1; transform: translateY(0px); }
+  to { opacity: 0; transform: translateY(20px); }
+}
+
+@keyframes fadeOutLeft {
+  from { opacity: 1; transform: translateX(0px); }
+  to { opacity: 0; transform: translateX(-20px); }
+}
+
+@keyframes fadeOutRight {
+  from { opacity: 1; transform: translateX(0px); }
+  to { opacity: 0; transform: translateX(20px); }
+}
+
+.animate-fadeIn { animation: fadeIn 0.2s; }
+.animate-fadeInUp { animation: fadeInUp 0.2s; }
+.animate-fadeInDown { animation: fadeInDown 0.2s; }
+.animate-fadeInLeft { animation: fadeInLeft 0.2s; }
+.animate-fadeInRight { animation: fadeInRight 0.2s; }
+.animate-fadeOut { animation: fadeOut 0.2s; }
+.animate-fadeOutUp { animation: fadeOutUp 0.2s; }
+.animate-fadeOutDown { animation: fadeOutDown 0.2s; }
+.animate-fadeOutLeft { animation: fadeOutLeft 0.2s; }
+.animate-fadeOutRight { animation: fadeOutRight 0.2s; }

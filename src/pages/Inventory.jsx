@@ -24,13 +24,17 @@ function Inventory({
   setCart,
   isCart,
   setIsCart,
+  page,
+  setPage,
+  totalPages,
+  setTotalPages,
+  filter,
+  setFilter,
   isWaitingResponse,
   setIsWaitingResponse
  }) {
 
   const [isLoading, setIsLoading] = useState(true);
-  const [page, setPage] = useState(1);
-  const [totalPages, setTotalPages] = useState(1);
 
   const [shopItemButtonsAnimation, setShopItemButtonsAnimation] = useState('');
   const [modalAnimation, setModalAnimation] = useState('')
@@ -39,7 +43,6 @@ function Inventory({
   const [products, setProducts] = useState([]);
   const [categories, setCategories] = useState([]);
 
-  const [filter, setFilter] = useState('all');
   const [isSelling, setIsSelling] = useState(false);
   const [isAddingProduct, setIsAddingProduct] = useState(false);
 

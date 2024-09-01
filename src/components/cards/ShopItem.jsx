@@ -14,8 +14,8 @@ function ShopItem({ buttonsAnimation, product, showButtons, cart, setCart }) {
   };
 
   return (
-    <div className="w-[200px] flex flex-col">
-      <div onClick={() => handleOnClick(product.id)} className="hover:cursor-pointer group w-full h-[300px] flex flex-col justify-evenly rounded-xl shadow-md scale-95 hover:scale-100 transition">
+    <div className={`${product.stock <= 0 && 'opacity-75'} w-[200px] flex flex-col`}>
+      <div onClick={() => handleOnClick(product.id)} disabled className="hover:cursor-pointer group w-full h-[300px] flex flex-col justify-evenly rounded-xl shadow-md scale-95 hover:scale-100 transition">
         <div className="flex w-full items-center justify-center">
           <img
             src={bucketURL + product.Images[0].url}
@@ -29,12 +29,12 @@ function ShopItem({ buttonsAnimation, product, showButtons, cart, setCart }) {
           {product.name}
         </div>
         <div
-          className="px-4 text-sm mb-3 opacity-60"
+          className="px-4 text-sm mb-3 opacity-80"
         >
           {`${product.stock + (product.stock === 1 ? ' disponible' : ' disponibles')}`}
         </div>
       </div>
-      {showButtons &&
+      {showButtons && product.stock > 0 &&
         <div className="scale-95 mt-1">
           <ShopItemButtons
             animationClass={buttonsAnimation}

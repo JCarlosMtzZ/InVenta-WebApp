@@ -13,12 +13,12 @@ function ShopItemButtons({ setCartItemAnimation, animationClass, product, cart, 
     if (isOnCart) {
       const updatedCart = cart.map(item =>
         item.id === product.id
-          ? { ...item, quantity: item.quantity + 1 }
+          ? { ...item, quantity: item.quantity < product.stock ? item.quantity + 1 : item.quantity}
           : item
       );
       setCart(updatedCart);
     } else {
-      setQuantity(quantity + 1);
+      setQuantity(quantity < product.stock ? quantity + 1 : quantity);
     }
   };
 
@@ -50,7 +50,7 @@ function ShopItemButtons({ setCartItemAnimation, animationClass, product, cart, 
     if (obj) {
       const updatedCart = cart.map(item =>
         item.id === product.id
-          ? { ...item, quantity: item.quantity + quantity }
+          ? { ...item, quantity: item.quantity + quantity < product.stock ? item.quantity + quantity : product.stock }
           : item
       );
       setCart(updatedCart);

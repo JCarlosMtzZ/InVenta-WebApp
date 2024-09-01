@@ -36,7 +36,7 @@ export const getFinalPrice = (item) => {
     hasDiscount: hasDiscount,
     isPercentage: isPercentage,
     discount: discount,
-    unitPrice: unitPrice,
+    unitPrice: unitPrice.toFixed(2),
     finalPrice: finalPrice
   };
 };

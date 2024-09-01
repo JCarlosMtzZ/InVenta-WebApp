@@ -104,8 +104,8 @@ function EditProductForm({
         newIsNewProductData.isUnitPrice = false;
         hasError = true;
       }
-      if (currentStock <= 0) {
-        setStockFieldMessage("Debe ser mayor a 0");
+      if (currentStock < 0) {
+        setStockFieldMessage("No debe ser menor a 0");
         newIsNewProductData.isStock = false;
         hasError = true;
       }
@@ -127,7 +127,7 @@ function EditProductForm({
           productId: product.id
         });
       }
-      else {
+      else if (newDiscountId !== 'none' && product.Discounts.length > 0) {
         await updateProductDiscount({
           id: product.Discounts[0].ProductDiscounts.id,
           discountId: newDiscountId
@@ -227,7 +227,7 @@ function EditProductForm({
                 value={newProductData.unitPrice}
                 isValue={isNewProductData.isUnitPrice}
                 onChange={handleInputChange}
-                style='text-center w-[60px]'
+                style='text-center w-[100px]'
               />
             </div>
             <FormFieldWarning
@@ -250,7 +250,7 @@ function EditProductForm({
                 value={newProductData.stock}
                 isValue={isNewProductData.isStock}
                 onChange={handleInputChange}
-                style='text-center w-[60px]'
+                style='text-center w-[100px]'
               />
             </div>
             <FormFieldWarning

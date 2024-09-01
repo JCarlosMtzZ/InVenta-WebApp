@@ -63,6 +63,9 @@ function SearchBar({
   }, [searchTerm]);
 
   useEffect(() => {
+    if (!isTyping)
+      return;
+
     const handleClickOutside = (event) => {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
         handleCloseModal(setIsTyping, setAnimationClass);
@@ -72,7 +75,7 @@ function SearchBar({
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
     };
-  }, []);
+  }, [isTyping]);
 
   return (
     <div ref={dropdownRef} className={`relative ${hasDropdown && 'z-30'}`}>
