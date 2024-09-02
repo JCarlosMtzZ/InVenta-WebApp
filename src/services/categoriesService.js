@@ -1,4 +1,6 @@
-const URL = 'http://localhost:3001/categories';
+import { apiURL } from "./util";
+
+const URL = apiURL + 'categories';
 
 export const getAllCategories = async () => {
     const response = await fetch(URL);

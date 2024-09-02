@@ -1,6 +1,7 @@
 import { getFinalPrice } from "../utilities/discounts";
+import { apiURL } from "./util";
 
-const URL = 'http://localhost:3001/orderItems';
+const URL = apiURL + 'orderItems';
 
 export const addOrderItem = async (orderItem, orderId) => {
     const response = await fetch(`${URL}`, {

@@ -1,4 +1,6 @@
-const URL = 'http://localhost:3001/images'
+import { apiURL } from "./util";
+
+const URL = apiURL + 'images';
 
 export const deleteFromDB = async (id) => {
     const response = await fetch(`${URL}/${id}`, {

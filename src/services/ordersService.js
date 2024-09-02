@@ -1,4 +1,6 @@
-const URL = 'http://localhost:3001/orders';
+import { apiURL } from "./util";
+
+const URL = apiURL + 'orders';
 
 export const addOrder = async (adminId) => {
     const response = await fetch(`${URL}`, {

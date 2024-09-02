@@ -1,4 +1,6 @@
-const URL = 'http://localhost:3001/admins';
+import { apiURL } from "./util";
+
+const URL = apiURL + 'admins';
 
 export const signup = async (adminData) => {
     const response = await fetch(`${URL}/signup`, {

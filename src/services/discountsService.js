@@ -1,4 +1,6 @@
-const URL = 'http://localhost:3001/discounts';
+import { apiURL } from "./util";
+
+const URL = apiURL + 'discounts';
 
 export const getAllDiscounts = async () => {
     const response = await fetch(URL);

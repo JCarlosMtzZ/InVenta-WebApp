@@ -1,1 +1,2 @@
-export const bucketURL = 'https://axi88wcqsfqf.objectstorage.mx-queretaro-1.oci.customer-oci.com/n/axi88wcqsfqf/b/bucket-catalog-web-app/o/';
+export const apiURL = import.meta.env.VITE_API_URL;
+export const bucketURL = import.meta.env.VITE_BUCKET_URL;

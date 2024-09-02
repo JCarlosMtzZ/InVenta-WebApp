@@ -1,4 +1,6 @@
-const URL = 'http://localhost:3001/files';
+import { apiURL } from "./util";
+
+const URL = apiURL + 'files';
 
 export const getFilesByPrefix = async (prefix) => {
     const response = await fetch(`${URL}/${prefix}`);
